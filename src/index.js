@@ -24,7 +24,7 @@ class ReactStarsRating extends PureComponent {
   }
 
   onMouseMove(event) {
-    const { isEdit, size, isHalf } = this.props;
+    const { isEdit, isHalf } = this.props;
 
     if (isEdit) {
       let stars = event.target.getAttribute('data-stars');
@@ -106,7 +106,14 @@ class ReactStarsRating extends PureComponent {
   }
 }
 
-ReactStarsRating.propTypes = {};
+ReactStarsRating.propTypes = {
+  isEdit: PropTypes.bool,
+  isHalf: PropTypes.bool,
+  onClick: PropTypes.func,
+  count: PropTypes.number,
+  value: PropTypes.number,
+  size: PropTypes.number,
+};
 
 ReactStarsRating.defaultProps = {
   isEdit: true,

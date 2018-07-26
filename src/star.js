@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const StarSVG = ({
-  className,
   viewBox,
   size,
   onMouseMove,
@@ -26,7 +25,6 @@ const StarSVG = ({
       width={size}
       viewBox={viewBox}
       xmlns="http://www.w3.org/2000/svg"
-      className={`svg-icon ${className || ''}`}
       xmlnsXlink="http://www.w3.org/1999/xlink"
       onMouseLeave={onMouseLeave}
       onClick={onClick}
@@ -52,6 +50,20 @@ const StarSVG = ({
       />
     </svg>
   );
+};
+
+StarSVG.propTypes = {
+  viewBox: PropTypes.string,
+  size: PropTypes.number,
+  primaryColor: PropTypes.string,
+  secondaryColor: PropTypes.string,
+  onMouseLeave: PropTypes.func,
+  onMouseMove: PropTypes.func,
+  onClick: PropTypes.func,
+  isHalf: PropTypes.bool.isRequired,
+  fill: PropTypes.string,
+  index: PropTypes.number.isRequired,
+  stars: PropTypes.number,
 };
 
 StarSVG.defaultProps = {
