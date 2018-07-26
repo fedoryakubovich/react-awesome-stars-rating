@@ -1,20 +1,98 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
+import Star from './star';
+
 class ReactStarsRating extends PureComponent {
   constructor(props) {
     super(props);
+
+    this.state = {
+      stars: props.value,
+    };
+
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.onClick = this.onClick.bind(this);
+  }
+
+  isMoreThanHalf(event) {
+    const { size } = this.props;
+    const point = event.clientX - event.target.getBoundingClientRect().left;
+
+    return point > size / 2;
+  }
+
+  onMouseMove(event) {
+    const { isEdit, size, isHalf } = this.props;
+
+    if (isEdit) {
+      let stars = event.target.getAttribute('data-stars');
+
+      if (isHalf) {
+        const isMoreThanHalf = this.isMoreThanHalf(event);
+
+        if (!isMoreThanHalf) {
+          stars -= 0.5;
+        }
+      }
+
+      this.setState({
+        stars,
+      });
+    }
+  }
+
+  onMouseLeave() {
+    const { isEdit } = this.props;
+
+    if (isEdit) {
+      this.setState({
+        stars: null,
+      });
+    }
+  }
+
+  onClick(event) {
+    const { isEdit, onClick, isHalf } = this.props;
+
+    if (isEdit) {
+      let stars = event.target.getAttribute('data-stars');
+
+      if (isHalf) {
+        const isMoreThanHalf = this.isMoreThanHalf(event);
+
+        if (!isMoreThanHalf) {
+          stars -= 0.5;
+        }
+      }
+
+      onClick(stars);
+    }
   }
 
   renderStars() {
-    const { count, char } = this.props;
-    const stars = [];
+    const { count, size, isHalf } = this.props;
+    const { stars } = this.state;
+    const starsList = [];
 
-    for (let i = 0; i < count; i++) {
-      stars.push(<span key={`char${i}`}>{char}</span>);
+    for (let i = 1; i <= count; i++) {
+      starsList.push(
+        <span key={`char${i}`}>
+          <Star
+            index={i}
+            stars={stars}
+            onMouseMove={this.onMouseMove}
+            onMouseLeave={this.onMouseLeave}
+            onClick={this.onClick}
+            size={size}
+            isHalf={isHalf}
+          />
+        </span>,
+      );
     }
 
-    return stars;
+    return starsList;
   }
 
   render() {
@@ -22,8 +100,7 @@ class ReactStarsRating extends PureComponent {
 
     return (
       <div>
-        <h2>Hello React!</h2>
-        <div>{stars}</div>
+        <span>{stars}</span>
       </div>
     );
   }
@@ -32,9 +109,11 @@ class ReactStarsRating extends PureComponent {
 ReactStarsRating.propTypes = {};
 
 ReactStarsRating.defaultProps = {
-  isEditable: true,
+  isEdit: true,
+  isHalf: true,
   count: 5,
-  char: '★',
+  value: null,
+  size: 25,
 };
 
 export default ReactStarsRating;

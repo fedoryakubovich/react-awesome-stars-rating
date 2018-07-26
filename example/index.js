@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import ReactStarsRating from '../src/index';
+import ReactStarsExample from './ReactStarsExample';
 
-ReactDOM.render(<ReactStarsRating />, document.getElementById('root'));
+ReactDOM.render(<ReactStarsExample />, document.getElementById('root'));
