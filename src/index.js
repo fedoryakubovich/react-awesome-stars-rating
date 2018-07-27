@@ -14,6 +14,7 @@ class ReactStarsRating extends PureComponent {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   isMoreThanHalf(event) {
@@ -71,6 +72,32 @@ class ReactStarsRating extends PureComponent {
     }
   }
 
+  onChangeStars(value) {
+    let { stars } = this.state;
+    const { count } = this.props;
+
+    if ((stars > 0 && value < 0) || (stars < count && value > 0)) {
+      stars += value;
+      this.setState({ stars });
+    }
+  }
+
+  onKeyDown(event) {
+    const { keyCode } = event;
+    const { isHalf } = this.props;
+
+    switch (keyCode) {
+      case 37:
+        this.onChangeStars(isHalf ? -0.5 : -1);
+        break;
+      case 39:
+        this.onChangeStars(isHalf ? 0.5 : 1);
+        break;
+      default:
+        break;
+    }
+  }
+
   renderStars() {
     const { count, size, isHalf } = this.props;
     const { stars } = this.state;
@@ -98,11 +125,7 @@ class ReactStarsRating extends PureComponent {
   render() {
     const stars = this.renderStars();
 
-    return (
-      <div>
-        <span>{stars}</span>
-      </div>
-    );
+    return <button onKeyDown={this.onKeyDown}>{stars}</button>;
   }
 }
 
@@ -119,7 +142,7 @@ ReactStarsRating.defaultProps = {
   isEdit: true,
   isHalf: true,
   count: 5,
-  value: null,
+  value: 0,
   size: 25,
 };
 
