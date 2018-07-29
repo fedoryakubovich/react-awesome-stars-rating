@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 import Star from './star';
+import styles from './styles';
 
 class ReactStarsRating extends PureComponent {
   constructor(props) {
@@ -125,7 +126,11 @@ class ReactStarsRating extends PureComponent {
   render() {
     const stars = this.renderStars();
 
-    return <button onKeyDown={this.onKeyDown}>{stars}</button>;
+    return (
+      <button onKeyDown={this.onKeyDown} style={styles.container}>
+        {stars}
+      </button>
+    );
   }
 }
 
