@@ -16,6 +16,7 @@ class ReactStarsRating extends PureComponent {
     this.onMouseLeave = this.onMouseLeave.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.onBlur = this.onBlur.bind(this);
   }
 
   isMoreThanHalf(event) {
@@ -55,6 +56,14 @@ class ReactStarsRating extends PureComponent {
     }
   }
 
+  onBlur() {
+    const { isEdit } = this.props;
+
+    if (isEdit) {
+      this.setState({ stars: 0 });
+    }
+  }
+
   onClick(event) {
     const { isEdit, onClick, isHalf } = this.props;
 
@@ -85,17 +94,25 @@ class ReactStarsRating extends PureComponent {
 
   onKeyDown(event) {
     const { keyCode } = event;
-    const { isHalf } = this.props;
+    const { stars } = this.state;
+    const { isHalf, isEdit, onClick } = this.props;
 
-    switch (keyCode) {
-      case 37:
-        this.onChangeStars(isHalf ? -0.5 : -1);
-        break;
-      case 39:
-        this.onChangeStars(isHalf ? 0.5 : 1);
-        break;
-      default:
-        break;
+    if (isEdit) {
+      switch (keyCode) {
+        case 37:
+          this.onChangeStars(isHalf ? -0.5 : -1);
+          break;
+        case 39:
+          this.onChangeStars(isHalf ? 0.5 : 1);
+          break;
+        case 13:
+          if (isEdit) {
+            onClick(stars);
+          }
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -113,6 +130,7 @@ class ReactStarsRating extends PureComponent {
             onMouseMove={this.onMouseMove}
             onMouseLeave={this.onMouseLeave}
             onClick={this.onClick}
+            onBlur={this.onBlur}
             size={size}
             isHalf={isHalf}
           />
@@ -127,7 +145,11 @@ class ReactStarsRating extends PureComponent {
     const stars = this.renderStars();
 
     return (
-      <button onKeyDown={this.onKeyDown} style={styles.container}>
+      <button
+        onKeyDown={this.onKeyDown}
+        style={styles.container}
+        onBlur={this.onBlur}
+      >
         {stars}
       </button>
     );
