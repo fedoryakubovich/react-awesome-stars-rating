@@ -9,7 +9,7 @@ class ReactStarsRating extends PureComponent {
     super(props);
 
     this.state = {
-      stars: props.value,
+      value: props.value,
     };
 
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -30,19 +30,17 @@ class ReactStarsRating extends PureComponent {
     const { isEdit, isHalf } = this.props;
 
     if (isEdit) {
-      let stars = event.target.getAttribute('data-stars');
+      let value = event.target.getAttribute('data-stars');
 
       if (isHalf) {
         const isMoreThanHalf = this.isMoreThanHalf(event);
 
         if (!isMoreThanHalf) {
-          stars -= 0.5;
+          value -= 0.5;
         }
       }
 
-      this.setState({
-        stars,
-      });
+      this.setState({ value });
     }
   }
 
@@ -50,9 +48,7 @@ class ReactStarsRating extends PureComponent {
     const { isEdit } = this.props;
 
     if (isEdit) {
-      this.setState({
-        stars: null,
-      });
+      this.setState({ value: 0 });
     }
   }
 
@@ -60,7 +56,7 @@ class ReactStarsRating extends PureComponent {
     const { isEdit } = this.props;
 
     if (isEdit) {
-      this.setState({ stars: 0 });
+      this.setState({ value: 0 });
     }
   }
 
@@ -68,33 +64,33 @@ class ReactStarsRating extends PureComponent {
     const { isEdit, onClick, isHalf } = this.props;
 
     if (isEdit) {
-      let stars = event.target.getAttribute('data-stars');
+      let value = event.target.getAttribute('data-stars');
 
       if (isHalf) {
         const isMoreThanHalf = this.isMoreThanHalf(event);
 
         if (!isMoreThanHalf) {
-          stars -= 0.5;
+          value -= 0.5;
         }
       }
 
-      onClick(stars);
+      onClick(value);
     }
   }
 
-  onChangeStars(value) {
-    let { stars } = this.state;
+  onChangeStars(newValue) {
+    let { value } = this.state;
     const { count } = this.props;
 
-    if ((stars > 0 && value < 0) || (stars < count && value > 0)) {
-      stars += value;
-      this.setState({ stars });
+    if ((value > 0 && newValue < 0) || (value < count && newValue > 0)) {
+      value += newValue;
+      this.setState({ value });
     }
   }
 
   onKeyDown(event) {
     const { keyCode } = event;
-    const { stars } = this.state;
+    const { value } = this.state;
     const { isHalf, isEdit, onClick } = this.props;
 
     if (isEdit) {
@@ -107,7 +103,7 @@ class ReactStarsRating extends PureComponent {
           break;
         case 13:
           if (isEdit) {
-            onClick(stars);
+            onClick(value);
           }
           break;
         default:
@@ -118,7 +114,7 @@ class ReactStarsRating extends PureComponent {
 
   renderStars() {
     const { count, size, isHalf } = this.props;
-    const { stars } = this.state;
+    const { value } = this.state;
     const starsList = [];
 
     for (let i = 1; i <= count; i++) {
@@ -126,7 +122,7 @@ class ReactStarsRating extends PureComponent {
         <span key={`char${i}`}>
           <Star
             index={i}
-            stars={stars}
+            value={value}
             onMouseMove={this.onMouseMove}
             onMouseLeave={this.onMouseLeave}
             onClick={this.onClick}

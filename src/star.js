@@ -8,15 +8,15 @@ const StarSVG = ({
   onMouseLeave,
   onClick,
   index,
-  stars,
+  value,
   isHalf,
   primaryColor,
   secondaryColor,
   fill,
 }) => {
-  if (index <= stars) {
+  if (index <= value) {
     fill = 'url(#full)';
-  } else if (isHalf && index - 0.5 === stars) {
+  } else if (isHalf && index - 0.5 === value) {
     fill = 'url(#half)';
   }
 
@@ -63,7 +63,7 @@ StarSVG.propTypes = {
   isHalf: PropTypes.bool.isRequired,
   fill: PropTypes.string,
   index: PropTypes.number.isRequired,
-  stars: PropTypes.number,
+  value: PropTypes.number,
 };
 
 StarSVG.defaultProps = {
