@@ -27,55 +27,46 @@ class ReactStarsRating extends PureComponent {
   }
 
   onMouseMove(event) {
-    const { isEdit, isHalf } = this.props;
+    const { isHalf } = this.props;
 
-    if (isEdit) {
-      let value = event.target.getAttribute('data-stars');
+    let value = event.target.getAttribute('data-stars');
 
-      if (isHalf) {
-        const isMoreThanHalf = this.isMoreThanHalf(event);
+    if (isHalf) {
+      const isMoreThanHalf = this.isMoreThanHalf(event);
 
-        if (!isMoreThanHalf) {
-          value -= 0.5;
-        }
+      if (!isMoreThanHalf) {
+        value -= 0.5;
       }
-
-      this.setState({ value });
     }
+
+    this.setState({ value });
   }
 
   onMouseLeave() {
-    const { isEdit } = this.props;
-
-    if (isEdit) {
-      this.setState({ value: 0 });
-    }
+    this.setState({ value: 0 });
   }
 
   onBlur() {
-    const { isEdit } = this.props;
+    const { onClick } = this.props;
+    const { value } = this.state;
 
-    if (isEdit) {
-      this.setState({ value: 0 });
-    }
+    onClick(value);
   }
 
   onClick(event) {
-    const { isEdit, onClick, isHalf } = this.props;
+    const { onClick, isHalf } = this.props;
 
-    if (isEdit) {
-      let value = event.target.getAttribute('data-stars');
+    let value = event.target.getAttribute('data-stars');
 
-      if (isHalf) {
-        const isMoreThanHalf = this.isMoreThanHalf(event);
+    if (isHalf) {
+      const isMoreThanHalf = this.isMoreThanHalf(event);
 
-        if (!isMoreThanHalf) {
-          value -= 0.5;
-        }
+      if (!isMoreThanHalf) {
+        value -= 0.5;
       }
-
-      onClick(value);
     }
+
+    onClick(value);
   }
 
   onChangeStars(newValue) {
@@ -84,6 +75,7 @@ class ReactStarsRating extends PureComponent {
 
     if ((value > 0 && newValue < 0) || (value < count && newValue > 0)) {
       value += newValue;
+
       this.setState({ value });
     }
   }
@@ -91,44 +83,46 @@ class ReactStarsRating extends PureComponent {
   onKeyDown(event) {
     const { keyCode } = event;
     const { value } = this.state;
-    const { isHalf, isEdit, onClick } = this.props;
+    const { isHalf, onClick } = this.props;
 
-    if (isEdit) {
-      switch (keyCode) {
-        case 37:
-          this.onChangeStars(isHalf ? -0.5 : -1);
-          break;
-        case 39:
-          this.onChangeStars(isHalf ? 0.5 : 1);
-          break;
-        case 13:
-          if (isEdit) {
-            onClick(value);
-          }
-          break;
-        default:
-          break;
-      }
+    switch (keyCode) {
+      case 37:
+        this.onChangeStars(isHalf ? -0.5 : -1);
+        break;
+      case 39:
+        this.onChangeStars(isHalf ? 0.5 : 1);
+        break;
+      case 13:
+        onClick(value);
+        break;
+      default:
+        break;
     }
   }
 
   renderStars() {
-    const { count, size, isHalf } = this.props;
+    const { count, size, isHalf, isEdit } = this.props;
     const { value } = this.state;
     const starsList = [];
+    let props = {};
+
+    if (isEdit) {
+      props = {
+        onMouseMove: this.onMouseMove,
+        onMouseLeave: this.onMouseLeave,
+        onClick: this.onClick,
+      };
+    }
 
     for (let i = 1; i <= count; i++) {
       starsList.push(
-        <span key={`char${i}`}>
+        <span key={`react-stars-rating-char${i}`}>
           <Star
             index={i}
             value={value}
-            onMouseMove={this.onMouseMove}
-            onMouseLeave={this.onMouseLeave}
-            onClick={this.onClick}
-            onBlur={this.onBlur}
             size={size}
             isHalf={isHalf}
+            {...props}
           />
         </span>,
       );
@@ -138,14 +132,19 @@ class ReactStarsRating extends PureComponent {
   }
 
   render() {
+    const { isEdit } = this.props;
     const stars = this.renderStars();
+    let props = { tabIndex: -1 };
+
+    if (isEdit) {
+      props = {
+        onKeyDown: this.onKeyDown,
+        onBlur: this.onBlur,
+      };
+    }
 
     return (
-      <button
-        onKeyDown={this.onKeyDown}
-        style={styles.container}
-        onBlur={this.onBlur}
-      >
+      <button style={styles.container} {...props}>
         {stars}
       </button>
     );
