@@ -11,21 +11,27 @@ class ReactStarsExample extends PureComponent {
       isEdit: true,
     };
 
-    this.onClick = this.onClick.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
-  onClick(value) {
+  onChange(value) {
     this.setState({
       value,
       isEdit: false,
     });
+
+    console.log(value);
   }
 
   render() {
     const { isEdit, value } = this.state;
 
     return (
-      <ReactStarsRating onClick={this.onClick} isEdit={isEdit} value={value} />
+      <ReactStarsRating
+        onChange={this.onChange}
+        isEdit={isEdit}
+        value={value}
+      />
     );
   }
 }

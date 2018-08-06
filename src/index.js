@@ -14,7 +14,7 @@ class ReactStarsRating extends PureComponent {
 
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
-    this.onClick = this.onClick.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onBlur = this.onBlur.bind(this);
   }
@@ -47,14 +47,14 @@ class ReactStarsRating extends PureComponent {
   }
 
   onBlur() {
-    const { onClick } = this.props;
+    const { onChange } = this.props;
     const { value } = this.state;
 
-    onClick(value);
+    onChange(value);
   }
 
-  onClick(event) {
-    const { onClick, isHalf } = this.props;
+  onChange(event) {
+    const { onChange, isHalf } = this.props;
 
     let value = event.target.getAttribute('data-stars');
 
@@ -66,7 +66,7 @@ class ReactStarsRating extends PureComponent {
       }
     }
 
-    onClick(value);
+    onChange(value);
   }
 
   onChangeStars(newValue) {
@@ -83,7 +83,7 @@ class ReactStarsRating extends PureComponent {
   onKeyDown(event) {
     const { keyCode } = event;
     const { value } = this.state;
-    const { isHalf, onClick } = this.props;
+    const { isHalf, onChange } = this.props;
 
     switch (keyCode) {
       case 37:
@@ -93,7 +93,7 @@ class ReactStarsRating extends PureComponent {
         this.onChangeStars(isHalf ? 0.5 : 1);
         break;
       case 13:
-        onClick(value);
+        onChange(value);
         break;
       default:
         break;
@@ -110,7 +110,7 @@ class ReactStarsRating extends PureComponent {
       props = {
         onMouseMove: this.onMouseMove,
         onMouseLeave: this.onMouseLeave,
-        onClick: this.onClick,
+        onChange: this.onChange,
       };
     }
 
@@ -154,7 +154,7 @@ class ReactStarsRating extends PureComponent {
 ReactStarsRating.propTypes = {
   isEdit: PropTypes.bool,
   isHalf: PropTypes.bool,
-  onClick: PropTypes.func,
+  onChange: PropTypes.func,
   count: PropTypes.number,
   value: PropTypes.number,
   size: PropTypes.number,

@@ -6,7 +6,7 @@ const StarSVG = ({
   size,
   onMouseMove,
   onMouseLeave,
-  onClick,
+  onChange,
   index,
   value,
   isHalf,
@@ -27,7 +27,7 @@ const StarSVG = ({
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       onMouseLeave={onMouseLeave}
-      onClick={onClick}
+      onClick={onChange}
       data-stars={index}
       onMouseMove={onMouseMove}
     >
@@ -59,7 +59,7 @@ StarSVG.propTypes = {
   secondaryColor: PropTypes.string,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,
-  onClick: PropTypes.func,
+  onChange: PropTypes.func,
   isHalf: PropTypes.bool.isRequired,
   fill: PropTypes.string,
   index: PropTypes.number.isRequired,
