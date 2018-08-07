@@ -29,7 +29,7 @@ class ReactStarsRating extends PureComponent {
   onMouseMove(event) {
     const { isHalf } = this.props;
 
-    let value = event.target.getAttribute('data-stars');
+    let value = Number(event.target.getAttribute('data-stars'));
 
     if (isHalf) {
       const isMoreThanHalf = this.isMoreThanHalf(event);
@@ -56,7 +56,7 @@ class ReactStarsRating extends PureComponent {
   onChange(event) {
     const { onChange, isHalf } = this.props;
 
-    let value = event.target.getAttribute('data-stars');
+    let value = Number(event.target.getAttribute('data-stars'));
 
     if (isHalf) {
       const isMoreThanHalf = this.isMoreThanHalf(event);

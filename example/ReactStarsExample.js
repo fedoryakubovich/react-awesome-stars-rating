@@ -7,7 +7,7 @@ class ReactStarsExample extends PureComponent {
     super(props);
 
     this.state = {
-      value: null,
+      value: 0,
       isEdit: true,
     };
 
@@ -18,20 +18,24 @@ class ReactStarsExample extends PureComponent {
     this.setState({
       value,
       isEdit: false,
+      selectedValue: value,
     });
-
-    console.log(value);
   }
 
   render() {
-    const { isEdit, value } = this.state;
+    const { isEdit, value, selectedValue } = this.state;
 
     return (
-      <ReactStarsRating
-        onChange={this.onChange}
-        isEdit={isEdit}
-        value={value}
-      />
+      <section>
+        <ReactStarsRating
+          onChange={this.onChange}
+          isEdit={isEdit}
+          value={value}
+          selectedValue={selectedValue}
+        />
+
+        <div>Selected value: {selectedValue}</div>
+      </section>
     );
   }
 }
