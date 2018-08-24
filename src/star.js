@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Gradient from './gradient';
+
 const StarSVG = ({
   viewBox,
   size,
@@ -13,12 +15,35 @@ const StarSVG = ({
   primaryColor,
   secondaryColor,
   fill,
+  isEdit,
+  primaryOffset,
+  secondaryOffset,
 }) => {
-  if (index <= value) {
-    fill = 'url(#full)';
-  } else if (isHalf && index - 0.5 === value) {
-    fill = 'url(#half)';
+  if (isEdit) {
+    if (index <= value) {
+      fill = 'url(#full)';
+    } else if (isHalf && index - 0.5 === value) {
+      fill = 'url(#half)';
+    }
+  } else {
+    if (index === 1) {
+      const rest = value - Math.floor(value);
+      primaryOffset = Math.round(rest * 100);
+    }
+    const ceilValue = Math.ceil(value);
+    if (index < ceilValue) {
+      fill = 'url(#full)';
+    } else if (isHalf && index === ceilValue) {
+      fill = 'url(#half)';
+    }
   }
+
+  const props = {
+    primaryColor,
+    primaryOffset,
+    secondaryColor,
+    secondaryOffset,
+  };
 
   return (
     <svg
@@ -31,16 +56,7 @@ const StarSVG = ({
       data-stars={index}
       onMouseMove={onMouseMove}
     >
-      <linearGradient id="full">
-        <stop offset="100%" stopColor={primaryColor} />
-      </linearGradient>
-      <linearGradient id="none">
-        <stop offset="100%" stopColor={secondaryColor} />
-      </linearGradient>
-      <linearGradient id="half">
-        <stop offset="50%" stopColor={primaryColor} />
-        <stop offset="50%" stopColor={secondaryColor} />
-      </linearGradient>
+      {index === 1 && <Gradient {...props} />}
 
       <polygon
         fill={fill}
@@ -54,24 +70,26 @@ const StarSVG = ({
 
 StarSVG.propTypes = {
   viewBox: PropTypes.string,
-  size: PropTypes.number,
-  primaryColor: PropTypes.string,
-  secondaryColor: PropTypes.string,
+  size: PropTypes.number.isRequired,
+  primaryColor: PropTypes.string.isRequired,
+  secondaryColor: PropTypes.string.isRequired,
   onMouseLeave: PropTypes.func,
   onMouseMove: PropTypes.func,
   onChange: PropTypes.func,
   isHalf: PropTypes.bool.isRequired,
   fill: PropTypes.string,
   index: PropTypes.number.isRequired,
-  value: PropTypes.number,
+  value: PropTypes.number.isRequired,
+  isEdit: PropTypes.bool.isRequired,
+  primaryOffset: PropTypes.number.isRequired,
+  secondaryOffset: PropTypes.number.isRequired,
 };
 
 StarSVG.defaultProps = {
   viewBox: '0 0 306 306',
-  size: 25,
   fill: 'url(#none)',
-  primaryColor: 'yellow',
-  secondaryColor: 'grey',
+  primaryOffset: 50,
+  secondaryOffset: 50,
 };
 
 export default StarSVG;

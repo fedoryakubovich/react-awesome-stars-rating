@@ -7,8 +7,8 @@ class ReactStarsExample extends PureComponent {
     super(props);
 
     this.state = {
-      value: 0,
-      isEdit: true,
+      value: 3.7,
+      isEdit: false,
     };
 
     this.onChange = this.onChange.bind(this);
