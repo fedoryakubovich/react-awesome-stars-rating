@@ -19,7 +19,7 @@ React Stars Rating is a simple star component with easy integration for your Rea
 
 ## Example
 
-```
+```javascript
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactStarsRating from 'react-stars-rating';
@@ -41,3 +41,7 @@ ReactDOM.render(<ReactStarsExample />, document.getElementById('root'));
 | :------- | :------------------------------------------------------- | :------- | :------ |
 | value    | Value                                                    | Number   | 0       |
 | onChange | A function, that will be invoked when value have changed | Function | null    |
+| isEdit   | If `true` the rating is in editing mode                  | Boolean  | true    |
+| isHalf   | If `true` half stars are available                       | Boolean  | true    |
+| count    | Count of the stars                                       | Number   | 5       |
+| size     | Size of the stars                                        | Number   | 25      |
