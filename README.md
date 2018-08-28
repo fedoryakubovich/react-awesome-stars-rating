@@ -1,6 +1,6 @@
-# React Stars Rating
+# React Awesome Stars Rating
 
-React Stars Rating is a simple star component with easy integration for your React applications.
+React Awesome Stars Rating is a simple star component with easy integration for your React applications.
 
 - Half stars
 - Custom size and color
@@ -15,14 +15,15 @@ React Stars Rating is a simple star component with easy integration for your Rea
 
 ## Installation
 
-`npm install react-stars-rating`
+`npm install react-awesome-stars-rating`
 
 ## Example
 
 ```javascript
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactStarsRating from 'react-stars-rating';
+
+import ReactStarsRating from 'react-awesome-stars-rating';
 
 const onChange = (value) => {
   console.log(`React Stars Rating value is ${value}`);
