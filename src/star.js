@@ -27,11 +27,11 @@ const StarSVG = ({
     }
   } else {
     if (index === 1) {
-      const rest = value - Math.floor(value);
+      const rest = value - Math.floor(value) || 1;
       primaryOffset = Math.round(rest * 100);
     }
     const ceilValue = Math.ceil(value);
-    if (index < ceilValue) {
+    if (index < value) {
       fill = 'url(#full)';
     } else if (isHalf && index === ceilValue) {
       fill = 'url(#half)';
