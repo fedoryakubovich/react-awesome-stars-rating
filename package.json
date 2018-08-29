@@ -1,14 +1,29 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open"
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "awesome",
+    "stars",
+    "star",
+    "rating",
+    "redux",
+    "svg"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fedoryakubovich/react-awesome-stars-rating"
+  },
   "author": "Fedor Yakubovich",
-  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fedoryakubovich/react-awesome-stars-rating/issues"
+  },
+  "license": "MIT",
   "dependencies": {
     "prop-types": "^15.6.2",
     "react": "^16.4.2",

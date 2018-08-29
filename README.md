@@ -7,6 +7,7 @@ React Awesome Stars Rating is a simple star component with easy integration for 
 - Value shows with high precision
 - Easy integration with Redux
 - Accessibility
+- SVG Icons
 
 ## Table of Contents
 
