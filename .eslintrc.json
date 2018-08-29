@@ -1,0 +1,63 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:react/recommended",
+    "prettier",
+    "prettier/react"
+  ],
+  "env": {
+    "browser": true
+  },
+  "plugins": ["prettier", "react", "jsx-a11y"],
+  "parser": "babel-eslint",
+  "rules": {
+    "prettier/prettier": "error",
+    "react/boolean-prop-naming": [
+      "error",
+      { "rule": "^(is|has)[A-Z]([A-Za-z0-9]?)+" }
+    ],
+    "react/no-array-index-key": 2,
+    "no-console": 1,
+    "no-debugger": 1,
+    "no-unused-vars": 1,
+    "react/no-access-state-in-setstate": 2,
+    "react/no-this-in-sfc": 2,
+    "react/no-children-prop": 0,
+    "react/no-deprecated": 1,
+    "react/no-did-mount-set-state": 2,
+    "react/no-direct-mutation-state": 2,
+    "react/no-multi-comp": 1,
+    "react/no-typos": 2,
+    "react/no-string-refs": 2,
+    "react/no-unescaped-entities": 1,
+    "react/no-unknown-property": 2,
+    "react/no-unused-prop-types": 1,
+    "react/no-unused-state": 1,
+    "react/prefer-es6-class": 2,
+    "react/prefer-stateless-function": 1,
+    "react/prop-types": 1,
+    "react/react-in-jsx-scope": 1,
+    "react/require-optimization": 1,
+    "react/self-closing-comp": 1,
+    "react/style-prop-object": 2,
+    "react/jsx-boolean-value": 2,
+    "react/jsx-key": 2,
+    "jsx-a11y/label-has-for": [
+      1,
+      {
+        "components": ["Label"],
+        "required": {
+          "some": ["nesting", "id"]
+        },
+        "allowChildren": false
+      }
+    ],
+    "jsx-a11y/no-autofocus": [
+      2,
+      {
+        "ignoreNonDOM": true
+      }
+    ]
+  }
+}
