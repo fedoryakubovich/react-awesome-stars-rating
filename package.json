@@ -1,13 +1,13 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open",
     "clean": "./node_modules/.bin/rimraf dist/",
-    "build": "babel ./src --presets babel-preset-env --out-dir dist",
-    "prepublish": "npm run build"
+    "build": "babel src --presets babel-preset-env --out-dir dist",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "react",
