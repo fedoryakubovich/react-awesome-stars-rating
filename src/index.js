@@ -152,7 +152,7 @@ class ReactStarsRating extends PureComponent {
     }
 
     return (
-      <button style={styles.container} {...props}>
+      <button type="button" style={styles.container} {...props}>
         {stars}
       </button>
     );
