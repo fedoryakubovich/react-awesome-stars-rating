@@ -43,7 +43,9 @@ class ReactStarsRating extends PureComponent {
   }
 
   onMouseLeave() {
-    this.setState({ value: 0 });
+    const { value } = this.props;
+
+    this.setState({ value: value || 0 });
   }
 
   onBlur() {
