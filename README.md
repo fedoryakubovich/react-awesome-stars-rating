@@ -49,7 +49,8 @@ ReactDOM.render(<ReactStarsExample />, document.getElementById('root'));
 | isHalf         | If `true` half stars are available                       | Boolean  | true     |
 | count          | Count of the stars                                       | Number   | 5        |
 | size           | Size of the stars                                        | Number   | 25       |
-| primaryColor   | Star's color when star is active                         | String   | 'yellow' |
+| className      | Class name for button container                          | String   | ''       |
+| primaryColor   | Star's color when star is active                         | String   | 'orange' |
 | secondaryColor | Star's color when star isn't active                      | String   | 'grey'   |
 
 ## Examples
