@@ -140,7 +140,7 @@ class ReactStarsRating extends PureComponent {
   }
 
   render() {
-    const { isEdit } = this.props;
+    const { isEdit, className } = this.props;
     const stars = this.renderStars();
     let props = { tabIndex: -1 };
 
@@ -152,7 +152,12 @@ class ReactStarsRating extends PureComponent {
     }
 
     return (
-      <button type="button" style={styles.container} {...props}>
+      <button
+        type="button"
+        className={className}
+        style={styles.container}
+        {...props}
+      >
         {stars}
       </button>
     );
@@ -168,6 +173,7 @@ ReactStarsRating.propTypes = {
   secondaryColor: PropTypes.string.isRequired,
   isEdit: PropTypes.bool.isRequired,
   isHalf: PropTypes.bool.isRequired,
+  className: PropTypes.string.isRequired,
 };
 
 ReactStarsRating.defaultProps = {
@@ -176,8 +182,9 @@ ReactStarsRating.defaultProps = {
   count: 5,
   value: 0,
   size: 25,
-  primaryColor: 'yellow',
+  primaryColor: 'orange',
   secondaryColor: 'grey',
+  className: '',
 };
 
 export default ReactStarsRating;
