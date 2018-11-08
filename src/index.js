@@ -10,6 +10,7 @@ class ReactStarsRating extends PureComponent {
 
     this.state = {
       value: props.value,
+      isSubmitted: false,
     };
 
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -17,6 +18,12 @@ class ReactStarsRating extends PureComponent {
     this.onChange = this.onChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onBlur = this.onBlur.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.value !== prevProps.value) {
+      this.setState({ value: this.props.value });
+    }
   }
 
   isMoreThanHalf(event) {
@@ -53,6 +60,7 @@ class ReactStarsRating extends PureComponent {
     const { value } = this.state;
 
     onChange(value);
+    this.setState({ isSubmitted: true });
   }
 
   onChange(event) {
@@ -73,12 +81,16 @@ class ReactStarsRating extends PureComponent {
 
   onChangeStars(newValue) {
     let { value } = this.state;
-    const { count } = this.props;
+    const { count, isArrowSubmit, onChange } = this.props;
 
     if ((value > 0 && newValue < 0) || (value < count && newValue > 0)) {
       value += newValue;
 
       this.setState({ value });
+    }
+
+    if (isArrowSubmit) {
+      onChange(value);
     }
   }
 
@@ -110,6 +122,7 @@ class ReactStarsRating extends PureComponent {
       isEdit,
       primaryColor,
       secondaryColor,
+      starGap,
     } = this.props;
     const { value } = this.state;
     const starsList = [];
@@ -125,8 +138,10 @@ class ReactStarsRating extends PureComponent {
     }
 
     for (let i = 1; i <= count; i++) {
+      const style = i !== count ? { paddingRight: starGap } : null;
+
       starsList.push(
-        <span key={`react-stars-rating-char${i}`}>
+        <span key={`react-stars-rating-char${i}`} style={style}>
           <Star
             index={i}
             value={value}
@@ -142,11 +157,12 @@ class ReactStarsRating extends PureComponent {
   }
 
   render() {
-    const { isEdit, className } = this.props;
+    const { isEdit, className, isArrowSubmit } = this.props;
     const stars = this.renderStars();
     let props = { tabIndex: -1 };
+    const { isSubmitted } = this.state;
 
-    if (isEdit) {
+    if ((isEdit || isArrowSubmit) && !isSubmitted) {
       props = {
         onKeyDown: this.onKeyDown,
         onBlur: this.onBlur,
@@ -176,6 +192,8 @@ ReactStarsRating.propTypes = {
   isEdit: PropTypes.bool.isRequired,
   isHalf: PropTypes.bool.isRequired,
   className: PropTypes.string.isRequired,
+  starGap: PropTypes.number.isRequired,
+  isArrowSubmit: PropTypes.bool.isRequired,
 };
 
 ReactStarsRating.defaultProps = {
@@ -187,6 +205,8 @@ ReactStarsRating.defaultProps = {
   primaryColor: 'orange',
   secondaryColor: 'grey',
   className: '',
+  starGap: 0,
+  isArrowSubmit: false,
 };
 
 export default ReactStarsRating;
