@@ -110,6 +110,7 @@ class ReactStarsRating extends PureComponent {
       isEdit,
       primaryColor,
       secondaryColor,
+      starGap,
     } = this.props;
     const { value } = this.state;
     const starsList = [];
@@ -125,8 +126,10 @@ class ReactStarsRating extends PureComponent {
     }
 
     for (let i = 1; i <= count; i++) {
+      const style = i !== count ? { paddingRight: starGap } : null;
+
       starsList.push(
-        <span key={`react-stars-rating-char${i}`}>
+        <span key={`react-stars-rating-char${i}`} style={style}>
           <Star
             index={i}
             value={value}
@@ -176,6 +179,7 @@ ReactStarsRating.propTypes = {
   isEdit: PropTypes.bool.isRequired,
   isHalf: PropTypes.bool.isRequired,
   className: PropTypes.string.isRequired,
+  starGap: PropTypes.number.isRequired,
 };
 
 ReactStarsRating.defaultProps = {
@@ -187,6 +191,7 @@ ReactStarsRating.defaultProps = {
   primaryColor: 'orange',
   secondaryColor: 'grey',
   className: '',
+  starGap: 0,
 };
 
 export default ReactStarsRating;
