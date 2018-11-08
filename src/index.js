@@ -20,6 +20,12 @@ class ReactStarsRating extends PureComponent {
     this.onBlur = this.onBlur.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.value !== prevProps.value) {
+      this.setState({ value: this.props.value });
+    }
+  }
+
   isMoreThanHalf(event) {
     const { size } = this.props;
     const point = event.clientX - event.target.getBoundingClientRect().left;
