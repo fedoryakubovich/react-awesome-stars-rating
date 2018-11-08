@@ -10,6 +10,7 @@ class ReactStarsRating extends PureComponent {
 
     this.state = {
       value: props.value,
+      isSubmitted: false,
     };
 
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -53,6 +54,7 @@ class ReactStarsRating extends PureComponent {
     const { value } = this.state;
 
     onChange(value);
+    this.setState({ isSubmitted: true });
   }
 
   onChange(event) {
@@ -73,12 +75,16 @@ class ReactStarsRating extends PureComponent {
 
   onChangeStars(newValue) {
     let { value } = this.state;
-    const { count } = this.props;
+    const { count, isArrowSubmit, onChange } = this.props;
 
     if ((value > 0 && newValue < 0) || (value < count && newValue > 0)) {
       value += newValue;
 
       this.setState({ value });
+    }
+
+    if (isArrowSubmit) {
+      onChange(value);
     }
   }
 
@@ -145,11 +151,12 @@ class ReactStarsRating extends PureComponent {
   }
 
   render() {
-    const { isEdit, className } = this.props;
+    const { isEdit, className, isArrowSubmit } = this.props;
     const stars = this.renderStars();
     let props = { tabIndex: -1 };
+    const { isSubmitted } = this.state;
 
-    if (isEdit) {
+    if ((isEdit || isArrowSubmit) && !isSubmitted) {
       props = {
         onKeyDown: this.onKeyDown,
         onBlur: this.onBlur,
@@ -180,6 +187,7 @@ ReactStarsRating.propTypes = {
   isHalf: PropTypes.bool.isRequired,
   className: PropTypes.string.isRequired,
   starGap: PropTypes.number.isRequired,
+  isArrowSubmit: PropTypes.bool.isRequired,
 };
 
 ReactStarsRating.defaultProps = {
@@ -192,6 +200,7 @@ ReactStarsRating.defaultProps = {
   secondaryColor: 'grey',
   className: '',
   starGap: 0,
+  isArrowSubmit: false,
 };
 
 export default ReactStarsRating;

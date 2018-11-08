@@ -53,6 +53,7 @@ ReactDOM.render(<ReactStarsExample />, document.getElementById('root'));
 | className      | Class name for button container                          | String   | ''       |
 | primaryColor   | Star's color when star is active                         | String   | 'orange' |
 | secondaryColor | Star's color when star isn't active                      | String   | 'grey'   |
+| isArrowSubmit  | Left arrow or right arrow click onvokes onChange         | Boolean  | false    |
 
 ## Examples
 
