@@ -1,6 +1,11 @@
 export default {
-  container: {
+  activeContainer: {
     border: 'none',
     backgroundColor: '#ffffff',
+  },
+  inActiveContainer: {
+    border: 'none',
+    backgroundColor: '#ffffff',
+    outline: 0,
   },
 };
