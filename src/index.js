@@ -166,18 +166,19 @@ class ReactStarsRating extends PureComponent {
       props = {
         onKeyDown: this.onKeyDown,
         onBlur: this.onBlur,
+        tabIndex: 0,
       };
     }
 
     return (
-      <button
-        type="button"
+      <span
+        role="button"
         className={className}
         {...props}
         style={isEdit ? styles.activeContainer : styles.inActiveContainer}
       >
         {stars}
-      </button>
+      </span>
     );
   }
 }
