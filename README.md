@@ -4,8 +4,8 @@ React Awesome Stars Rating is a simple star component with easy integration for 
 
 ## Table of Contents
 
-- [Features](#features)
 - [Previews](#previews)
+- [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Examples](#examples)
