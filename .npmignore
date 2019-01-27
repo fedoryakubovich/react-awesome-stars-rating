@@ -1,5 +1,6 @@
 src/
-example/
+examples/
+images/
 .babelrc
 .gitignore
 webpack.config.js
