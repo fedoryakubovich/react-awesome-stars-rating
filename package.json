@@ -7,7 +7,15 @@
     "start": "webpack-dev-server --mode development --open",
     "clean": "./node_modules/.bin/rimraf dist/",
     "build": "babel src --presets babel-preset-env --out-dir dist",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "jest": {
+    "setupTestFrameworkScriptFile": "<rootDir>__tests__/setup/setupEnzyme.js",
+    "testPathIgnorePatterns": [
+      "<rootDir>/__tests__/setup/"
+    ]
   },
   "keywords": [
     "react",
@@ -33,13 +41,15 @@
     "react-dom": "^16.7.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.6",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.3.1",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.5",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.8.0",
     "eslint": "^5.12.1",
     "eslint-config-prettier": "^2.10.0",
     "eslint-config-react-app": "^2.1.0",
@@ -50,10 +60,11 @@
     "eslint-plugin-prettier": "^2.7.0",
     "eslint-plugin-react": "^7.12.4",
     "html-webpack-plugin": "^3.2.0",
+    "jest": "^24.0.0",
     "prettier": "^1.16.1",
-    "react-redux": "^5.1.1",
+    "react-redux": "^6.0.0",
     "redux": "^4.0.1",
-    "redux-form": "^7.4.2",
+    "redux-form": "^8.1.0",
     "rimraf": "^2.6.3",
     "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1",
