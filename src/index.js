@@ -141,7 +141,11 @@ class ReactStarsRating extends PureComponent {
       const style = i !== count ? { paddingRight: starGap } : null;
 
       starsList.push(
-        <span key={`react-stars-rating-char${i}`} style={style}>
+        <span
+          key={`react-stars-rating-char${i}`}
+          className={`star star-${i}`}
+          style={style}
+        >
           <Star
             index={i}
             value={value}
