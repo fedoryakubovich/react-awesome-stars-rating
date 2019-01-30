@@ -9,7 +9,8 @@
     "build": "babel src --presets babel-preset-env --out-dir dist",
     "prepublishOnly": "npm run build",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "<rootDir>__tests__/setup/setupEnzyme.js",
