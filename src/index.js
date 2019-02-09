@@ -188,7 +188,7 @@ class ReactStarsRating extends PureComponent {
 }
 
 ReactStarsRating.propTypes = {
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
   count: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
   size: PropTypes.number.isRequired,
@@ -212,6 +212,7 @@ ReactStarsRating.defaultProps = {
   className: '',
   starGap: 0,
   isArrowSubmit: false,
+  onChange: () => {},
 };
 
 export default ReactStarsRating;
