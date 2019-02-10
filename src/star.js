@@ -16,8 +16,7 @@ const StarSVG = ({
   secondaryColor,
   fill,
   isEdit,
-  primaryOffset,
-  secondaryOffset,
+  offset,
 }) => {
   if (isEdit) {
     if (index <= value) {
@@ -28,7 +27,7 @@ const StarSVG = ({
   } else {
     if (index === 1) {
       const rest = value - Math.floor(value) || 1;
-      primaryOffset = Math.round(rest * 100);
+      offset = Math.round(rest * 100);
     }
     const ceilValue = Math.ceil(value);
     if (index < value) {
@@ -40,9 +39,8 @@ const StarSVG = ({
 
   const props = {
     primaryColor,
-    primaryOffset,
     secondaryColor,
-    secondaryOffset,
+    offset,
   };
 
   return (
@@ -81,15 +79,13 @@ StarSVG.propTypes = {
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
   isEdit: PropTypes.bool.isRequired,
-  primaryOffset: PropTypes.number.isRequired,
-  secondaryOffset: PropTypes.number.isRequired,
+  offset: PropTypes.number.isRequired,
 };
 
 StarSVG.defaultProps = {
   viewBox: '0 0 306 306',
   fill: 'url(#none)',
-  primaryOffset: 50,
-  secondaryOffset: 50,
+  offset: 50,
 };
 
 export default StarSVG;

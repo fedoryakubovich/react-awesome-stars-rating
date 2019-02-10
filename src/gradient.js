@@ -1,12 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Gradient = ({
-  primaryColor,
-  primaryOffset,
-  secondaryColor,
-  secondaryOffset,
-}) => {
+const Gradient = ({ primaryColor, secondaryColor, offset }) => {
   return (
     <defs>
       <linearGradient id="full">
@@ -16,8 +11,8 @@ const Gradient = ({
         <stop offset="100%" stopColor={secondaryColor} />
       </linearGradient>
       <linearGradient id="half">
-        <stop offset={`${primaryOffset}%`} stopColor={primaryColor} />
-        <stop offset={`${secondaryOffset}%`} stopColor={secondaryColor} />
+        <stop offset={`${offset}%`} stopColor={primaryColor} />
+        <stop offset={`${offset}%`} stopColor={secondaryColor} />
       </linearGradient>
     </defs>
   );
@@ -25,9 +20,8 @@ const Gradient = ({
 
 Gradient.propTypes = {
   primaryColor: PropTypes.string.isRequired,
-  primaryOffset: PropTypes.number.isRequired,
   secondaryColor: PropTypes.string.isRequired,
-  secondaryOffset: PropTypes.number.isRequired,
+  offset: PropTypes.number.isRequired,
 };
 
 export default Gradient;
