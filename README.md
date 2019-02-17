@@ -1,14 +1,5 @@
 # React Awesome Stars Rating &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/react-awesome-stars-rating.svg?style=flat)](https://www.npmjs.com/package/react-awesome-stars-rating) [![Build Status](https://img.shields.io/travis/fedoryakubovich/react-awesome-stars-rating/release/v0.1.8.svg)](https://travis-ci.org/)
 
-```{r, echo=FALSE, eval=TRUE, results="asis"}
-travis_url <- "https://travis-ci.org/RevolutionAnalytics/miniCRAN.svg?branch="
-shield <- paste0("[![Build Status](",
-                 travis_url,
-                 system("git rev-parse --abbrev-ref HEAD", intern = TRUE),
-                 ")](https://travis-ci.org/RevolutionAnalytics/miniCRAN)")
-cat(shield)
-```
-
 React Awesome Stars Rating is a simple star component with easy integration for your React applications.
 
 ## Table of Contents
