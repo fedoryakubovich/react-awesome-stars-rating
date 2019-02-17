@@ -7,7 +7,7 @@ class ReactStarsExample extends PureComponent {
     super(props);
 
     this.state = {
-      value: 0,
+      value: 3.2,
       isEdit: true,
     };
 

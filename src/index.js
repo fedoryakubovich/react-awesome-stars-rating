@@ -81,16 +81,20 @@ class ReactStarsRating extends PureComponent {
 
   onChangeStars(newValue) {
     let { value } = this.state;
-    const { count, isArrowSubmit, onChange } = this.props;
+    const { count } = this.props;
 
-    if ((value > 0 && newValue < 0) || (value < count && newValue > 0)) {
-      value += newValue;
+    if (value > 0 || value < count) {
+      const { isArrowSubmit, onChange } = this.props;
+
+      if ((value > 0 && newValue < 0) || (value < count && newValue > 0)) {
+        value = (value % 1 === 0.5 ? value : Math.round(value)) + newValue;
+      }
 
       this.setState({ value });
-    }
 
-    if (isArrowSubmit) {
-      onChange(value);
+      if (isArrowSubmit) {
+        onChange(value);
+      }
     }
   }
 
@@ -126,7 +130,7 @@ class ReactStarsRating extends PureComponent {
     } = this.props;
     const { value } = this.state;
     const starsList = [];
-    let props = { primaryColor, secondaryColor, isEdit };
+    let props = { primaryColor, secondaryColor };
 
     if (isEdit) {
       props = {
@@ -176,6 +180,7 @@ class ReactStarsRating extends PureComponent {
 
     return (
       <span
+        id="react-awesome-stars-rating"
         role="button"
         className={className}
         {...props}

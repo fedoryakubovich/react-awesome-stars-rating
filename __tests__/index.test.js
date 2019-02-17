@@ -25,7 +25,7 @@ describe('Count stars', () => {
   });
 });
 
-describe('onChange simulate', () => {
+describe('Mouse onChange simulate', () => {
   describe('isEdit is equal true', () => {
     it('without isHalf', () => {
       const props = {
@@ -89,6 +89,58 @@ describe('onChange simulate', () => {
       wrapper.find('.star-3 svg').simulate('click');
       expect(props.onChange).not.toBeCalled();
     });
+  });
+});
+
+describe('Keyboard onChange simulate', () => {
+  describe('isEdit is equal true', () => {
+    it('without isHalf', () => {
+      const props = {
+        countStars: 5,
+        isHalf: false,
+        value: 1,
+        onChange: jest.fn(),
+      };
+
+      const wrapper = mount(<ReactStarsRating {...props} />);
+      wrapper
+        .find('#react-awesome-stars-rating')
+        .simulate('keyDown', { keyCode: 39 });
+      expect(wrapper.state('value')).toEqual(2);
+      wrapper
+        .find('#react-awesome-stars-rating')
+        .simulate('keyDown', { keyCode: 39 });
+      expect(wrapper.state('value')).toEqual(3);
+      wrapper
+        .find('#react-awesome-stars-rating')
+        .simulate('keyDown', { keyCode: 37 })
+        .simulate('keyDown', { keyCode: 37 })
+        .simulate('keyDown', { keyCode: 13 });
+      wrapper
+        .find('#react-awesome-stars-rating')
+        .simulate('keyDown', { keyCode: 38 });
+      expect(wrapper.state('value')).toEqual(props.value);
+    });
+  });
+
+  it('without isHalf', () => {
+    const props = {
+      countStars: 5,
+      isHalf: true,
+      value: 1,
+      isArrowSubmit: true,
+      onChange: jest.fn(),
+    };
+
+    const wrapper = mount(<ReactStarsRating {...props} />);
+    wrapper
+      .find('#react-awesome-stars-rating')
+      .simulate('keyDown', { keyCode: 39 });
+    expect(wrapper.state('value')).toEqual(1.5);
+    wrapper
+      .find('#react-awesome-stars-rating')
+      .simulate('keyDown', { keyCode: 37 });
+    expect(wrapper.state('value')).toEqual(props.value);
   });
 });
 
