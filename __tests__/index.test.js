@@ -55,12 +55,16 @@ describe('Mouse onChange simulate', () => {
       const props = {
         countStars: 5,
         isHalf: false,
+        value: 1,
         onChange: jest.fn(),
       };
 
       const wrapper = mount(<ReactStarsRating {...props} />);
+      expect(wrapper.state('value')).toEqual(1);
       wrapper.find('.star-3 svg').simulate('mousemove');
       expect(wrapper.state('value')).toEqual(3);
+      wrapper.find('.star-3 svg').simulate('mouseleave');
+      expect(wrapper.state('value')).toEqual(1);
     });
 
     it('onMouseOver', () => {
@@ -144,4 +148,37 @@ describe('Keyboard onChange simulate', () => {
   });
 });
 
+describe('Accessibility', () => {
+  it('isSubmitted', () => {
+    const props = {
+      countStars: 5,
+      isHalf: false,
+      value: 1,
+      isArrowSubmit: false,
+    };
+
+    const wrapper = mount(<ReactStarsRating {...props} />);
+    wrapper
+      .find('#react-awesome-stars-rating')
+      .simulate('keyDown', { keyCode: 39 })
+      .simulate('keyDown', { keyCode: 9 })
+      .simulate('blur');
+    expect(wrapper.state('value')).toEqual(2);
+    expect(wrapper.state('isSubmitted')).toEqual(true);
+  });
+});
+
+describe('componentDidUpdate', () => {
+  it('change value', () => {
+    const props = {
+      countStars: 5,
+      isHalf: false,
+      value: 3,
+    };
+
+    const wrapper = shallow(<ReactStarsRating {...props} />);
+    wrapper.setProps({ value: 4 });
+    expect(wrapper.instance().props.value).toEqual(4);
+  });
+});
 // props checking

@@ -27,7 +27,7 @@ const Gradient = ({ primaryColor, secondaryColor, offset, index, value }) => {
 Gradient.propTypes = {
   primaryColor: PropTypes.string.isRequired,
   secondaryColor: PropTypes.string.isRequired,
-  offset: PropTypes.number.isRequired,
+  offset: PropTypes.number,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
 };
