@@ -10,7 +10,8 @@
     "prepublishOnly": "npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
-    "coveralls": "jest --coverage && cat ./__tests__/coverage/lcov.info | coveralls"
+    "test:coverage": "jest --coverage",
+    "coveralls": "jest --coverage && cat coverage/lcov.info | coveralls"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "<rootDir>__tests__/setup/setupEnzyme.js",
