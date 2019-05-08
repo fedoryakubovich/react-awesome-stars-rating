@@ -24,13 +24,13 @@ class ReactStarsExample extends PureComponent {
 
   render() {
     const { isEdit, value, selectedValue } = this.state;
-
     return (
       <section>
         <ReactStarsRating
           onChange={this.onChange}
           isEdit={isEdit}
           value={value}
+          isHalf={false}
           selectedValue={selectedValue}
         />
 

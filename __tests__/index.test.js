@@ -169,7 +169,7 @@ describe('Accessibility', () => {
 });
 
 describe('componentDidUpdate', () => {
-  it('change value', () => {
+  it('Change value', () => {
     const props = {
       countStars: 5,
       isHalf: false,
