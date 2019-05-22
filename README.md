@@ -13,7 +13,7 @@ React Awesome Stars Rating is a simple star component with easy integration for 
 
 ## Previews
 
-![react-awesome-stars-rating preview](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/release/v0.1.8/images/gifs/react-awesome-stars-rating.gif)
+![react-awesome-stars-rating preview](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/master/images/gifs/react-awesome-stars-rating.gif)
 
 ## Features
 
