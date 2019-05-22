@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
 
-import ReactStarsRating from '../dist/index';
+import ReactStarsRating from '../src';
 
 class ReactStarsExample extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      value: 0,
+      value: 3.2,
       isEdit: true,
     };
 
@@ -24,13 +24,13 @@ class ReactStarsExample extends PureComponent {
 
   render() {
     const { isEdit, value, selectedValue } = this.state;
-
     return (
       <section>
         <ReactStarsRating
           onChange={this.onChange}
           isEdit={isEdit}
           value={value}
+          isHalf={false}
           selectedValue={selectedValue}
         />
 

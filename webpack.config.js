@@ -1,14 +1,14 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 const htmlWebpackPlugin = new HtmlWebPackPlugin({
-  template: './example/index.html',
+  template: './examples/index.html',
   filename: './index.html',
 });
 
 module.exports = {
-  entry: ['./example/index.js'],
+  entry: ['./examples/index.js'],
   output: {
-    filename: './example/bundle.js',
+    filename: './examples/bundle.js',
     pathinfo: true,
   },
   module: {

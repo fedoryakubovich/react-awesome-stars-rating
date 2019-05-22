@@ -15,34 +15,20 @@ const StarSVG = ({
   primaryColor,
   secondaryColor,
   fill,
-  isEdit,
-  primaryOffset,
-  secondaryOffset,
+  offset,
 }) => {
-  if (isEdit) {
-    if (index <= value) {
-      fill = 'url(#full)';
-    } else if (isHalf && index - 0.5 === value) {
-      fill = 'url(#half)';
-    }
-  } else {
-    if (index === 1) {
-      const rest = value - Math.floor(value) || 1;
-      primaryOffset = Math.round(rest * 100);
-    }
-    const ceilValue = Math.ceil(value);
-    if (index < value) {
-      fill = 'url(#full)';
-    } else if (isHalf && index === ceilValue) {
-      fill = 'url(#half)';
-    }
+  if (index <= value) {
+    fill = 'url(#full)';
+  } else if (isHalf && Math.ceil(value) === index) {
+    fill = 'url(#half)';
   }
 
   const props = {
     primaryColor,
-    primaryOffset,
     secondaryColor,
-    secondaryOffset,
+    offset,
+    index,
+    value,
   };
 
   return (
@@ -56,8 +42,7 @@ const StarSVG = ({
       data-stars={index}
       onMouseMove={onMouseMove}
     >
-      {index === 1 && <Gradient {...props} />}
-
+      <Gradient {...props} />
       <polygon
         fill={fill}
         points="153,230.775 247.35,299.625 211.65,187.425 306,121.125 191.25,121.125 153,6.375 114.75,121.125 0,121.125 
@@ -80,16 +65,13 @@ StarSVG.propTypes = {
   fill: PropTypes.string,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
-  isEdit: PropTypes.bool.isRequired,
-  primaryOffset: PropTypes.number.isRequired,
-  secondaryOffset: PropTypes.number.isRequired,
+  offset: PropTypes.number.isRequired,
 };
 
 StarSVG.defaultProps = {
   viewBox: '0 0 306 306',
   fill: 'url(#none)',
-  primaryOffset: 50,
-  secondaryOffset: 50,
+  offset: 50,
 };
 
 export default StarSVG;

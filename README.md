@@ -1,6 +1,21 @@
-# React Awesome Stars Rating &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/react-awesome-stars-rating.svg?style=flat)](https://www.npmjs.com/package/react-awesome-stars-rating)
+# React Awesome Stars Rating &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/react-awesome-stars-rating.svg?style=flat)](https://www.npmjs.com/package/react-awesome-stars-rating) [![Build Status](https://img.shields.io/travis/fedoryakubovich/react-awesome-stars-rating/release/v0.1.8.svg)](https://travis-ci.org/) [![Coverage Status](https://coveralls.io/repos/fedoryakubovich/react-awesome-stars-rating/badge.svg?branch=release/v0.1.8)](https://coveralls.io/github/fedoryakubovich/react-awesome-stars-rating?branch=release/v0.1.8)
 
 React Awesome Stars Rating is a simple star component with easy integration for your React applications.
+
+## Table of Contents
+
+- [Previews](#previews)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Documentation](#documentation)
+
+## Previews
+
+![react-awesome-stars-rating preview](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/release/v0.1.8/images/gifs/react-awesome-stars-rating.gif)
+
+## Features
 
 - Half stars
 - Custom size and color
@@ -8,13 +23,6 @@ React Awesome Stars Rating is a simple star component with easy integration for 
 - Easy integration with Redux
 - Accessibility
 - SVG Icons
-
-## Table of Contents
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Examples](#examples)
-- [Documentation](#documentation)
 
 ## Installation
 
