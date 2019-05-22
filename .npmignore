@@ -7,3 +7,4 @@ coverage/
 .babelrc
 .gitignore
 webpack.config.js
+.DS_Store

@@ -1,12 +1,12 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open",
     "clean": "./node_modules/.bin/rimraf dist/",
-    "build": "babel src --presets babel-preset-env --out-dir dist",
+    "build": "babel src --out-dir dist",
     "prepublishOnly": "npm run build",
     "test": "jest",
     "test:watch": "jest --watch",
