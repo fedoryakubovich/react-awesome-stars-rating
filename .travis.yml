@@ -6,12 +6,5 @@ before_install:
 script:
   - npm test
   - npm run coveralls
-deploy:
-  provider: heroku
-  api_key:
-    secure: KJlr570/Y6OdAVcJJ+AX8nj+4RUJef+QtGr8Obp6cX0xy5FCAetaqg0RrntK+JtKsz5/XAfNQjad1kMlbBMJ+t2yvljtG1w/UZkNSD3jMfqh/ju0VQxRlmQn2AHCnS/FZLNDe+zPLkQ3O/umCWzZyxmu9fnougpXibzscZTkq1ILT7QFOb4tyWqNw2YHvtlYih63is4llbRuDPc8H2jgxiUQa5NBvlD5wvVr3XWPjNIWTQ0fpiz6VScLokMrpDFqjsyHE3xqX1b/oBLZdXHjnuXHgSvT49zHtawseRwu88TlY2t4K9UFsNXgXeOQh2ti7QtnzVhH0PwYHtuQnnzcw5LYDdTsnzS7MbVmbwyCyYRSwBn+7k0XxtaVCvSb5JbcFAt13Tb9lZURLdhqHSFHJ0AGNN52OfVDLKRRebVnNk4plXN5lp1iB6/jiy+yL+dHohNspTS7Ze+Po5D4kINrkUjzF8Iyo2nJckllgOVXLy4xgdUAdBzb385hfb8xMybxdUVdC8epOokkPko0h9eSxFKWp+opbZZuh6Iv7JnYACbFnMeGFT2E1JqvWaoaMNcXmNqU7wDbO60k6FB995eFyBMAlr91Tagjrl0y0OAplLGR9QYbVQsob2T0DljoV2efgGXco97bIRoDmH9HUZuXz2oFvhUjwXtEvt7wJERdZAk=
-  app: react-awesome-stars-rating
-  on:
-    repo: fedoryakubovich/react-awesome-stars-rating
 env:
   - REACT=16.8
