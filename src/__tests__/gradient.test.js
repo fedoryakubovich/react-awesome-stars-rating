@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 
-import Gradient from '../src/gradient';
+import Gradient from '../lib/gradient';
 
 describe('Gradient', () => {
   it('Render', () => {

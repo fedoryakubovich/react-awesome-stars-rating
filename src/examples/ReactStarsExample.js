@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import ReactStarsRating from '../src';
+import ReactStarsRating from '../lib';
 
 class ReactStarsExample extends PureComponent {
   constructor(props) {

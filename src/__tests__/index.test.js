@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 
-import ReactStarsRating from '../src';
+import ReactStarsRating from '../lib';
 
 describe('Render', () => {
   it('ReactStarsRating', () => {
