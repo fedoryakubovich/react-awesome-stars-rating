@@ -30,7 +30,7 @@ class ReactStarsExample extends PureComponent {
           onChange={this.onChange}
           isEdit={isEdit}
           value={value}
-          isHalf={false}
+          isHalf
           selectedValue={selectedValue}
         />
 

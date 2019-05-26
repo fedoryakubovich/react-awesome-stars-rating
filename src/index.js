@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactStarsExample from './examples/ReactStarsExample';
+import ReactStarsExamples from './examples';
 
-ReactDOM.render(<ReactStarsExample />, document.getElementById('root'));
+ReactDOM.render(<ReactStarsExamples />, document.getElementById('root'));

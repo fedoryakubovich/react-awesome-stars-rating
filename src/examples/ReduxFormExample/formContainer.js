@@ -7,28 +7,26 @@ class FormContainer extends PureComponent {
     super(props);
 
     this.state = { isEdit: true };
-    this.onSubmit = this.onSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.initialValues = {
       reactStarsRating: 0,
     };
   }
 
-  onSubmit(values) {
-    const { reactStarsRating } = values;
-
+  handleChange(value) {
     this.setState({
       isEdit: false,
-      selectedValue: reactStarsRating,
+      selectedValue: value,
     });
   }
 
   render() {
     const { isEdit, selectedValue } = this.state;
     const props = {
-      onSubmit: this.onSubmit,
       initialValues: this.initialValues,
       isEdit,
       selectedValue,
+      handleChange: this.handleChange,
     };
 
     return <Form {...props} />;

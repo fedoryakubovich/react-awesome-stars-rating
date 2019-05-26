@@ -4,19 +4,23 @@ import { Field, reduxForm } from 'redux-form';
 
 import ReactStarsRating from './ReactStarsRating';
 
-const Form = ({ handleSubmit, isEdit, selectedValue }) => (
-  <section>
-    <form onSubmit={handleSubmit}>
-      <Field
-        name="reactStarsRating"
-        component={ReactStarsRating}
-        isEdit={isEdit}
-      />
-    </form>
+const Form = ({ handleSubmit, handleChange, isEdit, selectedValue }) => {
+  return (
+    <section>
+      <form onSubmit={handleSubmit}>
+        <Field
+          name="reactStarsRating"
+          component={ReactStarsRating}
+          isEdit={isEdit}
+          isHalf
+          onChange={handleChange}
+        />
+      </form>
 
-    <div>Selected value: {selectedValue}</div>
-  </section>
-);
+      <div>Selected value: {selectedValue}</div>
+    </section>
+  );
+};
 
 Form.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
