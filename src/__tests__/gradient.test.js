@@ -10,6 +10,8 @@ describe('Gradient', () => {
       secondaryColor: 'grey',
       primaryOffset: 50,
       secondaryOffset: 50,
+      index: 0,
+      value: 1,
     };
 
     shallow(<Gradient {...props} />);
@@ -21,6 +23,8 @@ describe('Gradient', () => {
       secondaryColor: 'grey',
       primaryOffset: 50,
       secondaryOffset: 50,
+      index: 0,
+      value: 1,
     };
     const gradientWrapper = mount(<Gradient {...props} />);
 
