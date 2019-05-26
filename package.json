@@ -1,11 +1,5 @@
 {
   "name": "react-awesome-stars-rating",
-  "jest": {
-    "collectCoverageFrom": [
-      "src/lib/**/*.{js,jsx,ts,tsx}",
-      "!src/lib/**/*.d.ts"
-    ]
-  },
   "version": "0.1.91",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -13,22 +7,6 @@
     "dist",
     "README.md"
   ],
-  "dependencies": {
-    "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "deploy": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "coverage": "react-scripts test --coverage --watchAll=false",
-    "coveralls": "npm run coverage && cat ./coverage/lcov.info | coveralls",
-    "build": "NODE_ENV=production babel src/lib --out-dir dist",
-    "prepublishOnly": "npm run build",
-    "clean": "./node_modules/.bin/rimraf build/"
-  },
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -62,6 +40,28 @@
     "url": "https://github.com/fedoryakubovich/react-awesome-stars-rating/issues"
   },
   "license": "MIT",
+  "jest": {
+    "collectCoverageFrom": [
+      "src/lib/**/*.{js,jsx,ts,tsx}",
+      "!src/lib/**/*.d.ts"
+    ]
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "deploy": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "coverage": "react-scripts test --coverage --watchAll=false",
+    "coveralls": "npm run coverage && cat ./coverage/lcov.info | coveralls",
+    "build": "NODE_ENV=production babel src/lib --out-dir dist",
+    "prepublishOnly": "npm run build",
+    "clean": "./node_modules/.bin/rimraf build/"
+  },
+  "dependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "coveralls": "^3.0.3",
