@@ -18,7 +18,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --env=jsdom --coverage",
-    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
+    "coveralls": "cat lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "build": "NODE_ENV=production babel src/lib --out-dir dist",
     "prepublishOnly": "npm run build",
     "clean": "./node_modules/.bin/rimraf build/"
