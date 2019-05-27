@@ -119,7 +119,7 @@ class ReactStarsRating extends PureComponent {
   }
 
   renderStars() {
-    const {
+    let {
       count,
       size,
       isHalf,
@@ -127,10 +127,17 @@ class ReactStarsRating extends PureComponent {
       primaryColor,
       secondaryColor,
       starGap,
+      fullId,
+      halfId,
+      noneId,
     } = this.props;
     const { value } = this.state;
     const starsList = [];
     let props = { primaryColor, secondaryColor };
+    const now = Date.now();
+    fullId += now;
+    halfId += now;
+    noneId += now;
 
     if (isEdit) {
       props = {
@@ -155,6 +162,9 @@ class ReactStarsRating extends PureComponent {
             value={value}
             size={size}
             isHalf={isHalf}
+            fullId={fullId}
+            halfId={halfId}
+            noneId={noneId}
             {...props}
           />
         </span>,
@@ -218,6 +228,9 @@ ReactStarsRating.defaultProps = {
   starGap: 0,
   isArrowSubmit: false,
   onChange: () => {},
+  fullId: 'full',
+  halfId: 'half',
+  noneId: 'none',
 };
 
 export default ReactStarsRating;
