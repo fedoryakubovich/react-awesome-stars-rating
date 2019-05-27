@@ -119,7 +119,7 @@ class ReactStarsRating extends PureComponent {
   }
 
   renderStars() {
-    let {
+    const {
       count,
       size,
       isHalf,
@@ -127,17 +127,14 @@ class ReactStarsRating extends PureComponent {
       primaryColor,
       secondaryColor,
       starGap,
-      fullId,
-      halfId,
-      noneId,
+      id,
     } = this.props;
     const { value } = this.state;
     const starsList = [];
     let props = { primaryColor, secondaryColor };
-    const now = Date.now();
-    fullId += now;
-    halfId += now;
-    noneId += now;
+    const fullId = `fullId-${id}`;
+    const halfId = `halfId-${id}`;
+    const noneId = `noneId-${id}`;
 
     if (isEdit) {
       props = {
@@ -175,7 +172,7 @@ class ReactStarsRating extends PureComponent {
   }
 
   render() {
-    const { isEdit, className, isArrowSubmit } = this.props;
+    const { isEdit, className, isArrowSubmit, id } = this.props;
     const stars = this.renderStars();
     let props = { tabIndex: -1 };
     const { isSubmitted } = this.state;
@@ -190,7 +187,7 @@ class ReactStarsRating extends PureComponent {
 
     return (
       <span
-        id="react-awesome-stars-rating"
+        id={id}
         role="button"
         className={className}
         {...props}
@@ -214,6 +211,7 @@ ReactStarsRating.propTypes = {
   className: PropTypes.string.isRequired,
   starGap: PropTypes.number.isRequired,
   isArrowSubmit: PropTypes.bool.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 ReactStarsRating.defaultProps = {
@@ -228,9 +226,7 @@ ReactStarsRating.defaultProps = {
   starGap: 0,
   isArrowSubmit: false,
   onChange: () => {},
-  fullId: 'full',
-  halfId: 'half',
-  noneId: 'none',
+  id: `${Date.now()}`,
 };
 
 export default ReactStarsRating;

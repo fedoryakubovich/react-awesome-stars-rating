@@ -27,7 +27,7 @@ const StarSVG = ({
   } else {
     fill = `url(#${noneId})`;
   }
-
+  console.log(fullId);
   const props = {
     primaryColor,
     secondaryColor,

@@ -6,6 +6,7 @@ declare class ReactStarsRating extends React.Component<
 > {}
 
 export interface ReactStarsRatingProps {
+  id?: string;
   isEdit?: boolean;
   isHalf?: boolean;
   count?: number;
