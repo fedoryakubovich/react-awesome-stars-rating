@@ -32,7 +32,7 @@ class ReactStarsExample extends PureComponent {
           value={value}
           isHalf
           selectedValue={selectedValue}
-          id="string"
+          id="simple"
         />
 
         <div>Selected value: {selectedValue}</div>

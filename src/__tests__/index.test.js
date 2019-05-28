@@ -100,6 +100,7 @@ describe('Keyboard onChange simulate', () => {
   describe('isEdit is equal true', () => {
     it('without isHalf', () => {
       const props = {
+        id: 'simple',
         countStars: 5,
         isHalf: false,
         value: 1,
@@ -107,28 +108,23 @@ describe('Keyboard onChange simulate', () => {
       };
 
       const wrapper = mount(<ReactStarsRating {...props} />);
-      wrapper
-        .find('#react-awesome-stars-rating')
-        .simulate('keyDown', { keyCode: 39 });
+      wrapper.find(`span#${props.id}`).simulate('keyDown', { keyCode: 39 });
       expect(wrapper.state('value')).toEqual(2);
-      wrapper
-        .find('#react-awesome-stars-rating')
-        .simulate('keyDown', { keyCode: 39 });
+      wrapper.find(`span#${props.id}`).simulate('keyDown', { keyCode: 39 });
       expect(wrapper.state('value')).toEqual(3);
       wrapper
-        .find('#react-awesome-stars-rating')
+        .find(`span#${props.id}`)
         .simulate('keyDown', { keyCode: 37 })
         .simulate('keyDown', { keyCode: 37 })
         .simulate('keyDown', { keyCode: 13 });
-      wrapper
-        .find('#react-awesome-stars-rating')
-        .simulate('keyDown', { keyCode: 38 });
+      wrapper.find(`span#${props.id}`).simulate('keyDown', { keyCode: 38 });
       expect(wrapper.state('value')).toEqual(props.value);
     });
   });
 
   it('without isHalf', () => {
     const props = {
+      id: 'simple',
       countStars: 5,
       isHalf: true,
       value: 1,
@@ -137,13 +133,9 @@ describe('Keyboard onChange simulate', () => {
     };
 
     const wrapper = mount(<ReactStarsRating {...props} />);
-    wrapper
-      .find('#react-awesome-stars-rating')
-      .simulate('keyDown', { keyCode: 39 });
+    wrapper.find(`span#${props.id}`).simulate('keyDown', { keyCode: 39 });
     expect(wrapper.state('value')).toEqual(1.5);
-    wrapper
-      .find('#react-awesome-stars-rating')
-      .simulate('keyDown', { keyCode: 37 });
+    wrapper.find(`span#${props.id}`).simulate('keyDown', { keyCode: 37 });
     expect(wrapper.state('value')).toEqual(props.value);
   });
 });
@@ -151,6 +143,7 @@ describe('Keyboard onChange simulate', () => {
 describe('Accessibility', () => {
   it('isSubmitted', () => {
     const props = {
+      id: 'simple',
       countStars: 5,
       isHalf: false,
       value: 1,
@@ -159,7 +152,7 @@ describe('Accessibility', () => {
 
     const wrapper = mount(<ReactStarsRating {...props} />);
     wrapper
-      .find('#react-awesome-stars-rating')
+      .find(`span#${props.id}`)
       .simulate('keyDown', { keyCode: 39 })
       .simulate('keyDown', { keyCode: 9 })
       .simulate('blur');
