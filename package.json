@@ -1,6 +1,6 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "0.1.91",
+  "version": "0.1.92",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "files": [
@@ -63,16 +63,16 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "coveralls": "^3.0.3",
-    "enzyme": "^3.9.0",
-    "enzyme-adapter-react-16": "^1.13.1",
+    "@babel/cli": "^7.5.5",
+    "coveralls": "^3.0.5",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
     "eslint-config-prettier": "^4.3.0",
     "eslint-plugin-prettier": "^3.1.0",
-    "prettier": "^1.17.1",
-    "react-redux": "^7.0.3",
+    "prettier": "^1.18.2",
+    "react-redux": "^7.1.0",
     "react-scripts": "3.0.1",
-    "redux": "^4.0.1",
-    "redux-form": "^8.2.0"
+    "redux": "^4.0.4",
+    "redux-form": "^8.2.4"
   }
 }
