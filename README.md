@@ -49,19 +49,20 @@ ReactDOM.render(<ReactStarsExample />, document.getElementById('root'));
 
 ## Documentation
 
-| Name           | Description                                              | Type     | Default  |
-| :------------- | :------------------------------------------------------- | :------- | :------- |
-| value          | Value                                                    | Number   | 0        |
-| onChange       | A function, that will be invoked when value have changed | Function | null     |
-| isEdit         | If `true` the rating is in editing mode                  | Boolean  | true     |
-| isHalf         | If `true` half stars are available                       | Boolean  | true     |
-| count          | Count of the stars                                       | Number   | 5        |
-| size           | Size of the stars                                        | Number   | 25       |
-| starGap        | Gap between the stars                                    | Number   | 0        |
-| className      | Class name for button container                          | String   | ''       |
-| primaryColor   | Star's color when star is active                         | String   | 'orange' |
-| secondaryColor | Star's color when star isn't active                      | String   | 'grey'   |
-| isArrowSubmit  | Left arrow or right arrow click onvokes onChange         | Boolean  | false    |
+| Name           | Description                                              | Type     | Default         |
+| :------------- | :------------------------------------------------------- | :------- | :-------------- |
+| id             | Identifier                                               | String   | `${Date.now()}` |
+| value          | Value                                                    | Number   | 0               |
+| onChange       | A function, that will be invoked when value have changed | Function | null            |
+| isEdit         | If `true` the rating is in editing mode                  | Boolean  | true            |
+| isHalf         | If `true` half stars are available                       | Boolean  | true            |
+| count          | Count of the stars                                       | Number   | 5               |
+| size           | Size of the stars                                        | Number   | 25              |
+| starGap        | Gap between the stars                                    | Number   | 0               |
+| className      | Class name for button container                          | String   | ''              |
+| primaryColor   | Star's color when star is active                         | String   | 'orange'        |
+| secondaryColor | Star's color when star isn't active                      | String   | 'grey'          |
+| isArrowSubmit  | Left arrow or right arrow click onvokes onChange         | Boolean  | false           |
 
 ## Examples
 

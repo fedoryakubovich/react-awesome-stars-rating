@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 
-import Gradient from '../src/gradient';
+import Gradient from '../lib/gradient';
 
 describe('Gradient', () => {
   it('Render', () => {
@@ -10,6 +10,8 @@ describe('Gradient', () => {
       secondaryColor: 'grey',
       primaryOffset: 50,
       secondaryOffset: 50,
+      index: 0,
+      value: 1,
     };
 
     shallow(<Gradient {...props} />);
@@ -21,6 +23,8 @@ describe('Gradient', () => {
       secondaryColor: 'grey',
       primaryOffset: 50,
       secondaryOffset: 50,
+      index: 0,
+      value: 1,
     };
     const gradientWrapper = mount(<Gradient {...props} />);
 

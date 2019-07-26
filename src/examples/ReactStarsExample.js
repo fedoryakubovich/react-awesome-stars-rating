@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import ReactStarsRating from '../src';
+import ReactStarsRating from '../lib';
 
 class ReactStarsExample extends PureComponent {
   constructor(props) {
@@ -30,8 +30,9 @@ class ReactStarsExample extends PureComponent {
           onChange={this.onChange}
           isEdit={isEdit}
           value={value}
-          isHalf={false}
+          isHalf
           selectedValue={selectedValue}
+          id="simple"
         />
 
         <div>Selected value: {selectedValue}</div>

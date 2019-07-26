@@ -16,11 +16,16 @@ const StarSVG = ({
   secondaryColor,
   fill,
   offset,
+  fullId,
+  halfId,
+  noneId,
 }) => {
   if (index <= value) {
-    fill = 'url(#full)';
+    fill = `url(#${fullId})`;
   } else if (isHalf && Math.ceil(value) === index) {
-    fill = 'url(#half)';
+    fill = `url(#${halfId})`;
+  } else {
+    fill = `url(#${noneId})`;
   }
 
   const props = {
@@ -29,6 +34,9 @@ const StarSVG = ({
     offset,
     index,
     value,
+    fullId,
+    halfId,
+    noneId,
   };
 
   return (
@@ -70,7 +78,6 @@ StarSVG.propTypes = {
 
 StarSVG.defaultProps = {
   viewBox: '0 0 306 306',
-  fill: 'url(#none)',
   offset: 50,
 };
 
