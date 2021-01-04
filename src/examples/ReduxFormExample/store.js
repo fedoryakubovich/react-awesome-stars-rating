@@ -2,7 +2,7 @@ import { compose, createStore } from 'redux';
 
 import reducer from './reducer';
 
-export default () => {
+const store = () => {
   const composeEnhancers =
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -10,3 +10,5 @@ export default () => {
 
   return store;
 };
+
+export default store;

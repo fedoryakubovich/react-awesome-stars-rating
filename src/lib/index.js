@@ -189,9 +189,9 @@ class ReactStarsRating extends PureComponent {
       <span
         id={id}
         role="button"
-        className={className}
         {...props}
         style={isEdit ? styles.activeContainer : styles.inActiveContainer}
+        className={className}
       >
         {stars}
       </span>
