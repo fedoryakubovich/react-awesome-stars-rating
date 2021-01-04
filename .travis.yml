@@ -7,4 +7,4 @@ script:
   - npm test
   - npm run coveralls
 env:
-  - REACT=16.8
+  - REACT=17.0
