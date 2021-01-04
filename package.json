@@ -14,7 +14,12 @@
     ],
     "plugins": [
       "eslint-plugin-prettier"
-    ]
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error"
+      ]
+    }
   },
   "browserslist": {
     "production": [
