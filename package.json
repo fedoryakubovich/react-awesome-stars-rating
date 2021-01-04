@@ -1,6 +1,6 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "files": [
@@ -8,7 +8,13 @@
     "README.md"
   ],
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "eslint-config-prettier"
+    ],
+    "plugins": [
+      "eslint-plugin-prettier"
+    ]
   },
   "browserslist": {
     "production": [
@@ -59,20 +65,20 @@
   },
   "dependencies": {
     "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "coveralls": "^3.0.11",
+    "@babel/cli": "^7.12.10",
+    "coveralls": "^3.1.0",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
-    "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^2.0.2",
-    "react-redux": "^7.2.0",
-    "react-scripts": "3.4.1",
+    "enzyme-adapter-react-16": "^1.15.5",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "prettier": "^2.2.1",
+    "react-redux": "^7.2.2",
+    "react-scripts": "4.0.1",
     "redux": "^4.0.5",
-    "redux-form": "^8.3.2"
+    "redux-form": "^8.3.7"
   }
 }
