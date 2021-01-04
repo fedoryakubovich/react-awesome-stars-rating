@@ -1,4 +1,4 @@
-export default {
+const styles = {
   activeContainer: {
     border: 'none',
   },
@@ -7,3 +7,5 @@ export default {
     outline: 0,
   },
 };
+
+export default styles;
