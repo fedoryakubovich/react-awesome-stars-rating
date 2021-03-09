@@ -172,6 +172,7 @@ class ReactStarsRating extends PureComponent {
   render() {
     const { isEdit, className, isArrowSubmit, id } = this.props;
     const stars = this.renderStars();
+    let props;
 
     if (isEdit || isArrowSubmit) {
       props = {
