@@ -1,6 +1,6 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "files": [
@@ -69,21 +69,21 @@
     "clean": "./node_modules/.bin/rimraf build/"
   },
   "dependencies": {
-    "prop-types": "^15.7.2",
+    "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.15.7",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
+    "@babel/cli": "^7.17.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
     "coveralls": "^3.1.1",
     "enzyme": "^3.11.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.4.1",
-    "react-redux": "^7.2.5",
-    "react-scripts": "4.0.3",
-    "redux": "^4.1.1",
-    "redux-form": "^8.3.7"
+    "prettier": "^2.5.1",
+    "react-redux": "^7.2.6",
+    "react-scripts": "5.0.0",
+    "redux": "^4.1.2",
+    "redux-form": "^8.3.8"
   }
 }
