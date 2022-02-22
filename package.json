@@ -1,6 +1,6 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "files": [
@@ -74,11 +74,11 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.0",
+    "@babel/cli": "^7.17.6",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
     "coveralls": "^3.1.1",
     "enzyme": "^3.11.0",
-    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.5.1",
     "react-redux": "^7.2.6",
