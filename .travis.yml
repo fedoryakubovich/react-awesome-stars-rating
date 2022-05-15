@@ -9,4 +9,4 @@ script:
   - npm test
   - npm run coveralls
 env:
-  - REACT=17.0
+  - REACT=18.0
