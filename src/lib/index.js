@@ -10,7 +10,6 @@ class ReactStarsRating extends PureComponent {
 
     this.state = {
       value: props.value,
-      isSubmitted: false,
     };
 
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -60,7 +59,6 @@ class ReactStarsRating extends PureComponent {
     const { value } = this.state;
 
     onChange(value);
-    this.setState({ isSubmitted: true });
   }
 
   onChange(event) {
@@ -174,14 +172,12 @@ class ReactStarsRating extends PureComponent {
   render() {
     const { isEdit, className, isArrowSubmit, id } = this.props;
     const stars = this.renderStars();
-    let props = { tabIndex: -1 };
-    const { isSubmitted } = this.state;
+    let props;
 
-    if ((isEdit || isArrowSubmit) && !isSubmitted) {
+    if (isEdit || isArrowSubmit) {
       props = {
         onKeyDown: this.onKeyDown,
         onBlur: this.onBlur,
-        tabIndex: 0,
       };
     }
 
@@ -192,6 +188,7 @@ class ReactStarsRating extends PureComponent {
         {...props}
         style={isEdit ? styles.activeContainer : styles.inActiveContainer}
         className={className}
+        tabIndex="0"
       >
         {stars}
       </span>

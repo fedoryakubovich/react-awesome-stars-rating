@@ -157,7 +157,6 @@ describe('Accessibility', () => {
       .simulate('keyDown', { keyCode: 9 })
       .simulate('blur');
     expect(wrapper.state('value')).toEqual(2);
-    expect(wrapper.state('isSubmitted')).toEqual(true);
   });
 });
 
