@@ -47,7 +47,7 @@ describe('Gradient', () => {
       `${(props.value % 1) * 100}`,
     );
 
-    const [full, none, half] = container.querySelectorAll('linearGradient');
+    const [full, none, half] = container.querySelectorAll('lineargradient');
 
     const fullStop = full.querySelector('stop');
     expect(fullStop).toHaveAttribute('stop-color', props.primaryColor);
