@@ -17,7 +17,7 @@ const Gradient = ({
 
   return (
     index === 1 && (
-      <defs>
+      <defs data-testid="gradient" data-offset={offset}>
         <linearGradient id={fullId}>
           <stop offset="100%" stopColor={primaryColor} />
         </linearGradient>

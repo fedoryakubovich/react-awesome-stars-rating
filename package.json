@@ -1,6 +1,6 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "0.11.0",
+  "version": "0.13.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "files": [
@@ -63,25 +63,24 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --coverage --watchAll=false",
-    "coveralls": "npm run coverage && coveralls < coverage/lcov.info",
     "upload": "NODE_ENV=production babel src/lib --out-dir dist",
     "prepublishOnly": "npm run upload",
     "clean": "./node_modules/.bin/rimraf build/"
   },
   "dependencies": {
     "prop-types": "^15.8.1",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.10",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
-    "coveralls": "^3.1.1",
-    "enzyme": "^3.11.0",
+    "@babel/cli": "^7.18.9",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/user-event": "^14.3.0",
     "eslint-config-prettier": "^8.4.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.6.2",
-    "react-redux": "^8.0.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
+    "react-redux": "^7.2.8",
     "react-scripts": "5.0.1",
     "redux": "^4.2.0",
     "redux-form": "^8.3.8"

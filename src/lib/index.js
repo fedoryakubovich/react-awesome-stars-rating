@@ -153,6 +153,7 @@ class ReactStarsRating extends PureComponent {
           key={`react-stars-rating-char${i}`}
           className={`star star-${i}`}
           style={style}
+          data-testid="star"
         >
           <Star
             index={i}
@@ -192,6 +193,9 @@ class ReactStarsRating extends PureComponent {
         {...props}
         style={isEdit ? styles.activeContainer : styles.inActiveContainer}
         className={className}
+        data-testid="react-awesome-stars-rating"
+        data-value={this.state.value}
+        data-submitted={this.state.isSubmitted}
       >
         {stars}
       </span>
