@@ -20,4 +20,24 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm test
-      - run: npm run coveralls
+
+  finish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v2
+      with: 
+        node-version: 16.x
+    - name: Run the tests
+      run: |
+        npm ci
+        npm run coverage
+      env:
+        CI: true
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        flags: unittests
