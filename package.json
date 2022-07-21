@@ -63,7 +63,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --coverage --watchAll=false",
-    "coveralls": "npm run coverage && coveralls < coverage/lcov.info",
     "upload": "NODE_ENV=production babel src/lib --out-dir dist",
     "prepublishOnly": "npm run upload",
     "clean": "./node_modules/.bin/rimraf build/"
