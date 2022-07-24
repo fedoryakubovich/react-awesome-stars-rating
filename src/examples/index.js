@@ -10,6 +10,7 @@ const Examples = () => {
         <h3>Simple Example</h3>
         <ReactStarsExample />
       </section>
+
       <section>
         <h3>Redux Form</h3>
         <ReduxFormExample />
