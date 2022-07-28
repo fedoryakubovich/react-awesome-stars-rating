@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Star from './star';
 import styles from './styles';
 
-const ReactStarsRating = (props) => {
+const ReactStarsRating = React.forwardRef((props, ref) => {
   const [state, setState] = React.useState({
     value: props.value,
     isSubmitted: false,
@@ -137,6 +137,8 @@ const ReactStarsRating = (props) => {
 
   return (
     <span
+      ref={ref}
+      name={props.name}
       id={props.id}
       role="button"
       {...resultProps}
@@ -149,7 +151,7 @@ const ReactStarsRating = (props) => {
       {renderStars()}
     </span>
   );
-};
+});
 
 ReactStarsRating.propTypes = {
   onChange: PropTypes.func.isRequired,

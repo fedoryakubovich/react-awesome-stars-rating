@@ -9,6 +9,7 @@ const Form = ({ handleSubmit, handleChange, isEdit, selectedValue }) => {
     <section>
       <form onSubmit={handleSubmit}>
         <Field
+          id="reduxExample"
           name="reactStarsRating"
           component={ReactStarsRating}
           isEdit={isEdit}

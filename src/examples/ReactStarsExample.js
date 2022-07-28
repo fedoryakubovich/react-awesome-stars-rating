@@ -17,7 +17,7 @@ const ReactStarsExample = () => {
         value={state.value}
         isHalf
         selectedValue={state.selectedValue}
-        id="simple"
+        id="simpleExample"
       />
 
       <div>Selected value: {state.selectedValue}</div>
