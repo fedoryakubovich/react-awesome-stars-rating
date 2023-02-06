@@ -1,6 +1,6 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "0.13.3",
+  "version": "0.13.4",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "files": [
@@ -79,10 +79,10 @@
     "@testing-library/user-event": "^14.4.3",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.2",
+    "prettier": "^2.8.3",
     "react-redux": "^7.2.9",
     "react-scripts": "5.0.1",
-    "redux": "^4.2.0",
+    "redux": "^4.2.1",
     "redux-form": "^8.3.9"
   }
 }
