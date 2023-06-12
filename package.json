@@ -59,7 +59,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "NODE_ENV=production react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "coverage": "react-scripts test --coverage --watchAll=false",
