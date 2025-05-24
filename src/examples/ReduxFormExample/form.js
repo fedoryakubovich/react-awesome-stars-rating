@@ -1,5 +1,5 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 
 import ReactStarsRating from './ReactStarsRating';

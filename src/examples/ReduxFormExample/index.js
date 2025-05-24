@@ -1,8 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import createStore from './store';
 import Form from './formContainer';
+import createStore from './store';
 
 const store = createStore();
 
