@@ -1,5 +1,3 @@
-import React from 'react';
-
 import SimpleExample from './SimpleExample';
 import HookFormExample from './HookFormExample';
 import FormikExample from './FormikExample';

@@ -1,4 +1,4 @@
-import React from 'react';
+import type { MouseEvent } from 'react';
 
 import Gradient from './gradient';
 
@@ -7,9 +7,9 @@ type StarProps = {
   size: number;
   primaryColor: string;
   secondaryColor: string;
-  onMouseLeave?: (event: React.MouseEvent<SVGSVGElement>) => void;
-  onMouseMove?: (event: React.MouseEvent<SVGSVGElement>) => void;
-  onChange?: (event: React.MouseEvent<SVGSVGElement>) => void;
+  onMouseLeave?: (event: MouseEvent<SVGSVGElement>) => void;
+  onMouseMove?: (event: MouseEvent<SVGSVGElement>) => void;
+  onChange?: (event: MouseEvent<SVGSVGElement>) => void;
   isHalf: boolean;
   fill?: string;
   index: number;

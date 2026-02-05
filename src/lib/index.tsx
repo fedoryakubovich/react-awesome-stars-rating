@@ -1,4 +1,11 @@
-import React, { useEffect, useId, useMemo, useState } from 'react';
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+} from 'react';
 
 import Star from './star';
 import styles from './styles';
@@ -49,13 +56,13 @@ const ReactStarsRating = ({
   const halfId = useMemo(() => `halfId-${resolvedId}`, [resolvedId]);
   const noneId = useMemo(() => `noneId-${resolvedId}`, [resolvedId]);
 
-  const isMoreThanHalf = (event: React.MouseEvent<SVGSVGElement>) => {
+  const isMoreThanHalf = (event: MouseEvent<SVGSVGElement>) => {
     const point =
       event.clientX - event.currentTarget.getBoundingClientRect().left;
     return point > size / 2;
   };
 
-  const getValueFromEvent = (event: React.MouseEvent<SVGSVGElement>) => {
+  const getValueFromEvent = (event: MouseEvent<SVGSVGElement>) => {
     const index = Number(event.currentTarget.getAttribute('data-stars'));
     if (!isHalf) {
       return index;
@@ -64,7 +71,7 @@ const ReactStarsRating = ({
     return isMoreThanHalf(event) ? index : index - 0.5;
   };
 
-  const handleMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
+  const handleMouseMove = (event: MouseEvent<SVGSVGElement>) => {
     if (!isEdit) {
       return;
     }
@@ -85,7 +92,7 @@ const ReactStarsRating = ({
     setIsSubmitted(true);
   };
 
-  const handleChange = (event: React.MouseEvent<SVGSVGElement>) => {
+  const handleChange = (event: MouseEvent<SVGSVGElement>) => {
     if (!isEdit) {
       return;
     }
@@ -111,7 +118,7 @@ const ReactStarsRating = ({
     }
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>) => {
     if (!isEdit && !isArrowSubmit) {
       return;
     }

@@ -1,5 +1,3 @@
-import React from 'react';
-
 type GradientProps = {
   primaryColor: string;
   secondaryColor: string;

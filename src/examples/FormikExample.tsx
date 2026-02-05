@@ -1,4 +1,3 @@
-import React from 'react';
 import { Field, FieldProps, Form, Formik } from 'formik';
 
 import ReactStarsRating from '../lib';
