@@ -3,13 +3,8 @@ import { useForm } from '@tanstack/react-form';
 
 import ReactStarsRating from '../lib';
 
-type FormValues = {
-  rating: number;
-  note: string;
-};
-
 const TanStackFormExample = () => {
-  const form = useForm<FormValues>({
+  const form = useForm({
     defaultValues: {
       rating: 3.5,
       note: '',

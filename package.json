@@ -1,6 +1,6 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "0.16.2",
+  "version": "1.0.0",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
