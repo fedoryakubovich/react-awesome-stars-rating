@@ -15,9 +15,9 @@ const TanStackFormExample = () => {
   });
 
   return (
-    <div className="rounded-3xl border border-ink-700/60 bg-ink-800/60 p-6">
-      <h3 className="font-display text-2xl text-ink-100">TanStack Form</h3>
-      <p className="mt-2 text-sm text-ink-200">
+    <div className="rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+      <h3 className="font-display text-2xl text-slate-900">TanStack Form</h3>
+      <p className="mt-2 text-sm text-slate-600">
         Headless form state management with a custom rating input.
       </p>
 
@@ -37,7 +37,10 @@ const TanStackFormExample = () => {
         >
           {(field) => (
             <div>
-              <label htmlFor="tanstack-rating" className="text-sm text-ink-200">
+              <label
+                htmlFor="tanstack-rating"
+                className="text-sm text-slate-700"
+              >
                 Rating
               </label>
               <div className="mt-2 flex items-center gap-4">
@@ -48,7 +51,7 @@ const TanStackFormExample = () => {
                   isHalf
                   size={28}
                 />
-                <span className="text-sm text-ink-200">
+                <span className="text-sm text-slate-600">
                   {field.state.value.toFixed(1)}
                 </span>
               </div>
@@ -71,12 +74,12 @@ const TanStackFormExample = () => {
         >
           {(field) => (
             <div>
-              <label htmlFor="tanstack-note" className="text-sm text-ink-200">
+              <label htmlFor="tanstack-note" className="text-sm text-slate-700">
                 Note
               </label>
               <textarea
                 id="tanstack-note"
-                className="mt-2 w-full rounded-2xl border border-ink-700 bg-ink-900/80 p-3 text-sm text-ink-100 outline-none focus:border-ember-500"
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white p-3 text-sm text-slate-900 outline-none focus:border-ember-500 focus:ring-2 focus:ring-ember-500/20"
                 rows={3}
                 value={field.state.value}
                 onBlur={field.handleBlur}

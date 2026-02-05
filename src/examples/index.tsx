@@ -7,18 +7,18 @@ import TanStackFormExample from './TanStackFormExample';
 
 const Examples = () => {
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
+    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-6 py-16">
       <header className="max-w-2xl">
-        <p className="text-sm uppercase tracking-[0.3em] text-ember-500">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ember-500">
           React Awesome Stars Rating
         </p>
-        <h1 className="mt-3 font-display text-4xl text-ink-100">
-          Modern star rating component, rebuilt with Vite, TypeScript, and
-          Tailwind.
+        <h1 className="mt-4 font-display text-4xl sm:text-5xl bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+          Modern star rating component for React.
         </h1>
-        <p className="mt-4 text-sm text-ink-200">
-          Explore the simple usage and form integrations with react-hook-form,
-          Formik, and TanStack Form.
+        <p className="mt-4 text-sm text-slate-600">
+          Explore simple usage and deep form integrations with React Hook Form,
+          Formik, and TanStack Form — all powered by a single accessible rating
+          component.
         </p>
       </header>
 

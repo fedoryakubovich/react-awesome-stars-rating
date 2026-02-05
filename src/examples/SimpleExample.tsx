@@ -12,9 +12,9 @@ const SimpleExample = () => {
   };
 
   return (
-    <div className="rounded-3xl border border-ink-700/60 bg-ink-800/60 p-6 shadow-glow">
-      <h3 className="font-display text-2xl text-ink-100">Simple Example</h3>
-      <p className="mt-2 text-sm text-ink-200">
+    <div className="rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+      <h3 className="font-display text-2xl text-slate-900">Simple example</h3>
+      <p className="mt-2 text-sm text-slate-600">
         Hover or click to set a rating. Keyboard arrows work too.
       </p>
       <div className="mt-6 flex items-center gap-4">
@@ -25,7 +25,7 @@ const SimpleExample = () => {
           size={32}
           id="simple"
         />
-        <span className="text-sm text-ink-200">
+        <span className="text-sm text-slate-600">
           Selected: {submittedValue ?? '—'}
         </span>
       </div>

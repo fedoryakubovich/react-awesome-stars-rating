@@ -30,15 +30,15 @@ const HookFormExample = () => {
   const rating = watch('rating') ?? 0;
 
   return (
-    <div className="rounded-3xl border border-ink-700/60 bg-ink-800/60 p-6">
-      <h3 className="font-display text-2xl text-ink-100">React Hook Form</h3>
-      <p className="mt-2 text-sm text-ink-200">
+    <div className="rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+      <h3 className="font-display text-2xl text-slate-900">React Hook Form</h3>
+      <p className="mt-2 text-sm text-slate-600">
         Uses Controller to bind the rating component.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
         <div>
-          <label htmlFor="rhf" className="text-sm text-ink-200">
+          <label htmlFor="rhf" className="text-sm text-slate-700">
             Rating
           </label>
           <div className="mt-2 flex items-center gap-4">
@@ -56,7 +56,7 @@ const HookFormExample = () => {
                 />
               )}
             />
-            <span className="text-sm text-ink-200">{rating.toFixed(1)}</span>
+            <span className="text-sm text-slate-600">{rating.toFixed(1)}</span>
           </div>
           {errors.rating && (
             <p className="mt-2 text-xs text-ember-500">
@@ -66,13 +66,13 @@ const HookFormExample = () => {
         </div>
 
         <div>
-          <label className="text-sm text-ink-200" htmlFor="feedback">
+          <label className="text-sm text-slate-700" htmlFor="feedback">
             Feedback
           </label>
           <textarea
             id="feedback"
             {...register('feedback', { required: true })}
-            className="mt-2 w-full rounded-2xl border border-ink-700 bg-ink-900/80 p-3 text-sm text-ink-100 outline-none focus:border-ember-500"
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white p-3 text-sm text-slate-900 outline-none focus:border-ember-500 focus:ring-2 focus:ring-ember-500/20"
             rows={3}
             placeholder="What made it awesome?"
           />
