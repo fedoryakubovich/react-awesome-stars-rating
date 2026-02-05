@@ -1,0 +1,10 @@
+# Dependencies and build output
+node_modules
+dist
+build
+coverage
+storybook-static
+
+# Config and generated
+*.config.cjs
+.eslintcache

@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: |
+          if [ -n "${GITHUB_BASE_REF}" ]; then
+            npm run commitlint -- --from=origin/${GITHUB_BASE_REF}
+          else
+            npm run commitlint
+          fi
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run coverage
+      - run: npm run build

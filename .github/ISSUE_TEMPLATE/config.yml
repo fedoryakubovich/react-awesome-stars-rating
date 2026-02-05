@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Discussions
+    url: https://github.com/fedoryakubovich/react-awesome-stars-rating/discussions
+    about: Ask questions or start a discussion.
+  - name: Security Issues
+    url: https://github.com/fedoryakubovich/react-awesome-stars-rating/security/policy
+    about: Please report security vulnerabilities here.

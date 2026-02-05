@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background:
+    radial-gradient(
+      1200px 600px at 20% -20%,
+      rgba(255, 138, 61, 0.2),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 100% 0%,
+      rgba(99, 102, 241, 0.16),
+      transparent 60%
+    ),
+    #0a0f1a;
+}

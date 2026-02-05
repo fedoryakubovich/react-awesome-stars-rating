@@ -4,31 +4,35 @@ import Gradient from '../lib/gradient';
 
 describe('Gradient', () => {
   test('Render', () => {
-    const props = {
-      primaryColor: 'orange',
-      secondaryColor: 'grey',
-      primaryOffset: 50,
-      secondaryOffset: 50,
-      index: 1,
-      value: 1,
-    };
-
-    render(<Gradient {...props} />);
+    render(
+      <Gradient
+        primaryColor="orange"
+        secondaryColor="grey"
+        offset={50}
+        index={1}
+        value={1}
+        fullId="full"
+        halfId="half"
+        noneId="none"
+      />,
+    );
 
     expect(screen.getByTestId('gradient')).toBeInTheDocument();
   });
 
   test('Not Render', () => {
-    const props = {
-      primaryColor: 'orange',
-      secondaryColor: 'grey',
-      primaryOffset: 50,
-      secondaryOffset: 50,
-      index: 0,
-      value: 1,
-    };
-
-    render(<Gradient {...props} />);
+    render(
+      <Gradient
+        primaryColor="orange"
+        secondaryColor="grey"
+        offset={50}
+        index={2}
+        value={1}
+        fullId="full"
+        halfId="half"
+        noneId="none"
+      />,
+    );
 
     expect(screen.queryByTestId('gradient')).not.toBeInTheDocument();
   });
@@ -39,6 +43,9 @@ describe('Gradient', () => {
       secondaryColor: 'grey',
       index: 1,
       value: 1,
+      fullId: 'full',
+      halfId: 'half',
+      noneId: 'none',
     };
 
     const { container } = render(<Gradient {...props} />);
@@ -47,7 +54,7 @@ describe('Gradient', () => {
       `${(props.value % 1) * 100}`,
     );
 
-    const [full, none, half] = container.querySelectorAll('lineargradient');
+    const [full, none, half] = container.querySelectorAll('linearGradient');
 
     const fullStop = full.querySelector('stop');
     expect(fullStop).toHaveAttribute('stop-color', props.primaryColor);
