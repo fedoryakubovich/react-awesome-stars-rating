@@ -10,7 +10,7 @@ const Examples = () => {
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ember-500">
           React Awesome Stars Rating
         </p>
-        <h1 className="mt-4 font-display text-4xl sm:text-5xl bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+        <h1 className="mt-4 font-display text-4xl sm:text-5xl bg-linear-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
           Modern star rating component for React.
         </h1>
         <p className="mt-4 text-sm text-slate-600">
@@ -20,7 +20,7 @@ const Examples = () => {
         </p>
       </header>
 
-      <section className="grid gap-6 lg:grid-cols-3 xl:grid-cols-4">
+      <section className="grid items-stretch gap-6 lg:grid-cols-3 xl:grid-cols-4">
         <SimpleExample />
         <HookFormExample />
         <FormikExample />

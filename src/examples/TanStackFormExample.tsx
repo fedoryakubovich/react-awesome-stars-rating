@@ -9,19 +9,19 @@ const TanStackFormExample = () => {
       note: '',
     },
     onSubmit: ({ value }) => {
-      console.log('tanstack-form submit', value);
+      window.alert(JSON.stringify(value, null, 2));
     },
   });
 
   return (
-    <div className="rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+    <div className="flex h-full flex-col rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
       <h3 className="font-display text-2xl text-slate-900">TanStack Form</h3>
       <p className="mt-2 text-sm text-slate-600">
-        Headless form state management with a custom rating input.
+        Headless form state with rating.
       </p>
 
       <form
-        className="mt-6 space-y-4"
+        className="mt-6 flex flex-1 flex-col space-y-4"
         onSubmit={(e) => {
           e.preventDefault();
           void form.handleSubmit();
@@ -40,9 +40,12 @@ const TanStackFormExample = () => {
                 htmlFor="tanstack-rating"
                 className="text-sm text-slate-700"
               >
-                Rating
+                Rating:{' '}
+                <span className="font-medium">
+                  {field.state.value.toFixed(1)}
+                </span>
               </label>
-              <div className="mt-2 flex items-center gap-4">
+              <div className="mt-2">
                 <ReactStarsRating
                   id="tanstack-rating"
                   value={field.state.value}
@@ -50,9 +53,6 @@ const TanStackFormExample = () => {
                   isHalf
                   size={28}
                 />
-                <span className="text-sm text-slate-600">
-                  {field.state.value.toFixed(1)}
-                </span>
               </div>
               {!field.state.meta.isValid &&
                 field.state.meta.errors.length > 0 && (
@@ -68,22 +68,22 @@ const TanStackFormExample = () => {
           name="note"
           validators={{
             onChange: ({ value }) =>
-              value.trim().length === 0 ? 'Note is required.' : undefined,
+              value.trim().length === 0 ? 'Feedback is required.' : undefined,
           }}
         >
           {(field) => (
-            <div>
+            <div className="flex-1">
               <label htmlFor="tanstack-note" className="text-sm text-slate-700">
-                Note
+                Feedback
               </label>
               <textarea
                 id="tanstack-note"
                 className="mt-2 w-full rounded-2xl border border-slate-200 bg-white p-3 text-sm text-slate-900 outline-none focus:border-ember-500 focus:ring-2 focus:ring-ember-500/20"
-                rows={3}
+                rows={2}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="Share a short note"
+                placeholder="Share your feedback"
               />
               {!field.state.meta.isValid &&
                 field.state.meta.errors.length > 0 && (
@@ -95,13 +95,15 @@ const TanStackFormExample = () => {
           )}
         </form.Field>
 
-        <button
-          type="submit"
-          disabled={form.state.isSubmitting}
-          className="rounded-full bg-ember-500 px-5 py-2 text-sm font-semibold text-ink-900 transition hover:bg-ember-400 disabled:opacity-60"
-        >
-          {form.state.isSubmitting ? 'Submitting...' : 'Submit'}
-        </button>
+        <div className="pt-2">
+          <button
+            type="submit"
+            disabled={form.state.isSubmitting}
+            className="w-full rounded-2xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white border border-slate-800 transition hover:bg-slate-800 disabled:opacity-60"
+          >
+            {form.state.isSubmitting ? 'Submitting...' : 'Submit'}
+          </button>
+        </div>
       </form>
     </div>
   );

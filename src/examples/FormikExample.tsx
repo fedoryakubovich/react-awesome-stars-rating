@@ -4,14 +4,14 @@ import ReactStarsRating from '../lib';
 
 type FormValues = {
   rating: number;
-  title: string;
+  feedback: string;
 };
 
 const FormikExample = () => {
-  const initialValues: FormValues = { rating: 2.5, title: '' };
+  const initialValues: FormValues = { rating: 2.5, feedback: '' };
 
   return (
-    <div className="rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+    <div className="flex h-full flex-col rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
       <h3 className="font-display text-2xl text-slate-900">Formik</h3>
       <p className="mt-2 text-sm text-slate-600">
         Formik Field render prop with a custom rating input.
@@ -21,8 +21,8 @@ const FormikExample = () => {
         initialValues={initialValues}
         validate={(values) => {
           const errors: Partial<Record<keyof FormValues, string>> = {};
-          if (!values.title) {
-            errors.title = 'Title is required.';
+          if (!values.feedback) {
+            errors.feedback = 'Feedback is required.';
           }
           if (values.rating < 1) {
             errors.rating = 'Minimum rating is 1.';
@@ -30,17 +30,19 @@ const FormikExample = () => {
           return errors;
         }}
         onSubmit={(values, { resetForm }) => {
-          console.log('formik submit', values);
+           
+          window.alert(JSON.stringify(values, null, 2));
           resetForm();
         }}
       >
         {({ errors, touched, values }) => (
-          <Form className="mt-6 space-y-4">
+          <Form className="mt-6 flex flex-1 flex-col space-y-4">
             <div>
               <label htmlFor="formik" className="text-sm text-slate-700">
-                Rating
+                Rating:{' '}
+                <span className="font-medium">{values.rating.toFixed(1)}</span>
               </label>
-              <div className="mt-2 flex items-center gap-4">
+              <div className="mt-2">
                 <Field name="rating">
                   {({ field, form }: FieldProps<number>) => (
                     <ReactStarsRating
@@ -52,36 +54,37 @@ const FormikExample = () => {
                     />
                   )}
                 </Field>
-                <span className="text-sm text-slate-600">
-                  {values.rating.toFixed(1)}
-                </span>
               </div>
               {touched.rating && errors.rating && (
                 <p className="mt-2 text-xs text-ember-500">{errors.rating}</p>
               )}
             </div>
 
-            <div>
-              <label className="text-sm text-slate-700" htmlFor="title">
-                Review title
+            <div className="flex-1">
+              <label className="text-sm text-slate-700" htmlFor="feedback">
+                Feedback
               </label>
               <Field
-                id="title"
-                name="title"
-                placeholder="Keep it short"
+                as="textarea"
+                id="feedback"
+                name="feedback"
+                rows={2}
+                placeholder="Share your feedback"
                 className="mt-2 w-full rounded-2xl border border-slate-200 bg-white p-3 text-sm text-slate-900 outline-none focus:border-ember-500 focus:ring-2 focus:ring-ember-500/20"
               />
-              {touched.title && errors.title && (
-                <p className="mt-2 text-xs text-ember-500">{errors.title}</p>
+              {touched.feedback && errors.feedback && (
+                <p className="mt-2 text-xs text-ember-500">{errors.feedback}</p>
               )}
             </div>
 
-            <button
-              type="submit"
-              className="rounded-full bg-ember-500 px-5 py-2 text-sm font-semibold text-ink-900 transition hover:bg-ember-400"
-            >
-              Send
-            </button>
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full rounded-2xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white border border-slate-800 transition hover:bg-slate-800"
+              >
+                Submit
+              </button>
+            </div>
           </Form>
         )}
       </Formik>
