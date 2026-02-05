@@ -47,7 +47,7 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "commitlint": "commitlint --from=HEAD~1",
+    "commitlint": "commitlint",
     "release": "semantic-release",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",

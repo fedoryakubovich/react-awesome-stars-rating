@@ -21,9 +21,9 @@ jobs:
       - run: npm run lint
       - run: |
           if [ -n "${GITHUB_BASE_REF}" ]; then
-            npm run commitlint -- --from=origin/${GITHUB_BASE_REF}
+            npm run commitlint -- --from="origin/${GITHUB_BASE_REF}" --to=HEAD
           else
-            npm run commitlint
+            npm run commitlint -- --from="origin/main" --to=HEAD
           fi
       - run: npm run typecheck
       - run: npm run test
