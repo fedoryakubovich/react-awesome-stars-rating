@@ -41,7 +41,7 @@
     "build": "vite build && tsc -p tsconfig.build.json",
     "build:site": "vite build --config vite.site.config.ts",
     "preview": "vite preview",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint src",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
     "test": "vitest run",

@@ -11,10 +11,21 @@ const prettier = require('eslint-config-prettier');
 module.exports = [
   js.configs.recommended,
   {
-    ignores: ['dist', 'coverage', 'node_modules', '**/node_modules/**'],
+    ignores: [
+      'dist',
+      'coverage',
+      'node_modules',
+      '**/node_modules/**',
+      '.cursor',
+      '.github',
+      '.husky',
+      'storybook-static',
+      '*.config.cjs',
+      '.eslintcache',
+    ],
   },
   {
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['src/**/*.{ts,tsx}', '*.config.ts', '.storybook/**/*.ts'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
