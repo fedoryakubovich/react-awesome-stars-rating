@@ -22,7 +22,6 @@ const HookFormExample = () => {
   });
 
   const onSubmit = (data: FormValues) => {
-     
     window.alert(JSON.stringify(data, null, 2));
   };
 

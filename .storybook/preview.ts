@@ -12,7 +12,7 @@ const preview: Preview = {
     },
     a11y: { disable: false },
     viewport: {
-      viewports: {
+      options: {
         mobile: {
           name: 'Mobile',
           styles: { width: '375px', height: '667px' },
@@ -26,7 +26,13 @@ const preview: Preview = {
           styles: { width: '1280px', height: '720px' },
         },
       },
-      defaultViewport: 'desktop',
+    },
+  },
+
+  initialGlobals: {
+    viewport: {
+      value: 'desktop',
+      isRotated: false,
     },
   },
 };

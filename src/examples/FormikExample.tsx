@@ -30,7 +30,6 @@ const FormikExample = () => {
           return errors;
         }}
         onSubmit={(values, { resetForm }) => {
-           
           window.alert(JSON.stringify(values, null, 2));
           resetForm();
         }}

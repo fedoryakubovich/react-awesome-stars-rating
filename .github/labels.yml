@@ -1,5 +1,5 @@
-# GitHub Labels — синхронизируются workflow sync-labels.yml
-# Цвета без # (6 hex-символов)
+# GitHub labels synced via sync-labels.yml workflow
+# Colors without # (6 hex characters)
 
 - name: bug
   color: 'd73a4a'
