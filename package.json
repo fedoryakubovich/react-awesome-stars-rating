@@ -1,33 +1,54 @@
 {
   "name": "react-awesome-stars-rating",
   "version": "1.0.0",
-  "main": "./dist/index.umd.js",
+  "description": "Accessible star rating component for React, with half stars, keyboard control and any scale or palette.",
+  "type": "module",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.umd.js"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
+  "unpkg": "./dist/index.umd.cjs",
+  "jsdelivr": "./dist/index.umd.cjs",
   "files": [
     "dist",
     "README.md",
+    "MIGRATION.md",
     "LICENSE"
   ],
   "sideEffects": false,
   "keywords": [
     "react",
-    "awesome",
+    "react-component",
+    "star-rating",
+    "stars-rating",
+    "rating",
+    "rating-component",
     "stars",
     "star",
-    "rating"
+    "half-star",
+    "review",
+    "feedback",
+    "accessibility",
+    "a11y",
+    "typescript",
+    "ui-component"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/fedoryakubovich/react-awesome-stars-rating"
+    "url": "git+https://github.com/fedoryakubovich/react-awesome-stars-rating.git"
   },
+  "homepage": "https://fedoryakubovich.github.io/react-awesome-stars-rating/",
   "author": "Fedor Yakubovich",
   "bugs": {
     "url": "https://github.com/fedoryakubovich/react-awesome-stars-rating/issues"
@@ -38,76 +59,102 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc -p tsconfig.build.json",
+    "build": "vite build && vite build -c vite.umd.config.ts && tsc -p tsconfig.build.json && node scripts/emit-cjs-types.mjs",
     "build:site": "vite build --config vite.site.config.ts",
     "preview": "vite preview",
-    "lint": "eslint src",
+    "lint": "eslint .",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
+    "verify:package": "node scripts/verify-package.mjs",
+    "lint:package": "publint && attw --pack",
+    "size": "size-limit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "commitlint": "commitlint",
     "release": "semantic-release",
+    "prepack": "npm run build && npm run verify:package",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist dist-site"
   },
   "peerDependencies": {
     "react": ">=19",
     "react-dom": ">=19"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.1",
-    "@commitlint/config-conventional": "^20.4.1",
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^12.0.0",
+    "@semantic-release/github": "^12.0.9",
     "@semantic-release/npm": "^13.1.5",
-    "@storybook/addon-a11y": "^10.2.13",
-    "@storybook/addon-links": "^10.2.13",
-    "@storybook/react-vite": "^10.2.13",
-    "@tailwindcss/postcss": "^4.1.18",
-    "@tanstack/react-form": "^1.28.0",
-    "@testing-library/dom": "^10.3.1",
-    "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/react": "^16.3.1",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/react": "^19.1.6",
-    "@types/react-dom": "^19.1.9",
-    "@typescript-eslint/eslint-plugin": "^8.54.0",
-    "@typescript-eslint/parser": "^8.54.0",
-    "@vitejs/plugin-react": "^5.1.3",
-    "@vitest/coverage-v8": "^4.0.18",
-    "autoprefixer": "^10.4.27",
-    "axe-core": "^4.9.0",
-    "eslint": "^9.39.3",
+    "@size-limit/file": "^12.1.0",
+    "@storybook/addon-a11y": "^10.5.10",
+    "@storybook/addon-links": "^10.5.10",
+    "@storybook/react-vite": "^10.5.10",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tanstack/react-form": "^1.33.5",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.6",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "@typescript-eslint/eslint-plugin": "^8.68.0",
+    "@typescript-eslint/parser": "^8.68.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "^4.1.11",
+    "axe-core": "^4.13.0",
+    "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jsx-a11y": "^6.9.0",
-    "eslint-plugin-react": "^7.35.0",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-storybook": "10.2.13",
-    "formik": "^2.4.6",
-    "husky": "^9.1.6",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-storybook": "10.5.10",
+    "formik": "^2.4.9",
+    "husky": "^9.1.7",
     "jsdom": "^28.1.0",
-    "lint-staged": "^16.3.1",
-    "postcss": "^8.4.35",
-    "prettier": "^3.2.5",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-hook-form": "^7.50.1",
-    "rimraf": "^6.0.1",
-    "semantic-release": "^25.0.3",
-    "storybook": "^10.2.13",
-    "tailwindcss": "^4.1.18",
-    "typescript": "^5.3.3",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18"
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.9.6",
+    "publint": "^0.3.24",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-hook-form": "^7.86.0",
+    "rimraf": "^6.1.3",
+    "semantic-release": "^25.0.9",
+    "size-limit": "^12.1.0",
+    "storybook": "^10.5.10",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   },
+  "size-limit": [
+    {
+      "name": "ESM entry",
+      "path": "dist/index.mjs",
+      "limit": "1.6 kB",
+      "gzip": true
+    },
+    {
+      "name": "CJS entry",
+      "path": "dist/index.cjs",
+      "limit": "1.65 kB",
+      "gzip": true
+    },
+    {
+      "name": "UMD bundle",
+      "path": "dist/index.umd.cjs",
+      "limit": "1.75 kB",
+      "gzip": true
+    }
+  ],
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,css,md}": "prettier --write",
-    "*.{ts,tsx,js,jsx}": "eslint --fix"
+    "*.{ts,tsx,js,jsx,mjs,cjs,json,css,md}": "prettier --write",
+    "*.{ts,tsx,js,jsx,mjs}": "eslint --fix"
   }
 }

@@ -6,19 +6,19 @@ import { resolve } from 'node:path';
 export default defineConfig({
   plugins: [react()],
   build: {
+    copyPublicDir: false,
     lib: {
-      entry: resolve(__dirname, 'src/lib/index.tsx'),
-      name: 'ReactAwesomeStarsRating',
-      fileName: 'index',
+      entry: resolve(import.meta.dirname, 'src/lib/index.tsx'),
+      formats: ['es', 'cjs'],
+      fileName: (format) => (format === 'es' ? 'index.mjs' : 'index.cjs'),
     },
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      // Regexes also cover subpaths such as react/jsx-runtime, which a bare
+      // 'react' string external would bundle into the package.
+      external: [/^react($|\/)/, /^react-dom($|\/)/],
       output: {
         exports: 'named',
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
+        minify: true,
       },
     },
   },
@@ -30,11 +30,13 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],
+      include: ['src/lib/**/*.{ts,tsx}'],
+      exclude: ['src/lib/**/*.stories.tsx'],
       thresholds: {
-        lines: 80,
-        functions: 80,
-        branches: 70,
-        statements: 80,
+        lines: 95,
+        functions: 95,
+        branches: 95,
+        statements: 95,
       },
     },
   },

@@ -13,6 +13,7 @@ module.exports = [
   {
     ignores: [
       'dist',
+      'dist-site',
       'coverage',
       'node_modules',
       '**/node_modules/**',
@@ -38,6 +39,7 @@ module.exports = [
         HTMLSpanElement: 'readonly',
         HTMLElement: 'readonly',
         Element: 'readonly',
+        DOMRect: 'readonly',
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
@@ -87,6 +89,21 @@ module.exports = [
     },
     settings: {
       react: { version: 'detect' },
+    },
+  },
+  {
+    files: ['scripts/**/*.mjs', '*.config.mjs'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        URL: 'readonly',
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+      },
     },
   },
   prettier,
