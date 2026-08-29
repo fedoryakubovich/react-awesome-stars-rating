@@ -1,0 +1,64 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    # Every dependency here is a devDependency: react and react-dom are peers,
+    # so nothing Dependabot bumps reaches consumers of the package.
+    groups:
+      react:
+        patterns:
+          - react
+          - react-dom
+          - '@types/react'
+          - '@types/react-dom'
+      storybook:
+        patterns:
+          - storybook
+          - '@storybook/*'
+          - eslint-plugin-storybook
+      linting:
+        patterns:
+          - eslint
+          - eslint-*
+          - '@typescript-eslint/*'
+          - prettier
+          - '@commitlint/*'
+          - lint-staged
+          - husky
+      testing:
+        patterns:
+          - vitest
+          - '@vitest/*'
+          - '@testing-library/*'
+          - jsdom
+          - axe-core
+      build:
+        patterns:
+          - vite
+          - '@vitejs/*'
+          - typescript
+          - tailwindcss
+          - '@tailwindcss/*'
+          - rimraf
+      release:
+        patterns:
+          - semantic-release
+          - '@semantic-release/*'
+      forms:
+        patterns:
+          - formik
+          - react-hook-form
+          - '@tanstack/react-form'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies

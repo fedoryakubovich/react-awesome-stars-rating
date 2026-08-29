@@ -10,8 +10,10 @@
 
 # production
 /build
+storybook-static
 
 # misc
+.cursor
 .DS_Store
 .env.local
 .env.development.local
@@ -24,5 +26,6 @@ yarn-error.log*
 
 # library
 /dist
+/dist-site
 
 .eslintcache

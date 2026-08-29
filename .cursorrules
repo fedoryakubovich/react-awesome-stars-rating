@@ -1,0 +1,21 @@
+# React Awesome Stars Rating
+
+## Commit Message Generation
+
+When generating or suggesting commit messages (including in Source Control, Generate Commit Message, or any commit UI):
+
+1. Follow the format and rules in `.cursor/rules/commit-messages.mdc`
+2. Use **Conventional Commits** — messages must pass `commitlint` in this project
+3. **Subject line**: max 100 characters
+4. **Body lines**: max 120 characters per line — split long lines or use short bullets
+5. Use imperative mood: "add" not "added", "fix" not "fixed"
+
+If the message has a body with multiple bullet points, keep each bullet under 120 characters. Example:
+
+```
+chore: update dependencies
+
+- Bump @semantic-release, eslint, jsdom, lint-staged
+- Update GitHub workflows for labels and release
+- Refactor Storybook config
+```
