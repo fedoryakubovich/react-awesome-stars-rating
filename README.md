@@ -6,7 +6,7 @@
 
 An accessible star rating component for React. Half stars from pointer position, full keyboard control, any scale or palette — in about 1.5 kB gzipped with no runtime dependencies.
 
-**[Live demo and Storybook](https://fedoryakubovich.github.io/react-awesome-stars-rating/)**
+**[Live demo](https://react-awesome-stars-rating.vercel.app)** · **[Storybook](https://react-awesome-stars-rating.vercel.app/storybook)**
 
 ## Highlights
 
@@ -180,7 +180,7 @@ Pre-commit (Husky) runs lint-staged (Prettier + ESLint on staged files) and comm
 ## CI / Releases
 
 - **CI** — on push/PR to `main`: format, lint, commitlint, typecheck, tests, coverage, build, package verification, publint/attw, size budgets, Storybook and site builds.
-- **Pages** — on push to `main`: publishes the demo site, with Storybook at `/storybook`.
+- **Deploy** — Vercel builds the demo site on every push (see `vercel.json`), serving Storybook at `/storybook`.
 - **Release** — [semantic-release](https://github.com/semantic-release/semantic-release) on push to `main`: analyzes Conventional Commits, bumps version, updates `CHANGELOG.md`, publishes to npm and creates a GitHub release.
 
 **Requirements:** `NPM_TOKEN` in repository secrets for npm publish.

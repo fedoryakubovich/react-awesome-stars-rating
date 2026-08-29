@@ -48,7 +48,7 @@
     "type": "git",
     "url": "git+https://github.com/fedoryakubovich/react-awesome-stars-rating.git"
   },
-  "homepage": "https://fedoryakubovich.github.io/react-awesome-stars-rating/",
+  "homepage": "https://react-awesome-stars-rating.vercel.app",
   "author": "Fedor Yakubovich",
   "bugs": {
     "url": "https://github.com/fedoryakubovich/react-awesome-stars-rating/issues"
