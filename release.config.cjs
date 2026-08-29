@@ -3,8 +3,15 @@
 module.exports = {
   branches: ['main'],
   plugins: [
-    '@semantic-release/commit-analyzer',
-    '@semantic-release/release-notes-generator',
+    // The default preset is angular, which only treats a BREAKING CHANGE
+    // footer as breaking and does not understand the `feat!:` shorthand that
+    // commitlint's config-conventional accepts. conventionalcommits handles
+    // both, so the two tools agree on what a breaking change looks like.
+    ['@semantic-release/commit-analyzer', { preset: 'conventionalcommits' }],
+    [
+      '@semantic-release/release-notes-generator',
+      { preset: 'conventionalcommits' },
+    ],
     [
       '@semantic-release/changelog',
       {

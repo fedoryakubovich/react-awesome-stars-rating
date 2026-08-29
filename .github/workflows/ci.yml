@@ -41,6 +41,9 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      # semantic-release opens an issue when a release fails; without this it
+      # cannot, and masks the real error with a 403.
+      issues: write
     steps:
       - uses: actions/checkout@v4
         with:
