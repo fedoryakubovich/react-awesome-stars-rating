@@ -13,18 +13,19 @@ npm run dev
 
 ## Scripts
 
-| Command                | Description              |
-| ---------------------- | ------------------------ |
-| `npm run dev`          | Demo app (Vite)          |
-| `npm run storybook`    | Storybook                |
-| `npm run test`         | Unit tests (Vitest)      |
-| `npm run test:watch`   | Tests in watch mode      |
-| `npm run coverage`     | Tests with coverage      |
-| `npm run lint`         | ESLint                   |
-| `npm run format`       | Prettier check           |
-| `npm run format:write` | Prettier fix             |
-| `npm run typecheck`    | TypeScript check         |
-| `npm run build`        | Build library to `dist/` |
+| Command                | Description                      |
+| ---------------------- | -------------------------------- |
+| `npm run dev`          | Demo app (Vite)                  |
+| `npm run storybook`    | Storybook                        |
+| `npm run test`         | Unit tests (Vitest)              |
+| `npm run test:watch`   | Tests in watch mode              |
+| `npm run coverage`     | Tests with coverage              |
+| `npm run lint`         | ESLint                           |
+| `npm run format`       | Prettier check                   |
+| `npm run format:write` | Prettier fix                     |
+| `npm run typecheck`    | TypeScript check                 |
+| `npm run build`        | Build ESM + CJS + UMD to `dist/` |
+| `npm run build:site`   | Build demo site to `dist-site/`  |
 
 ## Pre-commit
 
