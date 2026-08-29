@@ -22,7 +22,9 @@ const Gradient = ({
   let computedOffset = offset;
 
   if (index === 1) {
-    computedOffset = (value % 1) * 100;
+    // Rounded because floating point turns values such as 3.4 into an offset
+    // of 39.99999999999999%.
+    computedOffset = Math.round((value % 1) * 10000) / 100;
   }
 
   if (index !== 1) {
@@ -30,7 +32,7 @@ const Gradient = ({
   }
 
   return (
-    <defs data-testid="gradient" data-offset={computedOffset}>
+    <defs>
       <linearGradient id={fullId}>
         <stop offset="100%" stopColor={primaryColor} />
       </linearGradient>

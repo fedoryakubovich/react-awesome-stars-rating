@@ -1,5 +1,6 @@
+'use client';
+
 import {
-  useEffect,
   useId,
   useMemo,
   useState,
@@ -11,22 +12,111 @@ import Star from './star';
 import styles from './styles';
 
 export type ReactStarsRatingProps = {
+  /**
+   * `id` of the rendered element. Defaults to a generated, SSR-safe id, so
+   * only set this when something else needs to reference the control.
+   */
   id?: string;
+  /**
+   * Current rating. Values outside `0` to {@link ReactStarsRatingProps.count}
+   * are clamped before they are reported to assistive technology.
+   *
+   * @defaultValue 0
+   */
   value?: number;
+  /**
+   * Called with the new rating on click, on `Enter`, and on blur — and on
+   * every arrow key when {@link ReactStarsRatingProps.isArrowSubmit} is set.
+   * Hovering never calls it.
+   */
   onChange?: (value: number) => void;
+  /**
+   * Whether the rating can be changed. When `false` the control has no hover
+   * preview, no keyboard handling, and is removed from the tab order.
+   *
+   * @defaultValue true
+   */
   isEdit?: boolean;
+  /**
+   * Whether half stars can be selected. When `true` the half of the star the
+   * pointer is over decides between `n - 0.5` and `n`, and the arrow keys step
+   * by `0.5` instead of `1`.
+   *
+   * @defaultValue true
+   */
   isHalf?: boolean;
+  /**
+   * How many stars to render. Also becomes `aria-valuemax`.
+   *
+   * @defaultValue 5
+   */
   count?: number;
+  /**
+   * Width of one star, in pixels.
+   *
+   * @defaultValue 25
+   */
   size?: number;
+  /**
+   * Space between stars, in pixels. Applied as right padding to every star
+   * except the last.
+   *
+   * @defaultValue 0
+   */
   starGap?: number;
+  /**
+   * Class name for the container element. The stars themselves always carry
+   * `star` and `star-1`, `star-2`, … class names.
+   *
+   * @defaultValue ''
+   */
   className?: string;
+  /**
+   * Any CSS color for the filled part of a star.
+   *
+   * @defaultValue 'orange'
+   */
   primaryColor?: string;
+  /**
+   * Any CSS color for the empty part of a star.
+   *
+   * @defaultValue 'grey'
+   */
   secondaryColor?: string;
+  /**
+   * Report every arrow-key step through
+   * {@link ReactStarsRatingProps.onChange} immediately, instead of waiting for
+   * `Enter` or blur.
+   *
+   * @defaultValue false
+   */
   isArrowSubmit?: boolean;
+  /**
+   * Accessible name for the control. Ignored when
+   * {@link ReactStarsRatingProps.ariaLabelledBy} is set.
+   *
+   * @defaultValue 'Star rating'
+   */
   ariaLabel?: string;
+  /**
+   * `id` of an element that labels this control, for when the label already
+   * exists on the page. Takes precedence over
+   * {@link ReactStarsRatingProps.ariaLabel}.
+   */
   ariaLabelledBy?: string;
 };
 
+/**
+ * A star rating control. Renders as a single `role="slider"` element that
+ * reports its value through `aria-valuenow` and `aria-valuetext`.
+ *
+ * @example
+ * ```tsx
+ * const [value, setValue] = useState(3.5);
+ *
+ * <ReactStarsRating value={value} onChange={setValue} isHalf size={32} />
+ * ```
+ */
 const ReactStarsRating = ({
   id,
   value = 0,
@@ -45,12 +135,16 @@ const ReactStarsRating = ({
 }: ReactStarsRatingProps) => {
   const generatedId = useId().replace(/:/g, '');
   const resolvedId = id ?? `react-stars-rating-${generatedId}`;
-  const [displayValue, setDisplayValue] = useState<number>(value);
+  const [displayState, setDisplayState] = useState(() => ({
+    sourceValue: value,
+    displayValue: value,
+  }));
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  useEffect(() => {
-    setDisplayValue(value);
-  }, [value]);
+  const displayValue =
+    displayState.sourceValue === value ? displayState.displayValue : value;
+  const setDisplayValue = (nextValue: number) => {
+    setDisplayState({ sourceValue: value, displayValue: nextValue });
+  };
 
   const fullId = useMemo(() => `fullId-${resolvedId}`, [resolvedId]);
   const halfId = useMemo(() => `halfId-${resolvedId}`, [resolvedId]);
@@ -62,8 +156,10 @@ const ReactStarsRating = ({
     return point > size / 2;
   };
 
-  const getValueFromEvent = (event: MouseEvent<SVGSVGElement>) => {
-    const index = Number(event.currentTarget.getAttribute('data-stars'));
+  const getValueFromEvent = (
+    event: MouseEvent<SVGSVGElement>,
+    index: number,
+  ) => {
     if (!isHalf) {
       return index;
     }
@@ -71,12 +167,12 @@ const ReactStarsRating = ({
     return isMoreThanHalf(event) ? index : index - 0.5;
   };
 
-  const handleMouseMove = (event: MouseEvent<SVGSVGElement>) => {
+  const handleMouseMove = (event: MouseEvent<SVGSVGElement>, index: number) => {
     if (!isEdit) {
       return;
     }
 
-    setDisplayValue(getValueFromEvent(event));
+    setDisplayValue(getValueFromEvent(event, index));
   };
 
   const handleMouseLeave = () => {
@@ -92,12 +188,12 @@ const ReactStarsRating = ({
     setIsSubmitted(true);
   };
 
-  const handleChange = (event: MouseEvent<SVGSVGElement>) => {
+  const handleChange = (event: MouseEvent<SVGSVGElement>, index: number) => {
     if (!isEdit) {
       return;
     }
 
-    const nextValue = getValueFromEvent(event);
+    const nextValue = getValueFromEvent(event, index);
     setDisplayValue(nextValue);
     onChange(nextValue);
   };
@@ -118,11 +214,8 @@ const ReactStarsRating = ({
     }
   };
 
+  // Only attached while isEdit or isArrowSubmit is set, so no guard is needed.
   const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>) => {
-    if (!isEdit && !isArrowSubmit) {
-      return;
-    }
-
     switch (event.key) {
       case 'ArrowLeft':
         updateValueByStep(isHalf ? -0.5 : -1);
@@ -138,21 +231,19 @@ const ReactStarsRating = ({
     }
   };
 
-  const renderStars = () => {
-    const starsList = [];
+  const renderStars = () =>
+    Array.from({ length: count }, (_, position) => {
+      const index = position + 1;
+      const style = index !== count ? { paddingRight: starGap } : undefined;
 
-    for (let i = 1; i <= count; i += 1) {
-      const style = i !== count ? { paddingRight: starGap } : undefined;
-
-      starsList.push(
+      return (
         <span
-          key={`react-stars-rating-char${i}`}
-          className={`star star-${i}`}
+          key={`react-stars-rating-char${index}`}
+          className={`star star-${index}`}
           style={style}
-          data-testid="star"
         >
           <Star
-            index={i}
+            index={index}
             value={displayValue}
             size={size}
             isHalf={isHalf}
@@ -161,16 +252,13 @@ const ReactStarsRating = ({
             noneId={noneId}
             primaryColor={primaryColor}
             secondaryColor={secondaryColor}
-            onMouseMove={handleMouseMove}
+            onMouseMove={(event) => handleMouseMove(event, index)}
             onMouseLeave={handleMouseLeave}
-            onChange={handleChange}
+            onChange={(event) => handleChange(event, index)}
           />
-        </span>,
+        </span>
       );
-    }
-
-    return starsList;
-  };
+    });
 
   const interactiveProps = (isEdit || isArrowSubmit) && !isSubmitted;
 
@@ -191,9 +279,6 @@ const ReactStarsRating = ({
       onBlur={interactiveProps ? handleBlur : undefined}
       style={isEdit ? styles.activeContainer : styles.inActiveContainer}
       className={className}
-      data-testid="react-awesome-stars-rating"
-      data-value={displayValue}
-      data-submitted={isSubmitted}
     >
       {renderStars()}
     </span>

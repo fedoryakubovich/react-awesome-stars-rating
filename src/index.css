@@ -1,5 +1,16 @@
 @import 'tailwindcss';
 
+@theme {
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+
+  --color-ink-900: #0a0f1a;
+  --color-ink-800: #131a2a;
+  --color-ink-700: #1c2438;
+  --color-ink-100: #f5f7fb;
+
+  --color-ember-500: #ff8a3d;
+}
+
 :root {
   color-scheme: light;
 }

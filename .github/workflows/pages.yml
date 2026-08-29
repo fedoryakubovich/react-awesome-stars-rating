@@ -1,0 +1,46 @@
+name: Deploy site
+
+on:
+  push:
+    branches: ['main']
+  workflow_dispatch:
+
+# Only one deployment at a time; skip queued runs rather than stacking them.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build demo site
+        run: npm run build:site
+        env:
+          SITE_BASE: /${{ github.event.repository.name }}/
+      - name: Build Storybook
+        run: npm run build-storybook
+      - name: Assemble the published tree
+        run: mv storybook-static dist-site/storybook
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

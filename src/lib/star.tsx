@@ -55,7 +55,6 @@ const StarSVG = ({
       xmlnsXlink="http://www.w3.org/1999/xlink"
       onMouseLeave={onMouseLeave}
       onClick={onChange}
-      data-stars={index}
       onMouseMove={onMouseMove}
     >
       <Gradient

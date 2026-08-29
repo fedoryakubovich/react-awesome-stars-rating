@@ -41,6 +41,10 @@
   color: '0366d6'
   description: Dependency updates
 
+- name: needs review
+  color: 'd93f0b'
+  description: Major dependency update held back for a human
+
 - name: breaking change
   color: 'b60205'
   description: Breaking change
