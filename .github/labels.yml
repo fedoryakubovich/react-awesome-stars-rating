@@ -45,6 +45,10 @@
   color: 'd93f0b'
   description: Major dependency update held back for a human
 
+- name: semantic-release
+  color: 'e10079'
+  description: Opened by semantic-release when a release fails
+
 - name: breaking change
   color: 'b60205'
   description: Breaking change
