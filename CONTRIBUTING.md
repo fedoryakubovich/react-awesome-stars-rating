@@ -39,6 +39,15 @@ commitlint and lets npm nest version 5 under semantic-release, so both work.
 
 Remove it only once `@semantic-release/commit-analyzer` moves to `^6`.
 
+## A note on `conventional-changelog-conventionalcommits`
+
+Pinned to `^9` on purpose. Version 10 requires
+`conventional-changelog-writer@9`, while `@semantic-release/release-notes-generator`
+still depends on `^8`, so the preset throws `Missing helper: ... requires
+conventional-changelog-writer@9 or newer` during `generateNotes`.
+
+Upgrade it only once semantic-release moves to writer 9.
+
 ## Pre-commit
 
 - **lint-staged** — Prettier and ESLint run on staged files before each commit.
