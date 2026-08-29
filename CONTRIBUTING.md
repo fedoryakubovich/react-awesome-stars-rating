@@ -27,6 +27,18 @@ npm run dev
 | `npm run build`        | Build ESM + CJS + UMD to `dist/` |
 | `npm run build:site`   | Build demo site to `dist-site/`  |
 
+## A note on `conventional-commits-filter`
+
+It appears in `devDependencies` but nothing in this repository imports it.
+`@commitlint/cli` pulls in `@conventional-changelog/git-client`, which declares
+an optional peer dependency on `conventional-commits-filter@^6`, while
+`@semantic-release/commit-analyzer` still requires `^5`. `npm install` leaves
+the optional peer unmet, but `npm ci` treats it as required and fails with
+`EUSAGE`. Depending on `^6` explicitly puts version 6 at the root for
+commitlint and lets npm nest version 5 under semantic-release, so both work.
+
+Remove it only once `@semantic-release/commit-analyzer` moves to `^6`.
+
 ## Pre-commit
 
 - **lint-staged** — Prettier and ESLint run on staged files before each commit.
