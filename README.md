@@ -2,11 +2,13 @@
 
 [![npm](https://img.shields.io/npm/v/react-awesome-stars-rating)](https://www.npmjs.com/package/react-awesome-stars-rating)
 [![CI](https://github.com/fedoryakubovich/react-awesome-stars-rating/actions/workflows/ci.yml/badge.svg)](https://github.com/fedoryakubovich/react-awesome-stars-rating/actions/workflows/ci.yml)
-[![license](https://img.shields.io/npm/l/react-awesome-stars-rating)](./LICENSE)
+[![license](https://img.shields.io/npm/l/react-awesome-stars-rating)](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/main/LICENSE)
 
 An accessible star rating component for React. Half stars from pointer position, full keyboard control, any scale or palette — in about 1.5 kB gzipped with no runtime dependencies.
 
 **[Live demo](https://react-awesome-stars-rating.vercel.app)** · **[Storybook](https://react-awesome-stars-rating.vercel.app/storybook)**
+
+![react-awesome-stars-rating preview](https://raw.githubusercontent.com/fedoryakubovich/react-awesome-stars-rating/main/images/gifs/react-awesome-stars-rating.gif)
 
 ## Highlights
 
@@ -21,7 +23,7 @@ An accessible star rating component for React. Half stars from pointer position,
 
 React 19 or newer (`react` and `react-dom` are peer dependencies).
 
-Upgrading from 0.x? See the [migration guide](./MIGRATION.md).
+Upgrading from 0.x? See the [migration guide](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/main/MIGRATION.md).
 
 ## Installation
 
@@ -31,13 +33,22 @@ npm install react-awesome-stars-rating
 
 ### CDN
 
+React 19 no longer publishes UMD builds, so load the package as a module:
+
 ```html
-<script src="https://unpkg.com/react@19/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-awesome-stars-rating"></script>
-<script>
-  const { ReactStarsRating } = window.ReactAwesomeStarsRating;
+<script type="module">
+  import React from 'https://esm.sh/react@19';
+  import { createRoot } from 'https://esm.sh/react-dom@19/client';
+  import ReactStarsRating from 'https://esm.sh/react-awesome-stars-rating';
+
+  createRoot(document.getElementById('root')).render(
+    React.createElement(ReactStarsRating, { value: 3.5, isEdit: false }),
+  );
 </script>
 ```
+
+A UMD bundle is still published at `dist/index.umd.cjs` for pages that already
+expose React as a global, and expects `window.React` to be present.
 
 ## Usage
 
