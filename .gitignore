@@ -26,5 +26,6 @@ yarn-error.log*
 
 # library
 /dist
+/dist-site
 
 .eslintcache
