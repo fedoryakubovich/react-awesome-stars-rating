@@ -14,6 +14,16 @@ updates:
       prefix: chore
       prefix-development: chore
       include: scope
+    # Keep unsupported toolchain majors from repeatedly opening PRs that cannot
+    # pass npm's peer-dependency resolution. Remove these entries when the
+    # corresponding ESLint and TypeScript plugins add support.
+    ignore:
+      - dependency-name: eslint
+        update-types:
+          - version-update:semver-major
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
     # Every dependency here is a devDependency: react and react-dom are peers,
     # so nothing Dependabot bumps reaches consumers of the package.
     groups:
