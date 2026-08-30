@@ -192,9 +192,9 @@ Pre-commit (Husky) runs lint-staged (Prettier + ESLint on staged files) and comm
 
 - **CI** — on push/PR to `main`: format, lint, commitlint, typecheck, tests, coverage, build, package verification, publint/attw, size budgets, Storybook and site builds.
 - **Deploy** — Vercel builds the demo site on every push (see `vercel.json`), serving Storybook at `/storybook`.
-- **Release** — [semantic-release](https://github.com/semantic-release/semantic-release) on push to `main`: analyzes Conventional Commits, bumps version, updates `CHANGELOG.md`, publishes to npm and creates a GitHub release.
+- **Release** — [semantic-release](https://github.com/semantic-release/semantic-release) on push to `main`: analyzes Conventional Commits, publishes to npm and creates a GitHub release.
 
-**Requirements:** `NPM_TOKEN` in repository secrets for npm publish.
+Publishing uses npm trusted publishing (OIDC) from `.github/workflows/ci.yml`; the workflow does not use an npm token.
 
 No manual tagging: merge to `main` with commits like `feat: ...` or `fix: ...` to trigger a release.
 

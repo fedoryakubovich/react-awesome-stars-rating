@@ -71,8 +71,10 @@ Upgrade it only once semantic-release moves to writer 9.
 
 Releases are fully automated with **semantic-release** on push to `main`:
 
-- Version and changelog are derived from Conventional Commits.
+- Versions and GitHub release notes are derived from Conventional Commits.
 - No manual tags or changesets: merge to `main` with `feat:` / `fix:` / `BREAKING CHANGE:` etc. to trigger a release.
+- npm authentication uses trusted publishing (OIDC); the release workflow does not consume an npm token.
+- `CHANGELOG.md` is retained as historical documentation and is not modified during publishing, so a failed npm publication cannot leave a partial release commit on `main`.
 
 ## Issues
 
