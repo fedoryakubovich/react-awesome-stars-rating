@@ -139,7 +139,6 @@ const ReactStarsRating = ({
     sourceValue: value,
     displayValue: value,
   }));
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const displayValue =
     displayState.sourceValue === value ? displayState.displayValue : value;
   const setDisplayValue = (nextValue: number) => {
@@ -185,7 +184,6 @@ const ReactStarsRating = ({
 
   const handleBlur = () => {
     onChange(displayValue);
-    setIsSubmitted(true);
   };
 
   const handleChange = (event: MouseEvent<SVGSVGElement>, index: number) => {
@@ -260,7 +258,7 @@ const ReactStarsRating = ({
       );
     });
 
-  const interactiveProps = (isEdit || isArrowSubmit) && !isSubmitted;
+  const interactiveProps = isEdit || isArrowSubmit;
 
   const clampedValue = Math.min(Math.max(displayValue, 0), count);
 

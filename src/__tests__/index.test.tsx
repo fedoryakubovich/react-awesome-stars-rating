@@ -274,20 +274,30 @@ describe('Submitting', () => {
     expect(onChange).toHaveBeenCalledWith(2.5);
   });
 
-  test('blurring reports the value once and stops interacting', async () => {
+  test('blurring reports the value and remains keyboard accessible', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(<ReactStarsRating isHalf={false} value={1} onChange={onChange} />);
+    render(
+      <>
+        <ReactStarsRating isHalf={false} value={1} onChange={onChange} />
+        <button type="button">Next control</button>
+      </>,
+    );
 
     await user.tab();
     await user.keyboard('{ArrowRight}');
     await user.tab();
 
     expect(onChange).toHaveBeenCalledWith(2);
+    expect(getSlider()).toHaveAttribute('tabindex', '0');
 
+    await user.tab({ shift: true });
+    expect(getSlider()).toHaveFocus();
+    await user.keyboard('{ArrowRight}');
     await user.tab();
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(getSlider()).toHaveAttribute('tabindex', '-1');
+
+    expect(onChange).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenLastCalledWith(3);
   });
 });
 
