@@ -24,6 +24,9 @@ updates:
       - dependency-name: typescript
         update-types:
           - version-update:semver-major
+      - dependency-name: conventional-changelog-conventionalcommits
+        update-types:
+          - version-update:semver-major
     # Every dependency here is a devDependency: react and react-dom are peers,
     # so nothing Dependabot bumps reaches consumers of the package.
     groups:
@@ -52,8 +55,11 @@ updates:
           - vitest
           - '@vitest/*'
           - '@testing-library/*'
+          - playwright
+          - '@playwright/*'
           - jsdom
           - axe-core
+          - '@axe-core/*'
       build:
         patterns:
           - vite
