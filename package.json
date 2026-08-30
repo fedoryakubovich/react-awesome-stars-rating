@@ -1,6 +1,6 @@
 {
   "name": "react-awesome-stars-rating",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Accessible star rating component for React, with half stars, keyboard control and any scale or palette.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -54,9 +54,6 @@
     "url": "https://github.com/fedoryakubovich/react-awesome-stars-rating/issues"
   },
   "license": "MIT",
-  "engines": {
-    "node": ">=20"
-  },
   "scripts": {
     "dev": "vite",
     "build": "vite build && vite build -c vite.umd.config.ts && tsc -p tsconfig.build.json && node scripts/emit-cjs-types.mjs",
@@ -67,8 +64,11 @@
     "format:write": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:consumer": "node scripts/verify-consumer.mjs",
     "coverage": "vitest run --coverage",
     "verify:package": "node scripts/verify-package.mjs",
+    "verify:release": "node scripts/verify-release-notes.mjs",
     "lint:package": "publint && attw --pack",
     "size": "size-limit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -81,13 +81,15 @@
     "clean": "rimraf dist dist-site"
   },
   "peerDependencies": {
-    "react": ">=19",
-    "react-dom": ">=19"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
+    "@axe-core/playwright": "^4.13.0",
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
+    "@playwright/test": "^1.62.1",
     "@semantic-release/github": "^12.0.9",
     "@semantic-release/npm": "^13.1.5",
     "@size-limit/file": "^13.0.3",
@@ -107,7 +109,7 @@
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "^4.1.11",
     "axe-core": "^4.13.0",
-    "conventional-changelog-conventionalcommits": "^10.4.0",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
     "conventional-commits-filter": "^6.0.1",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",

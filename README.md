@@ -21,7 +21,10 @@ An accessible star rating component for React. Half stars from pointer position,
 
 ## Requirements
 
-React 19 or newer (`react` and `react-dom` are peer dependencies).
+React 18 or React 19 (`react` and `react-dom` are peer dependencies). The
+published browser package has no Node runtime requirement. Installed-consumer
+CI verifies React 18 and 19 across Node 20, 22 and 24, including server
+rendering and hydration.
 
 Upgrading from 0.x? See the [migration guide](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/main/MIGRATION.md).
 
@@ -87,15 +90,17 @@ export default function Example() {
 
 The control renders as a single `role="slider"` element with `aria-valuemin`, `aria-valuemax`, `aria-valuenow` and a readable `aria-valuetext` ("3.5 of 5"). Values outside `0…count` are clamped before they are reported.
 
-| Key        | Behaviour                                          |
-| :--------- | :------------------------------------------------- |
-| `←` / `→`  | Step by half a star (`isHalf`) or a whole star     |
-| `Enter`    | Report the current value through `onChange`        |
-| `Tab` away | Report the current value, then leave the tab order |
+| Key             | Behaviour                                                     |
+| :-------------- | :------------------------------------------------------------ |
+| `←` / `↓`       | Decrease by half a star (`isHalf`) or a whole star            |
+| `→` / `↑`       | Increase by half a star (`isHalf`) or a whole star            |
+| `Home` / `End`  | Move to the minimum (`0`) or maximum (`count`)                |
+| `Enter`         | Report the current value through `onChange`                   |
+| `Tab` away/back | Report an unsubmitted keyboard change and remain re-focusable |
 
 With `isArrowSubmit`, each arrow step reports through `onChange` immediately rather than waiting for `Enter` or blur.
 
-When `isEdit` is `false` the control is inert: no hover preview, no keyboard, and `tabIndex={-1}`.
+When `isEdit` is `false` the control is inert regardless of `isArrowSubmit`: no hover preview, no keyboard, `tabIndex={-1}`, and `aria-readonly="true"`.
 
 ## Server components
 

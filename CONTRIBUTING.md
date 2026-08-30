@@ -9,23 +9,27 @@ npm install
 npm run dev
 ```
 
-**Requirements:** Node.js 20+, npm 9+
+**Development requirements:** Node.js 22.22.2+ and npm 10+. The published
+browser package has no Node runtime requirement; older Node releases are
+covered separately by installed-consumer tests.
 
 ## Scripts
 
-| Command                | Description                      |
-| ---------------------- | -------------------------------- |
-| `npm run dev`          | Demo app (Vite)                  |
-| `npm run storybook`    | Storybook                        |
-| `npm run test`         | Unit tests (Vitest)              |
-| `npm run test:watch`   | Tests in watch mode              |
-| `npm run coverage`     | Tests with coverage              |
-| `npm run lint`         | ESLint                           |
-| `npm run format`       | Prettier check                   |
-| `npm run format:write` | Prettier fix                     |
-| `npm run typecheck`    | TypeScript check                 |
-| `npm run build`        | Build ESM + CJS + UMD to `dist/` |
-| `npm run build:site`   | Build demo site to `dist-site/`  |
+| Command                 | Description                       |
+| ----------------------- | --------------------------------- |
+| `npm run dev`           | Demo app (Vite)                   |
+| `npm run storybook`     | Storybook                         |
+| `npm run test`          | Unit tests (Vitest)               |
+| `npm run test:watch`    | Tests in watch mode               |
+| `npm run test:e2e`      | Playwright browser tests          |
+| `npm run test:consumer` | Packed React 18/19 consumer tests |
+| `npm run coverage`      | Tests with coverage               |
+| `npm run lint`          | ESLint                            |
+| `npm run format`        | Prettier check                    |
+| `npm run format:write`  | Prettier fix                      |
+| `npm run typecheck`     | TypeScript check                  |
+| `npm run build`         | Build ESM + CJS + UMD to `dist/`  |
+| `npm run build:site`    | Build demo site to `dist-site/`   |
 
 ## A note on `conventional-commits-filter`
 
@@ -75,6 +79,8 @@ Releases are fully automated with **semantic-release** on push to `main`:
 - No manual tags or changesets: merge to `main` with `feat:` / `fix:` / `BREAKING CHANGE:` etc. to trigger a release.
 - npm authentication uses trusted publishing (OIDC); the release workflow does not consume an npm token.
 - `CHANGELOG.md` is retained as historical documentation and is not modified during publishing, so a failed npm publication cannot leave a partial release commit on `main`.
+- The manifest uses `0.0.0-development` intentionally. Semantic-release sets
+  the real version only in the package it publishes.
 
 ## Issues
 
