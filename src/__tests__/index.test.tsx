@@ -531,4 +531,59 @@ describe('Presentation props', () => {
     expect(colors).toContain('red');
     expect(colors).toContain('blue');
   });
+
+  test('uses three regions when hoverColor previews below the saved value', async () => {
+    const user = userEvent.setup();
+    render(
+      <ReactStarsRating
+        value={3}
+        size={30}
+        primaryColor="orange"
+        hoverColor="cyan"
+        secondaryColor="grey"
+      />,
+    );
+
+    const second = withLayout(getStars()[1], 30);
+    await user.pointer({ target: second, coords: { clientX: 5 } });
+
+    const colorsByStar = getStars().map((star) =>
+      [...star.querySelectorAll('stop')].map((stop) =>
+        stop.getAttribute('stop-color'),
+      ),
+    );
+    expect(colorsByStar[0]).toEqual(['cyan', 'cyan']);
+    expect(colorsByStar[1]).toEqual(['cyan', 'cyan', 'orange', 'orange']);
+    expect(colorsByStar[2]).toEqual(['orange', 'orange']);
+    expect(colorsByStar[3]).toEqual(['grey', 'grey']);
+  });
+
+  test('colors only the additional region when previewing above the value', async () => {
+    const user = userEvent.setup();
+    render(
+      <ReactStarsRating
+        value={1.5}
+        size={30}
+        primaryColor="orange"
+        hoverColor="cyan"
+        secondaryColor="grey"
+      />,
+    );
+
+    const third = withLayout(getStars()[2], 30);
+    await user.pointer({ target: third, coords: { clientX: 25 } });
+
+    const secondColors = [...getStars()[1].querySelectorAll('stop')].map(
+      (stop) => stop.getAttribute('stop-color'),
+    );
+    expect(secondColors).toEqual(['orange', 'orange', 'cyan', 'cyan']);
+    expect(
+      [...getStars()[2].querySelectorAll('stop')].map((stop) =>
+        stop.getAttribute('stop-color'),
+      ),
+    ).toEqual(['cyan', 'cyan']);
+
+    await user.unhover(third);
+    expect(getSlider().querySelectorAll('[id*="-hover-"]')).toHaveLength(0);
+  });
 });

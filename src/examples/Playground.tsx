@@ -4,11 +4,36 @@ import ReactStarsRating from '../lib';
 import CodeBlock from './CodeBlock';
 
 const PALETTES = [
-  { name: 'Ember', primary: '#ff8a3d', secondary: '#e2e8f0' },
-  { name: 'Gold', primary: '#f5b301', secondary: '#ede9e0' },
-  { name: 'Rose', primary: '#f43f5e', secondary: '#fbe3e8' },
-  { name: 'Ocean', primary: '#0ea5e9', secondary: '#dbeafe' },
-  { name: 'Forest', primary: '#16a34a', secondary: '#dcfce7' },
+  {
+    name: 'Ember',
+    primary: '#ff8a3d',
+    hover: '#38bdf8',
+    secondary: '#e2e8f0',
+  },
+  {
+    name: 'Gold',
+    primary: '#f5b301',
+    hover: '#f97316',
+    secondary: '#ede9e0',
+  },
+  {
+    name: 'Rose',
+    primary: '#f43f5e',
+    hover: '#a855f7',
+    secondary: '#fbe3e8',
+  },
+  {
+    name: 'Ocean',
+    primary: '#0ea5e9',
+    hover: '#22c55e',
+    secondary: '#dbeafe',
+  },
+  {
+    name: 'Forest',
+    primary: '#16a34a',
+    hover: '#eab308',
+    secondary: '#dcfce7',
+  },
 ];
 
 const Playground = () => {
@@ -32,6 +57,7 @@ const Playground = () => {
     `  isEdit={${isEdit}}`,
     isArrowSubmit ? '  isArrowSubmit' : null,
     `  primaryColor="${palette.primary}"`,
+    `  hoverColor="${palette.hover}"`,
     `  secondaryColor="${palette.secondary}"`,
     '/>',
   ]
@@ -65,6 +91,7 @@ const Playground = () => {
             isEdit={isEdit}
             isArrowSubmit={isArrowSubmit}
             primaryColor={palette.primary}
+            hoverColor={palette.hover}
             secondaryColor={palette.secondary}
           />
           <p className="mt-4 text-sm text-slate-600">
@@ -131,7 +158,9 @@ const Playground = () => {
               <span
                 aria-hidden="true"
                 className="size-3 rounded-full"
-                style={{ backgroundColor: item.primary }}
+                style={{
+                  background: `linear-gradient(90deg, ${item.primary} 50%, ${item.hover} 50%)`,
+                }}
               />
               {item.name}
             </button>

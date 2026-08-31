@@ -4,7 +4,7 @@
 [![CI](https://github.com/fedoryakubovich/react-awesome-stars-rating/actions/workflows/ci.yml/badge.svg)](https://github.com/fedoryakubovich/react-awesome-stars-rating/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/react-awesome-stars-rating)](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/main/LICENSE)
 
-An accessible star rating component for React. Half stars from pointer position, full keyboard control, any scale or palette — in about 1.5 kB gzipped with no runtime dependencies.
+An accessible star rating component for React. Half stars from pointer position, full keyboard control, any scale or palette — in under 2 kB gzipped with no runtime dependencies.
 
 **[Live demo](https://react-awesome-stars-rating.vercel.app)** · **[Storybook](https://react-awesome-stars-rating.vercel.app/storybook)**
 
@@ -12,7 +12,7 @@ An accessible star rating component for React. Half stars from pointer position,
 
 ## Highlights
 
-- ~1.5 kB gzipped, no runtime dependencies
+- Under 2 kB gzipped, no runtime dependencies
 - Half-star precision from pointer position, plus arrow-key stepping
 - `role="slider"` with live `aria-valuenow` / `aria-valuetext`, verified with axe-core
 - ESM + CJS with correct types for each, and a UMD bundle for CDN use
@@ -82,6 +82,7 @@ export default function Example() {
 | className      | Container class                           | `string`                  | `''`            |
 | primaryColor   | Active star color                         | `string`                  | `'orange'`      |
 | secondaryColor | Inactive star color                       | `string`                  | `'grey'`        |
+| hoverColor     | Optional pointer-preview color            | `string`                  | `undefined`     |
 | isArrowSubmit  | Arrow keys trigger `onChange` immediately | `boolean`                 | `false`         |
 | ariaLabel      | Accessible label (if no `ariaLabelledBy`) | `string`                  | `'Star rating'` |
 | ariaLabelledBy | ID of element that labels the control     | `string`                  | `undefined`     |
@@ -101,6 +102,26 @@ The control renders as a single `role="slider"` element with `aria-valuemin`, `a
 With `isArrowSubmit`, each arrow step reports through `onChange` immediately rather than waiting for `Enter` or blur.
 
 When `isEdit` is `false` the control is inert regardless of `isArrowSubmit`: no hover preview, no keyboard, `tabIndex={-1}`, and `aria-readonly="true"`.
+
+### Hover preview color
+
+Set `hoverColor` to distinguish the pointer preview from both the saved value
+and inactive stars. It is opt-in, so omitting it preserves the original
+two-color presentation.
+
+```tsx
+<ReactStarsRating
+  value={3}
+  primaryColor="#f59e0b"
+  hoverColor="#38bdf8"
+  secondaryColor="#374151"
+/>
+```
+
+When the pointer previews `1.5`, the first `1.5` stars use `hoverColor`, the
+remainder of the saved value uses `primaryColor`, and inactive stars use
+`secondaryColor`. When previewing above the saved value, only the additional
+preview region uses `hoverColor`.
 
 ## Server components
 

@@ -7,6 +7,9 @@ type StarProps = {
   size: number;
   primaryColor: string;
   secondaryColor: string;
+  hoverColor?: string;
+  hoverValue?: number | null;
+  committedValue?: number;
   onMouseLeave?: (event: MouseEvent<SVGSVGElement>) => void;
   onMouseMove?: (event: MouseEvent<SVGSVGElement>) => void;
   onChange?: (event: MouseEvent<SVGSVGElement>) => void;
@@ -31,6 +34,9 @@ const StarSVG = ({
   isHalf,
   primaryColor,
   secondaryColor,
+  hoverColor,
+  hoverValue = null,
+  committedValue = value,
   fill,
   offset = 50,
   fullId,
@@ -38,8 +44,11 @@ const StarSVG = ({
   noneId,
 }: StarProps) => {
   let computedFill = fill;
+  const hoverGradientId = `${fullId}-hover-${index}`;
 
-  if (index <= value) {
+  if (hoverColor && hoverValue !== null) {
+    computedFill = `url(#${hoverGradientId})`;
+  } else if (index <= value) {
     computedFill = `url(#${fullId})`;
   } else if (isHalf && Math.ceil(value) === index) {
     computedFill = `url(#${halfId})`;
@@ -66,6 +75,10 @@ const StarSVG = ({
         fullId={fullId}
         halfId={halfId}
         noneId={noneId}
+        hoverColor={hoverColor}
+        hoverValue={hoverValue}
+        committedValue={committedValue}
+        hoverGradientId={hoverGradientId}
       />
       <polygon
         fill={computedFill}

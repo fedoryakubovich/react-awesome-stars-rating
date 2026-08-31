@@ -139,19 +139,19 @@
     {
       "name": "ESM entry",
       "path": "dist/index.mjs",
-      "limit": "1.6 kB",
+      "limit": "2 kB",
       "gzip": true
     },
     {
       "name": "CJS entry",
       "path": "dist/index.cjs",
-      "limit": "1.65 kB",
+      "limit": "2.05 kB",
       "gzip": true
     },
     {
       "name": "UMD bundle",
       "path": "dist/index.umd.cjs",
-      "limit": "1.75 kB",
+      "limit": "2.15 kB",
       "gzip": true
     }
   ],

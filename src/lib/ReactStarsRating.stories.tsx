@@ -53,6 +53,10 @@ const meta = {
       control: 'color',
       description: 'Inactive star color',
     },
+    hoverColor: {
+      control: 'color',
+      description: 'Optional pointer-preview color',
+    },
     onChange: {
       action: 'onChange',
       description: 'Called when the value changes',
@@ -96,5 +100,12 @@ export const CustomPalette: Story = {
   args: {
     primaryColor: '#22c55e',
     secondaryColor: '#0f172a',
+  },
+};
+
+export const HoverPalette: Story = {
+  args: {
+    value: 3,
+    hoverColor: '#38bdf8',
   },
 };

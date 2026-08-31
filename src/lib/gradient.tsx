@@ -7,7 +7,14 @@ type GradientProps = {
   fullId: string;
   halfId: string;
   noneId: string;
+  hoverColor?: string;
+  hoverValue?: number | null;
+  committedValue?: number;
+  hoverGradientId?: string;
 };
+
+const asPercent = (value: number, index: number) =>
+  Math.min(100, Math.max(0, Math.round((value - (index - 1)) * 10000) / 100));
 
 const Gradient = ({
   primaryColor,
@@ -18,7 +25,45 @@ const Gradient = ({
   fullId,
   halfId,
   noneId,
+  hoverColor,
+  hoverValue = null,
+  committedValue = value,
+  hoverGradientId,
 }: GradientProps) => {
+  if (hoverColor && hoverValue !== null && hoverGradientId) {
+    const lowerValue = Math.min(committedValue, hoverValue);
+    const upperValue = Math.max(committedValue, hoverValue);
+    const lowerOffset = asPercent(lowerValue, index);
+    const upperOffset = asPercent(upperValue, index);
+    const lowerColor = hoverValue <= committedValue ? hoverColor : primaryColor;
+    const middleColor =
+      hoverValue <= committedValue ? primaryColor : hoverColor;
+    const ranges = [
+      { start: 0, end: lowerOffset, color: lowerColor },
+      { start: lowerOffset, end: upperOffset, color: middleColor },
+      { start: upperOffset, end: 100, color: secondaryColor },
+    ].filter(({ start, end }) => end > start);
+
+    return (
+      <defs>
+        <linearGradient id={hoverGradientId}>
+          {ranges.flatMap(({ start, end, color }, rangeIndex) => [
+            <stop
+              key={`${rangeIndex}-start`}
+              offset={`${start}%`}
+              stopColor={color}
+            />,
+            <stop
+              key={`${rangeIndex}-end`}
+              offset={`${end}%`}
+              stopColor={color}
+            />,
+          ])}
+        </linearGradient>
+      </defs>
+    );
+  }
+
   let computedOffset = offset;
 
   if (index === 1) {
