@@ -106,11 +106,32 @@ test('integrates with a controlled HTML form', async ({ page }) => {
   await expect(page.getByTestId('submitted-rating')).toHaveText('3');
 });
 
+test('renders saved, hover, and inactive colors in a real browser', async ({
+  page,
+}) => {
+  await page.goto(
+    'http://127.0.0.1:6006/iframe.html?id=components-reactstarsrating--hover-palette&viewMode=story',
+  );
+  const secondStar = page.getByRole('slider').locator('svg').nth(1);
+  const box = await secondStar.boundingBox();
+  expect(box).not.toBeNull();
+
+  await page.mouse.move(box!.x + box!.width * 0.25, box!.y + box!.height / 2);
+
+  const colors = await secondStar
+    .locator('stop')
+    .evaluateAll((stops) =>
+      stops.map((stop) => stop.getAttribute('stop-color')),
+    );
+  expect(colors).toEqual(['#38bdf8', '#38bdf8', '#ff8a3d', '#ff8a3d']);
+});
+
 for (const story of [
   'default',
   'read-only',
   'arrow-submit',
   'custom-palette',
+  'hover-palette',
 ]) {
   test(`Storybook ${story} state is accessible and interactive`, async ({
     page,

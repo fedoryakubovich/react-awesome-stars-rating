@@ -86,6 +86,13 @@ export type ReactStarsRatingProps = {
    */
   secondaryColor?: string;
   /**
+   * Optional color for the portion being previewed by the pointer. The saved
+   * value keeps {@link ReactStarsRatingProps.primaryColor}, so moving below an
+   * existing rating can display preview, saved, and inactive regions at once.
+   * When omitted, hover previews retain the original two-color behavior.
+   */
+  hoverColor?: string;
+  /**
    * Report every arrow-key step through
    * {@link ReactStarsRatingProps.onChange} immediately, instead of waiting for
    * `Enter` or blur.
@@ -131,6 +138,7 @@ const ReactStarsRating = ({
   className = '',
   primaryColor = 'orange',
   secondaryColor = 'grey',
+  hoverColor,
   isArrowSubmit = false,
   ariaLabel = 'Star rating',
   ariaLabelledBy,
@@ -142,6 +150,7 @@ const ReactStarsRating = ({
     displayValue: value,
   }));
   const pendingKeyboardValueRef = useRef<number | null>(null);
+  const [hoverValue, setHoverValue] = useState<number | null>(null);
   const displayValue =
     displayState.sourceValue === value ? displayState.displayValue : value;
   const setDisplayValue = (nextValue: number) => {
@@ -181,7 +190,9 @@ const ReactStarsRating = ({
       return;
     }
 
-    setDisplayValue(getValueFromEvent(event, index));
+    const nextValue = getValueFromEvent(event, index);
+    setHoverValue(nextValue);
+    setDisplayValue(nextValue);
   };
 
   const handleMouseLeave = () => {
@@ -189,6 +200,7 @@ const ReactStarsRating = ({
       return;
     }
 
+    setHoverValue(null);
     setDisplayValue(value || 0);
   };
 
@@ -287,6 +299,9 @@ const ReactStarsRating = ({
             noneId={noneId}
             primaryColor={primaryColor}
             secondaryColor={secondaryColor}
+            hoverColor={hoverColor}
+            hoverValue={hoverValue}
+            committedValue={value}
             onMouseMove={(event) => handleMouseMove(event, index)}
             onMouseLeave={handleMouseLeave}
             onChange={(event) => handleChange(event, index)}
