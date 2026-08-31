@@ -16,7 +16,9 @@ const E2EHarness = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmittedRating(formRating);
+    setSubmittedRating(
+      Number(new FormData(event.currentTarget).get('form-rating')),
+    );
   };
 
   return (
@@ -64,6 +66,7 @@ const E2EHarness = () => {
           id="form-rating"
           value={formRating}
           onChange={setFormRating}
+          name="form-rating"
           isHalf={false}
           ariaLabel="Form rating"
         />
@@ -71,6 +74,17 @@ const E2EHarness = () => {
         <output data-testid="submitted-rating">
           {submittedRating ?? 'not submitted'}
         </output>
+      </form>
+
+      <form>
+        <ReactStarsRating
+          id="uncontrolled-rating"
+          defaultValue={2}
+          name="uncontrolled-rating"
+          isHalf={false}
+          ariaLabel="Uncontrolled rating"
+        />
+        <button type="reset">Reset uncontrolled rating</button>
       </form>
     </main>
   );

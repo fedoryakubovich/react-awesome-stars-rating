@@ -1,4 +1,4 @@
-import { copyFile, readFile } from 'node:fs/promises';
+import { copyFile, readFile, rm } from 'node:fs/promises';
 
 // The package is "type": "module", so dist/index.d.ts is read as ESM types.
 // The require condition resolves to CommonJS, and TypeScript needs a .d.cts
@@ -16,5 +16,10 @@ if (/^\s*(import|export)\s.*from\s+'\.\.?\//m.test(declarations)) {
 }
 
 await copyFile(source, target);
+await Promise.all(
+  ['gradient.d.ts', 'star.d.ts', 'styles.d.ts'].map((file) =>
+    rm(new URL(`../dist/${file}`, import.meta.url)),
+  ),
+);
 
-console.log('Emitted dist/index.d.cts for the require condition.');
+console.log('Emitted public ESM/CJS declarations and removed internal types.');

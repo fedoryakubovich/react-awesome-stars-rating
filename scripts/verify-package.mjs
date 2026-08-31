@@ -7,14 +7,11 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 const expectedFiles = [
-  'gradient.d.ts',
   'index.cjs',
   'index.d.cts',
   'index.d.ts',
   'index.mjs',
   'index.umd.cjs',
-  'star.d.ts',
-  'styles.d.ts',
 ];
 
 const files = (await readdir(new URL('../dist/', import.meta.url))).sort();

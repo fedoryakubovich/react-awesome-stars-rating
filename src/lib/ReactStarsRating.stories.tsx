@@ -21,6 +21,10 @@ const meta = {
       control: { type: 'number', min: 0, max: 5, step: 0.5 },
       description: 'Current rating value',
     },
+    defaultValue: {
+      control: { type: 'number', min: 0, max: 5, step: 0.5 },
+      description: 'Initial value for uncontrolled usage',
+    },
     count: {
       control: { type: 'number', min: 1, max: 10, step: 1 },
       description: 'Number of stars',
@@ -36,6 +40,14 @@ const meta = {
     isEdit: {
       control: 'boolean',
       description: 'Whether the rating is editable',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disable interaction and native form submission',
+    },
+    name: {
+      control: 'text',
+      description: 'Name of the hidden native form input',
     },
     isHalf: {
       control: 'boolean',
@@ -107,5 +119,27 @@ export const HoverPalette: Story = {
   args: {
     value: 3,
     hoverColor: '#38bdf8',
+  },
+};
+
+export const Uncontrolled: Story = {
+  args: {
+    value: undefined,
+    defaultValue: 2.5,
+    name: 'rating',
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+    value: 3,
+  },
+};
+
+export const LocalizedValue: Story = {
+  args: {
+    value: 2.5,
+    getValueText: (value, count) => `${value} von ${count} Sternen`,
   },
 };

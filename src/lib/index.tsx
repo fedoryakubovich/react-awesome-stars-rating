@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
-  type MouseEvent,
+  type PointerEvent,
 } from 'react';
 
 import Star from './star';
@@ -20,18 +20,28 @@ export type ReactStarsRatingProps = {
    */
   id?: string;
   /**
-   * Current rating. Values outside `0` to {@link ReactStarsRatingProps.count}
-   * are clamped before they are reported to assistive technology.
+   * Controlled current rating. Values outside `0` to
+   * {@link ReactStarsRatingProps.count} are clamped. When omitted, the
+   * component manages its own value.
+   */
+  value?: number;
+  /**
+   * Initial value when the component is uncontrolled. Ignored when
+   * {@link ReactStarsRatingProps.value} is provided.
    *
    * @defaultValue 0
    */
-  value?: number;
+  defaultValue?: number;
   /**
    * Called with the new rating on click, on `Enter`, and on blur — and on
    * every arrow key when {@link ReactStarsRatingProps.isArrowSubmit} is set.
    * Hovering never calls it.
    */
   onChange?: (value: number) => void;
+  /** Name of the hidden input contributed to the nearest HTML form. */
+  name?: string;
+  /** Disable interaction and native form submission. */
+  disabled?: boolean;
   /**
    * Whether the rating can be changed. When `false` the control has no hover
    * preview, no keyboard handling, and is removed from the tab order.
@@ -113,6 +123,25 @@ export type ReactStarsRatingProps = {
    * {@link ReactStarsRatingProps.ariaLabel}.
    */
   ariaLabelledBy?: string;
+  /**
+   * Formats the accessible value description.
+   *
+   * @defaultValue `(value, count) => `${value} of ${count}``
+   */
+  getValueText?: (value: number, count: number) => string;
+};
+
+const normalizeCount = (value: number) =>
+  Number.isFinite(value) && value >= 1 ? Math.floor(value) : 5;
+
+const normalizeDimension = (value: number, fallback: number, minimum = 0) =>
+  Number.isFinite(value) && value >= minimum ? value : fallback;
+
+const normalizeValue = (value: number, count: number, isHalf: boolean) => {
+  const finiteValue = Number.isFinite(value) ? value : 0;
+  const clampedValue = Math.min(Math.max(finiteValue, 0), count);
+
+  return isHalf ? clampedValue : Math.round(clampedValue);
 };
 
 /**
@@ -128,8 +157,11 @@ export type ReactStarsRatingProps = {
  */
 const ReactStarsRating = ({
   id,
-  value = 0,
+  value,
+  defaultValue = 0,
   onChange = () => {},
+  name,
+  disabled = false,
   isEdit = true,
   isHalf = true,
   count = 5,
@@ -142,19 +174,38 @@ const ReactStarsRating = ({
   isArrowSubmit = false,
   ariaLabel = 'Star rating',
   ariaLabelledBy,
+  getValueText = (currentValue, maximum) => `${currentValue} of ${maximum}`,
 }: ReactStarsRatingProps) => {
+  const normalizedCount = normalizeCount(count);
+  const normalizedSize = normalizeDimension(size, 25, Number.EPSILON);
+  const normalizedGap = normalizeDimension(starGap, 0);
+  const isControlled = value !== undefined;
+  const [uncontrolledValue, setUncontrolledValue] = useState(() =>
+    normalizeValue(defaultValue, normalizedCount, isHalf),
+  );
+  const committedValue = normalizeValue(
+    value ?? uncontrolledValue,
+    normalizedCount,
+    isHalf,
+  );
   const generatedId = useId().replace(/:/g, '');
   const resolvedId = id ?? `react-stars-rating-${generatedId}`;
   const [displayState, setDisplayState] = useState(() => ({
-    sourceValue: value,
-    displayValue: value,
+    sourceValue: committedValue,
+    displayValue: committedValue,
   }));
   const pendingKeyboardValueRef = useRef<number | null>(null);
   const [hoverValue, setHoverValue] = useState<number | null>(null);
+  const containerRef = useRef<HTMLSpanElement>(null);
   const displayValue =
-    displayState.sourceValue === value ? displayState.displayValue : value;
+    displayState.sourceValue === committedValue
+      ? displayState.displayValue
+      : committedValue;
   const setDisplayValue = (nextValue: number) => {
-    setDisplayState({ sourceValue: value, displayValue: nextValue });
+    setDisplayState({
+      sourceValue: committedValue,
+      displayValue: normalizeValue(nextValue, normalizedCount, isHalf),
+    });
   };
 
   const fullId = useMemo(() => `fullId-${resolvedId}`, [resolvedId]);
@@ -163,45 +214,82 @@ const ReactStarsRating = ({
 
   useEffect(() => {
     pendingKeyboardValueRef.current = null;
-  }, [value]);
+  }, [committedValue]);
 
-  const isMoreThanHalf = (event: MouseEvent<SVGSVGElement>) => {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const point = event.clientX - bounds.left;
-
-    // Use the rendered width rather than the size prop. This keeps half-star
-    // selection accurate when consumer CSS scales or otherwise resizes an SVG.
-    return point > bounds.width / 2;
-  };
-
-  const getValueFromEvent = (
-    event: MouseEvent<SVGSVGElement>,
-    index: number,
-  ) => {
-    if (!isHalf) {
-      return index;
+  useEffect(() => {
+    if (isControlled) {
+      return;
     }
 
-    return isMoreThanHalf(event) ? index : index - 0.5;
+    const form = containerRef.current?.closest('form');
+    const handleReset = () => {
+      const resetValue = normalizeValue(defaultValue, normalizedCount, isHalf);
+      pendingKeyboardValueRef.current = null;
+      setHoverValue(null);
+      setUncontrolledValue(resetValue);
+      setDisplayState({ sourceValue: resetValue, displayValue: resetValue });
+    };
+
+    form?.addEventListener('reset', handleReset);
+    return () => form?.removeEventListener('reset', handleReset);
+  }, [defaultValue, isControlled, isHalf, normalizedCount]);
+
+  const getValueFromEvent = (
+    event: PointerEvent<SVGSVGElement>,
+    fallbackIndex: number,
+  ) => {
+    const stars = Array.from(
+      containerRef.current?.querySelectorAll('svg') ?? [],
+    );
+    const selectedStar =
+      stars.find((star) => {
+        const bounds = star.getBoundingClientRect();
+        return bounds.width > 0 && event.clientX <= bounds.right;
+      }) ??
+      stars[stars.length - 1] ??
+      event.currentTarget;
+    const starPosition = stars.indexOf(selectedStar) + 1;
+    const selectedIndex = starPosition || fallbackIndex;
+
+    if (!isHalf) {
+      return selectedIndex;
+    }
+
+    const bounds = selectedStar.getBoundingClientRect();
+    const point = event.clientX - bounds.left;
+
+    // Rendered geometry keeps half selection correct under consumer scaling.
+    return point > bounds.width / 2 ? selectedIndex : selectedIndex - 0.5;
   };
 
-  const handleMouseMove = (event: MouseEvent<SVGSVGElement>, index: number) => {
-    if (!isEdit) {
+  const handlePointerMove = (
+    event: PointerEvent<SVGSVGElement>,
+    index: number,
+  ) => {
+    if (!isEdit || disabled) {
+      return;
+    }
+
+    const isCaptured =
+      typeof event.currentTarget.hasPointerCapture === 'function' &&
+      event.currentTarget.hasPointerCapture(event.pointerId);
+    if (event.pointerType === 'touch' && !isCaptured) {
       return;
     }
 
     const nextValue = getValueFromEvent(event, index);
+    pendingKeyboardValueRef.current = null;
     setHoverValue(nextValue);
     setDisplayValue(nextValue);
   };
 
-  const handleMouseLeave = () => {
-    if (!isEdit) {
+  const handlePointerLeave = (event: PointerEvent<SVGSVGElement>) => {
+    if (!isEdit || disabled || event.buttons !== 0) {
       return;
     }
 
     setHoverValue(null);
-    setDisplayValue(value || 0);
+    setDisplayValue(committedValue);
   };
 
   const handleBlur = () => {
@@ -209,23 +297,59 @@ const ReactStarsRating = ({
 
     if (pendingValue !== null) {
       pendingKeyboardValueRef.current = null;
-      onChange(pendingValue);
+      commitValue(pendingValue);
     }
   };
 
-  const handleChange = (event: MouseEvent<SVGSVGElement>, index: number) => {
-    if (!isEdit) {
+  const commitValue = (nextValue: number) => {
+    const normalizedValue = normalizeValue(nextValue, normalizedCount, isHalf);
+    setDisplayValue(normalizedValue);
+    if (!isControlled) {
+      setUncontrolledValue(normalizedValue);
+    }
+    onChange(normalizedValue);
+  };
+
+  const handlePointerDown = (
+    event: PointerEvent<SVGSVGElement>,
+    index: number,
+  ) => {
+    if (!isEdit || disabled) {
       return;
     }
 
-    const nextValue = getValueFromEvent(event, index);
-    setDisplayValue(nextValue);
+    containerRef.current?.focus();
+    event.currentTarget.setPointerCapture?.(event.pointerId);
     pendingKeyboardValueRef.current = null;
-    onChange(nextValue);
+    const nextValue = getValueFromEvent(event, index);
+    setHoverValue(nextValue);
+    setDisplayValue(nextValue);
+  };
+
+  const handlePointerUp = (
+    event: PointerEvent<SVGSVGElement>,
+    index: number,
+  ) => {
+    if (!isEdit || disabled) {
+      return;
+    }
+
+    commitValue(getValueFromEvent(event, index));
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+    if (event.pointerType === 'touch') {
+      setHoverValue(null);
+    }
+  };
+
+  const handlePointerCancel = (event: PointerEvent<SVGSVGElement>) => {
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+    pendingKeyboardValueRef.current = null;
+    setHoverValue(null);
+    setDisplayValue(committedValue);
   };
 
   const updateValueFromKeyboard = (nextValue: number) => {
-    const clampedNextValue = Math.min(Math.max(nextValue, 0), count);
+    const clampedNextValue = normalizeValue(nextValue, normalizedCount, isHalf);
 
     if (clampedNextValue === displayValue) {
       return;
@@ -235,7 +359,7 @@ const ReactStarsRating = ({
 
     if (isArrowSubmit) {
       pendingKeyboardValueRef.current = null;
-      onChange(clampedNextValue);
+      commitValue(clampedNextValue);
     } else {
       pendingKeyboardValueRef.current = clampedNextValue;
     }
@@ -266,12 +390,12 @@ const ReactStarsRating = ({
         break;
       case 'End':
         event.preventDefault();
-        updateValueFromKeyboard(count);
+        updateValueFromKeyboard(normalizedCount);
         break;
       case 'Enter':
         event.preventDefault();
         pendingKeyboardValueRef.current = null;
-        onChange(displayValue);
+        commitValue(displayValue);
         break;
       default:
         break;
@@ -279,9 +403,10 @@ const ReactStarsRating = ({
   };
 
   const renderStars = () =>
-    Array.from({ length: count }, (_, position) => {
+    Array.from({ length: normalizedCount }, (_, position) => {
       const index = position + 1;
-      const style = index !== count ? { paddingRight: starGap } : undefined;
+      const style =
+        index !== normalizedCount ? { paddingRight: normalizedGap } : undefined;
 
       return (
         <span
@@ -292,7 +417,7 @@ const ReactStarsRating = ({
           <Star
             index={index}
             value={displayValue}
-            size={size}
+            size={normalizedSize}
             isHalf={isHalf}
             fullId={fullId}
             halfId={halfId}
@@ -301,30 +426,35 @@ const ReactStarsRating = ({
             secondaryColor={secondaryColor}
             hoverColor={hoverColor}
             hoverValue={hoverValue}
-            committedValue={value}
-            onMouseMove={(event) => handleMouseMove(event, index)}
-            onMouseLeave={handleMouseLeave}
-            onChange={(event) => handleChange(event, index)}
+            committedValue={committedValue}
+            onPointerMove={(event) => handlePointerMove(event, index)}
+            onPointerLeave={handlePointerLeave}
+            onPointerDown={(event) => handlePointerDown(event, index)}
+            onPointerUp={(event) => handlePointerUp(event, index)}
+            onPointerCancel={handlePointerCancel}
           />
         </span>
       );
     });
 
-  const interactiveProps = isEdit;
+  const interactiveProps = isEdit && !disabled;
 
-  const clampedValue = Math.min(Math.max(displayValue, 0), count);
+  const clampedValue = normalizeValue(displayValue, normalizedCount, isHalf);
 
   return (
     <span
+      ref={containerRef}
       id={resolvedId}
       role="slider"
       aria-label={ariaLabelledBy ? undefined : ariaLabel}
       aria-labelledby={ariaLabelledBy}
       aria-valuemin={0}
-      aria-valuemax={count}
+      aria-valuemax={normalizedCount}
       aria-valuenow={clampedValue}
-      aria-valuetext={`${clampedValue} of ${count}`}
+      aria-valuetext={getValueText(clampedValue, normalizedCount)}
+      aria-orientation="horizontal"
       aria-readonly={!isEdit}
+      aria-disabled={disabled || undefined}
       tabIndex={interactiveProps ? 0 : -1}
       onKeyDown={interactiveProps ? handleKeyDown : undefined}
       onBlur={interactiveProps ? handleBlur : undefined}
@@ -332,6 +462,14 @@ const ReactStarsRating = ({
       className={className}
     >
       {renderStars()}
+      {name ? (
+        <input
+          type="hidden"
+          name={name}
+          value={committedValue}
+          disabled={disabled}
+        />
+      ) : null}
     </span>
   );
 };

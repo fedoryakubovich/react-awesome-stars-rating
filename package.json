@@ -69,6 +69,7 @@
     "coverage": "vitest run --coverage",
     "verify:package": "node scripts/verify-package.mjs",
     "verify:release": "node scripts/verify-release-notes.mjs",
+    "verify:published": "node scripts/verify-published.mjs",
     "lint:package": "publint && attw --pack",
     "size": "size-limit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -139,19 +140,19 @@
     {
       "name": "ESM entry",
       "path": "dist/index.mjs",
-      "limit": "2 kB",
+      "limit": "2.55 kB",
       "gzip": true
     },
     {
       "name": "CJS entry",
       "path": "dist/index.cjs",
-      "limit": "2.05 kB",
+      "limit": "2.6 kB",
       "gzip": true
     },
     {
       "name": "UMD bundle",
       "path": "dist/index.umd.cjs",
-      "limit": "2.15 kB",
+      "limit": "2.7 kB",
       "gzip": true
     }
   ],

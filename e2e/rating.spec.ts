@@ -59,7 +59,8 @@ test('selects pointer halves and does not submit the click again on blur', async
   await expect(page.getByTestId('rating-value')).toHaveText('3');
 });
 
-test('touch selects a half star', async ({ page }) => {
+test('touch selects a half star', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'firefox', 'Touch is covered by WebKit');
   const thirdStar = page
     .getByRole('slider', { name: 'Star rating' })
     .locator('svg')
@@ -72,6 +73,28 @@ test('touch selects a half star', async ({ page }) => {
     box!.y + box!.height / 2,
   );
   await expect(page.getByTestId('rating-value')).toHaveText('2.5');
+});
+
+test('supports a captured pointer drag across stars', async ({ page }) => {
+  const slider = page.getByRole('slider', { name: 'Star rating' });
+  const firstBox = await slider.locator('svg').first().boundingBox();
+  const fourthBox = await slider.locator('svg').nth(3).boundingBox();
+  expect(firstBox).not.toBeNull();
+  expect(fourthBox).not.toBeNull();
+
+  await page.mouse.move(
+    firstBox!.x + firstBox!.width / 2,
+    firstBox!.y + firstBox!.height / 2,
+  );
+  await page.mouse.down();
+  await page.mouse.move(
+    fourthBox!.x + fourthBox!.width * 0.75,
+    fourthBox!.y + fourthBox!.height / 2,
+  );
+  await page.mouse.up();
+
+  await expect(page.getByTestId('rating-value')).toHaveText('4');
+  await expect(page.getByTestId('change-count')).toHaveText('1');
 });
 
 test('uses the rendered width when CSS scales a star', async ({ page }) => {
@@ -106,6 +129,28 @@ test('integrates with a controlled HTML form', async ({ page }) => {
   await expect(page.getByTestId('submitted-rating')).toHaveText('3');
 });
 
+test('persists and resets an uncontrolled native form value', async ({
+  page,
+}) => {
+  const slider = page.getByRole('slider', { name: 'Uncontrolled rating' });
+  const fourth = slider.locator('svg').nth(3);
+  const box = await fourth.boundingBox();
+  expect(box).not.toBeNull();
+
+  await page.mouse.click(box!.x + box!.width * 0.75, box!.y + box!.height / 2);
+  await page.mouse.move(0, 0);
+  await expect(slider).toHaveAttribute('aria-valuenow', '4');
+  await expect(slider.locator('input[name="uncontrolled-rating"]')).toHaveValue(
+    '4',
+  );
+
+  await page.getByRole('button', { name: 'Reset uncontrolled rating' }).click();
+  await expect(slider).toHaveAttribute('aria-valuenow', '2');
+  await expect(slider.locator('input[name="uncontrolled-rating"]')).toHaveValue(
+    '2',
+  );
+});
+
 test('renders saved, hover, and inactive colors in a real browser', async ({
   page,
 }) => {
@@ -126,12 +171,29 @@ test('renders saved, hover, and inactive colors in a real browser', async ({
   expect(colors).toEqual(['#38bdf8', '#38bdf8', '#ff8a3d', '#ff8a3d']);
 });
 
+test('matches the rating visual baseline', async ({ page }, testInfo) => {
+  test.skip(
+    testInfo.project.name !== 'chromium',
+    'One browser owns the baseline',
+  );
+  await page.goto('/');
+
+  const slider = page.locator('#playground');
+  const screenshot = await slider.screenshot({
+    animations: 'disabled',
+  });
+  expect(screenshot).toMatchSnapshot('rating-slider.png');
+});
+
 for (const story of [
   'default',
   'read-only',
   'arrow-submit',
   'custom-palette',
   'hover-palette',
+  'uncontrolled',
+  'disabled',
+  'localized-value',
 ]) {
   test(`Storybook ${story} state is accessible and interactive`, async ({
     page,

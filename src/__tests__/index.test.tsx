@@ -121,6 +121,67 @@ describe('Pointer interaction', () => {
     await user.unhover(fourth);
     expect(getSlider()).toHaveAttribute('aria-valuenow', '0');
   });
+
+  test('restores the committed value when a pointer gesture is cancelled', () => {
+    const onChange = vi.fn();
+    render(
+      <ReactStarsRating
+        value={1}
+        size={30}
+        isHalf={false}
+        onChange={onChange}
+      />,
+    );
+
+    const fourth = withLayout(getStars()[3], 30);
+    fireEvent.pointerDown(fourth, {
+      clientX: 25,
+      pointerId: 1,
+      pointerType: 'mouse',
+    });
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '4');
+
+    fireEvent.pointerCancel(fourth, { pointerId: 1, pointerType: 'mouse' });
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '1');
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  test('only previews captured touch pointers and clears the preview on release', () => {
+    const onChange = vi.fn();
+    render(
+      <ReactStarsRating
+        value={1}
+        size={30}
+        isHalf={false}
+        onChange={onChange}
+      />,
+    );
+
+    const fourth = withLayout(getStars()[3], 30);
+    fourth.hasPointerCapture = vi.fn(() => false);
+    fireEvent.pointerMove(fourth, {
+      clientX: 25,
+      pointerId: 1,
+      pointerType: 'touch',
+    });
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '1');
+
+    fourth.hasPointerCapture = vi.fn(() => true);
+    fireEvent.pointerMove(fourth, {
+      clientX: 25,
+      pointerId: 1,
+      pointerType: 'touch',
+    });
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '4');
+
+    fireEvent.pointerUp(fourth, {
+      clientX: 25,
+      pointerId: 1,
+      pointerType: 'touch',
+    });
+    expect(onChange).toHaveBeenCalledWith(4);
+    expect(getSlider().querySelectorAll('[id*="-hover-"]')).toHaveLength(0);
+  });
 });
 
 describe('Uncontrolled usage', () => {
@@ -136,6 +197,55 @@ describe('Uncontrolled usage', () => {
     });
 
     expect(getSlider()).toHaveAttribute('aria-valuenow', '2');
+  });
+
+  test('keeps a committed value after the pointer leaves', async () => {
+    const user = userEvent.setup();
+    render(
+      <ReactStarsRating
+        defaultValue={1}
+        size={30}
+        isHalf={false}
+        name="rating"
+      />,
+    );
+
+    const third = withLayout(getStars()[2], 30);
+    await user.pointer({
+      keys: '[MouseLeft]',
+      target: third,
+      coords: { clientX: 25 },
+    });
+    await user.unhover(third);
+
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '3');
+    expect(screen.getByDisplayValue('3')).toHaveAttribute('name', 'rating');
+  });
+
+  test('resets defaultValue and its native form field', async () => {
+    const user = userEvent.setup();
+    render(
+      <form data-testid="form">
+        <ReactStarsRating
+          defaultValue={2}
+          size={30}
+          isHalf={false}
+          name="rating"
+        />
+        <button type="reset">Reset</button>
+      </form>,
+    );
+
+    await user.pointer({
+      keys: '[MouseLeft]',
+      target: withLayout(getStars()[3], 30),
+      coords: { clientX: 25 },
+    });
+    expect(new FormData(screen.getByTestId('form')).get('rating')).toBe('4');
+
+    await user.click(screen.getByRole('button', { name: 'Reset' }));
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '2');
+    expect(new FormData(screen.getByTestId('form')).get('rating')).toBe('2');
   });
 });
 
@@ -197,6 +307,34 @@ describe('Read only mode', () => {
 
     await user.tab();
     await user.keyboard('{ArrowRight}');
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('Disabled mode', () => {
+  test('is inert, announced as disabled, and omitted from FormData', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <form data-testid="form">
+        <ReactStarsRating
+          disabled
+          name="rating"
+          value={2}
+          onChange={onChange}
+        />
+      </form>,
+    );
+
+    expect(getSlider()).toHaveAttribute('aria-disabled', 'true');
+    expect(getSlider()).toHaveAttribute('tabindex', '-1');
+    expect(new FormData(screen.getByTestId('form')).has('rating')).toBe(false);
+
+    await user.pointer({
+      keys: '[MouseLeft]',
+      target: withLayout(getStars()[3], 25),
+      coords: { clientX: 20 },
+    });
     expect(onChange).not.toHaveBeenCalled();
   });
 });
@@ -530,6 +668,35 @@ describe('Presentation props', () => {
 
     expect(colors).toContain('red');
     expect(colors).toContain('blue');
+  });
+
+  test('normalizes invalid values and whole-star presentation', () => {
+    const { rerender } = render(
+      <ReactStarsRating count={Number.NaN} value={Number.NaN} />,
+    );
+
+    expect(getStars()).toHaveLength(5);
+    expect(getSlider()).toHaveAttribute('aria-valuemax', '5');
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '0');
+
+    rerender(
+      <ReactStarsRating count={4.9} value={3.5} isHalf={false} size={-1} />,
+    );
+    expect(getStars()).toHaveLength(4);
+    expect(getStars()[0]).toHaveAttribute('width', '25');
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '4');
+  });
+
+  test('supports localized accessible value text and orientation', () => {
+    render(
+      <ReactStarsRating
+        value={2.5}
+        getValueText={(value, count) => `${value} von ${count} Sternen`}
+      />,
+    );
+
+    expect(getSlider()).toHaveAttribute('aria-valuetext', '2.5 von 5 Sternen');
+    expect(getSlider()).toHaveAttribute('aria-orientation', 'horizontal');
   });
 
   test('uses three regions when hoverColor previews below the saved value', async () => {
