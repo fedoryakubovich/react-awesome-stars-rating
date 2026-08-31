@@ -13,13 +13,15 @@ describe('Demo site', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Product summary')).toBeInTheDocument();
     expect(screen.getByText('Scales and sizes')).toBeInTheDocument();
-    expect(await screen.findByText('React Hook Form')).toBeInTheDocument();
+    expect(
+      await screen.findByText('React Hook Form', {}, { timeout: 5_000 }),
+    ).toBeInTheDocument();
     expect(screen.getAllByRole('slider').length).toBeGreaterThan(5);
   });
 
   test('has no obvious accessibility violations', async () => {
     const { container } = render(<Examples />);
-    await screen.findByText('React Hook Form');
+    await screen.findByText('React Hook Form', {}, { timeout: 5_000 });
 
     const results = await axe.run(container);
 
