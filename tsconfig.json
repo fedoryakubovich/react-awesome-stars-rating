@@ -14,7 +14,9 @@
   },
   "include": [
     "src",
+    "e2e",
     ".storybook",
+    "playwright.config.ts",
     "vite.config.ts",
     "vite.site.config.ts",
     "vite.umd.config.ts"

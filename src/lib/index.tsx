@@ -1,8 +1,10 @@
 'use client';
 
 import {
+  useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
   type KeyboardEvent,
   type MouseEvent,
@@ -139,7 +141,7 @@ const ReactStarsRating = ({
     sourceValue: value,
     displayValue: value,
   }));
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const pendingKeyboardValueRef = useRef<number | null>(null);
   const displayValue =
     displayState.sourceValue === value ? displayState.displayValue : value;
   const setDisplayValue = (nextValue: number) => {
@@ -149,6 +151,10 @@ const ReactStarsRating = ({
   const fullId = useMemo(() => `fullId-${resolvedId}`, [resolvedId]);
   const halfId = useMemo(() => `halfId-${resolvedId}`, [resolvedId]);
   const noneId = useMemo(() => `noneId-${resolvedId}`, [resolvedId]);
+
+  useEffect(() => {
+    pendingKeyboardValueRef.current = null;
+  }, [value]);
 
   const isMoreThanHalf = (event: MouseEvent<SVGSVGElement>) => {
     const point =
@@ -184,8 +190,12 @@ const ReactStarsRating = ({
   };
 
   const handleBlur = () => {
-    onChange(displayValue);
-    setIsSubmitted(true);
+    const pendingValue = pendingKeyboardValueRef.current;
+
+    if (pendingValue !== null) {
+      pendingKeyboardValueRef.current = null;
+      onChange(pendingValue);
+    }
   };
 
   const handleChange = (event: MouseEvent<SVGSVGElement>, index: number) => {
@@ -195,35 +205,57 @@ const ReactStarsRating = ({
 
     const nextValue = getValueFromEvent(event, index);
     setDisplayValue(nextValue);
+    pendingKeyboardValueRef.current = null;
     onChange(nextValue);
   };
 
-  const updateValueByStep = (delta: number) => {
-    let nextValue = displayValue;
-    const isHalfValue = nextValue % 1 === 0.5;
+  const updateValueFromKeyboard = (nextValue: number) => {
+    const clampedNextValue = Math.min(Math.max(nextValue, 0), count);
 
-    if (!isHalfValue) {
-      nextValue = Math.round(nextValue);
+    if (clampedNextValue === displayValue) {
+      return;
     }
 
-    nextValue = Math.min(Math.max(nextValue + delta, 0), count);
-    setDisplayValue(nextValue);
+    setDisplayValue(clampedNextValue);
 
     if (isArrowSubmit) {
-      onChange(nextValue);
+      pendingKeyboardValueRef.current = null;
+      onChange(clampedNextValue);
+    } else {
+      pendingKeyboardValueRef.current = clampedNextValue;
     }
   };
 
-  // Only attached while isEdit or isArrowSubmit is set, so no guard is needed.
+  const updateValueByStep = (delta: number) => {
+    const normalizedValue =
+      displayValue % 1 === 0.5 ? displayValue : Math.round(displayValue);
+    updateValueFromKeyboard(normalizedValue + delta);
+  };
+
+  // Only attached while editing is enabled, so no isEdit guard is needed.
   const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>) => {
     switch (event.key) {
       case 'ArrowLeft':
+      case 'ArrowDown':
+        event.preventDefault();
         updateValueByStep(isHalf ? -0.5 : -1);
         break;
       case 'ArrowRight':
+      case 'ArrowUp':
+        event.preventDefault();
         updateValueByStep(isHalf ? 0.5 : 1);
         break;
+      case 'Home':
+        event.preventDefault();
+        updateValueFromKeyboard(0);
+        break;
+      case 'End':
+        event.preventDefault();
+        updateValueFromKeyboard(count);
+        break;
       case 'Enter':
+        event.preventDefault();
+        pendingKeyboardValueRef.current = null;
         onChange(displayValue);
         break;
       default:
@@ -260,7 +292,7 @@ const ReactStarsRating = ({
       );
     });
 
-  const interactiveProps = (isEdit || isArrowSubmit) && !isSubmitted;
+  const interactiveProps = isEdit;
 
   const clampedValue = Math.min(Math.max(displayValue, 0), count);
 
@@ -274,6 +306,7 @@ const ReactStarsRating = ({
       aria-valuemax={count}
       aria-valuenow={clampedValue}
       aria-valuetext={`${clampedValue} of ${count}`}
+      aria-readonly={!isEdit}
       tabIndex={interactiveProps ? 0 : -1}
       onKeyDown={interactiveProps ? handleKeyDown : undefined}
       onBlur={interactiveProps ? handleBlur : undefined}

@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import ReactStarsRating from '../lib';
 
@@ -25,6 +25,7 @@ describe('Rendering', () => {
     expect(slider).toHaveAttribute('aria-valuemax', '5');
     expect(slider).toHaveAttribute('aria-valuenow', '0');
     expect(slider).toHaveAttribute('aria-valuetext', '0 of 5');
+    expect(slider).toHaveAttribute('aria-readonly', 'false');
   });
 
   test('renders one star per count', () => {
@@ -173,9 +174,30 @@ describe('Read only mode', () => {
     render(<ReactStarsRating isEdit={false} value={2} />);
 
     expect(getSlider()).toHaveAttribute('tabindex', '-1');
+    expect(getSlider()).toHaveAttribute('aria-readonly', 'true');
 
     await user.tab();
     expect(getSlider()).not.toHaveFocus();
+  });
+
+  test('isArrowSubmit does not make a read-only rating interactive', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <ReactStarsRating
+        isEdit={false}
+        isArrowSubmit
+        value={2}
+        onChange={onChange}
+      />,
+    );
+
+    expect(getSlider()).toHaveAttribute('tabindex', '-1');
+    expect(getSlider()).not.toHaveAttribute('onkeydown');
+
+    await user.tab();
+    await user.keyboard('{ArrowRight}');
+    expect(onChange).not.toHaveBeenCalled();
   });
 });
 
@@ -213,14 +235,48 @@ describe('Keyboard interaction', () => {
     expect(getSlider()).toHaveAttribute('aria-valuetext', '1 of 5');
   });
 
-  test('ignores unrelated keys', async () => {
+  test('supports vertical arrow keys', async () => {
     const user = userEvent.setup();
     render(<ReactStarsRating isHalf={false} value={1} />);
 
     await user.tab();
     await user.keyboard('{ArrowUp}');
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '2');
 
+    await user.keyboard('{ArrowDown}');
     expect(getSlider()).toHaveAttribute('aria-valuenow', '1');
+  });
+
+  test('Home and End move to the bounds', async () => {
+    const user = userEvent.setup();
+    render(<ReactStarsRating count={7} isHalf value={3.5} />);
+
+    await user.tab();
+    await user.keyboard('{End}');
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '7');
+
+    await user.keyboard('{Home}');
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '0');
+  });
+
+  test.each([
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowUp',
+    'ArrowDown',
+    'Home',
+    'End',
+    'Enter',
+  ])('prevents the default action for %s', (key) => {
+    render(<ReactStarsRating value={2} />);
+
+    expect(fireEvent.keyDown(getSlider(), { key })).toBe(false);
+  });
+
+  test('does not prevent unrelated keys', () => {
+    render(<ReactStarsRating value={2} />);
+
+    expect(fireEvent.keyDown(getSlider(), { key: 'Tab' })).toBe(true);
   });
 
   test('stops at both bounds', async () => {
@@ -259,6 +315,25 @@ describe('Keyboard interaction', () => {
 
     expect(onChange).toHaveBeenCalledWith(2.5);
   });
+
+  test('does not report a blocked arrow step at a bound', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <ReactStarsRating
+        count={5}
+        isHalf={false}
+        value={5}
+        onChange={onChange}
+        isArrowSubmit
+      />,
+    );
+
+    await user.tab();
+    await user.keyboard('{ArrowRight}');
+
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });
 
 describe('Submitting', () => {
@@ -274,20 +349,105 @@ describe('Submitting', () => {
     expect(onChange).toHaveBeenCalledWith(2.5);
   });
 
-  test('blurring reports the value once and stops interacting', async () => {
+  test('blurring reports the value and remains keyboard accessible', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    render(<ReactStarsRating isHalf={false} value={1} onChange={onChange} />);
+    render(
+      <>
+        <ReactStarsRating isHalf={false} value={1} onChange={onChange} />
+        <button type="button">Next control</button>
+      </>,
+    );
 
     await user.tab();
     await user.keyboard('{ArrowRight}');
     await user.tab();
 
     expect(onChange).toHaveBeenCalledWith(2);
+    expect(getSlider()).toHaveAttribute('tabindex', '0');
+
+    await user.tab({ shift: true });
+    expect(getSlider()).toHaveFocus();
+    await user.keyboard('{ArrowRight}');
+    await user.tab();
+
+    expect(onChange).toHaveBeenCalledTimes(2);
+    expect(onChange).toHaveBeenLastCalledWith(3);
+  });
+
+  test('does not report again on blur after a click', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <>
+        <ReactStarsRating isHalf={false} value={1} onChange={onChange} />
+        <button type="button">Next control</button>
+      </>,
+    );
 
     await user.tab();
+    await user.click(withLayout(getStars()[2], 25));
+    await user.tab();
+
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect(getSlider()).toHaveAttribute('tabindex', '-1');
+    expect(onChange).toHaveBeenCalledWith(3);
+  });
+
+  test('does not report again on blur after Enter', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <>
+        <ReactStarsRating isHalf={false} value={1} onChange={onChange} />
+        <button type="button">Next control</button>
+      </>,
+    );
+
+    await user.tab();
+    await user.keyboard('{ArrowRight}{Enter}');
+    await user.tab();
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith(2);
+  });
+
+  test('does not report again on blur after immediate arrow submission', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <>
+        <ReactStarsRating
+          isHalf={false}
+          value={1}
+          onChange={onChange}
+          isArrowSubmit
+        />
+        <button type="button">Next control</button>
+      </>,
+    );
+
+    await user.tab();
+    await user.keyboard('{ArrowRight}');
+    await user.tab();
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith(2);
+  });
+
+  test('does not report on blur when the value was not changed', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <>
+        <ReactStarsRating value={1} onChange={onChange} />
+        <button type="button">Next control</button>
+      </>,
+    );
+
+    await user.tab();
+    await user.tab();
+
+    expect(onChange).not.toHaveBeenCalled();
   });
 });
 

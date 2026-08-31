@@ -6,16 +6,19 @@ on:
   pull_request:
     branches: ['main']
 
+permissions:
+  contents: read
+
 jobs:
   build-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run format
@@ -25,7 +28,7 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: npm run commitlint -- --from="$BASE_SHA" --to=HEAD
       - run: npm run typecheck
-      - run: npm run test
+      - run: npm run verify:release
       - run: npm run coverage
       - run: npm run build
       - run: npm run verify:package
@@ -33,10 +36,62 @@ jobs:
       - run: npm run size
       - run: npm run build-storybook
       - run: npm run build:site
+      - name: Pack development artifact
+        run: |
+          mkdir -p artifacts
+          npm pack --json --pack-destination artifacts
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: package-tarball
+          path: artifacts/react-awesome-stars-rating-0.0.0-development.tgz
+          if-no-files-found: error
+
+  browser-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+
+  consumer-matrix:
+    needs: build-test
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22', '24']
+        react: ['18.3.1', '19.2.8']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: package-tarball
+          path: artifacts
+      - name: Verify installed React consumer
+        run: >-
+          node scripts/verify-consumer.mjs
+          --tarball artifacts/react-awesome-stars-rating-0.0.0-development.tgz
+          --react ${{ matrix.react }}
+
+  consumer-test:
+    if: always()
+    needs: consumer-matrix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every consumer matrix entry to pass
+        run: test "${{ needs.consumer-matrix.result }}" = success
 
   release:
     if: github.event_name == 'push'
-    needs: build-test
+    needs: [build-test, browser-test, consumer-test]
     runs-on: ubuntu-latest
     concurrency:
       group: release-main
@@ -48,16 +103,16 @@ jobs:
       # cannot, and masks the real error with a 403.
       issues: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
           persist-credentials: true
       # npm authenticates this workflow through the package's trusted publisher
       # configuration. Do not add registry-url or NODE_AUTH_TOKEN here because
       # either would override OIDC with token authentication.
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run build

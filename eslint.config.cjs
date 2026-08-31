@@ -26,7 +26,12 @@ module.exports = [
     ],
   },
   {
-    files: ['src/**/*.{ts,tsx}', '*.config.ts', '.storybook/**/*.ts'],
+    files: [
+      'src/**/*.{ts,tsx}',
+      'e2e/**/*.ts',
+      '*.config.ts',
+      '.storybook/**/*.ts',
+    ],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
@@ -37,6 +42,7 @@ module.exports = [
       globals: {
         SVGSVGElement: 'readonly',
         HTMLSpanElement: 'readonly',
+        HTMLFormElement: 'readonly',
         HTMLElement: 'readonly',
         Element: 'readonly',
         DOMRect: 'readonly',
