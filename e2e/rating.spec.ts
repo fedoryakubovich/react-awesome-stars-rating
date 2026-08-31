@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/e2e');
+  await page.goto('/e2e.html');
 });
 
 test('supports the complete slider keyboard model and focus re-entry', async ({
@@ -72,6 +72,20 @@ test('touch selects a half star', async ({ page }) => {
     box!.y + box!.height / 2,
   );
   await expect(page.getByTestId('rating-value')).toHaveText('2.5');
+});
+
+test('uses the rendered width when CSS scales a star', async ({ page }) => {
+  const thirdStar = page
+    .getByRole('slider', { name: 'Scaled rating' })
+    .locator('svg')
+    .nth(2);
+  const box = await thirdStar.boundingBox();
+  expect(box).not.toBeNull();
+
+  // This is left of the rendered midpoint, but right of size / 2 after the
+  // horizontal scale. Comparing with the size prop would incorrectly choose 3.
+  await page.mouse.click(box!.x + box!.width * 0.4, box!.y + box!.height / 2);
+  await expect(page.getByTestId('scaled-rating-value')).toHaveText('2.5');
 });
 
 test('read-only mode wins over isArrowSubmit', async ({ page }) => {

@@ -6,6 +6,7 @@ const E2EHarness = () => {
   const [rating, setRating] = useState(1);
   const [changeCount, setChangeCount] = useState(0);
   const [formRating, setFormRating] = useState(2);
+  const [scaledRating, setScaledRating] = useState(1);
   const [submittedRating, setSubmittedRating] = useState<number | null>(null);
 
   const handleRatingChange = (nextValue: number) => {
@@ -31,6 +32,24 @@ const E2EHarness = () => {
       <output data-testid="rating-value">{rating}</output>
       <output data-testid="change-count">{changeCount}</output>
       <button type="button">Next control</button>
+
+      <div
+        style={{
+          transform: 'scaleX(2)',
+          transformOrigin: 'left center',
+          width: 'fit-content',
+        }}
+      >
+        <ReactStarsRating
+          id="scaled-rating"
+          value={scaledRating}
+          onChange={setScaledRating}
+          size={40}
+          isHalf
+          ariaLabel="Scaled rating"
+        />
+      </div>
+      <output data-testid="scaled-rating-value">{scaledRating}</output>
 
       <ReactStarsRating
         id="readonly-rating"

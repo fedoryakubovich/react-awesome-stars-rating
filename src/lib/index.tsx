@@ -157,9 +157,12 @@ const ReactStarsRating = ({
   }, [value]);
 
   const isMoreThanHalf = (event: MouseEvent<SVGSVGElement>) => {
-    const point =
-      event.clientX - event.currentTarget.getBoundingClientRect().left;
-    return point > size / 2;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const point = event.clientX - bounds.left;
+
+    // Use the rendered width rather than the size prop. This keeps half-star
+    // selection accurate when consumer CSS scales or otherwise resizes an SVG.
+    return point > bounds.width / 2;
   };
 
   const getValueFromEvent = (
