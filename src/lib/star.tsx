@@ -63,6 +63,10 @@ const StarSVG = ({
   return (
     <svg
       width={size}
+      style={{
+        forcedColorAdjust: 'auto',
+        width: 'var(--stars-rating-size)',
+      }}
       viewBox={viewBox}
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"

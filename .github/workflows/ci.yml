@@ -131,7 +131,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Release
-        run: npx semantic-release
+        run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true

@@ -194,12 +194,14 @@ for (const story of [
   'uncontrolled',
   'disabled',
   'localized-value',
+  'css-variables',
 ]) {
   test(`Storybook ${story} state is accessible and interactive`, async ({
     page,
   }) => {
     await page.goto(
-      `http://127.0.0.1:6006/iframe.html?id=components-reactstarsrating--${story}&viewMode=story`,
+      // Playwright owns the axe run here; avoid racing the addon's auto-scan.
+      `http://127.0.0.1:6006/iframe.html?id=components-reactstarsrating--${story}&viewMode=story&globals=a11y.manual:!true`,
     );
     const slider = page.getByRole('slider');
     await expect(slider).toBeVisible();
@@ -220,3 +222,25 @@ for (const story of [
     }
   });
 }
+
+test('retains focus and star visibility in forced-colors mode', async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name !== 'chromium',
+    'Forced colors are Chromium-only',
+  );
+  await page.emulateMedia({ forcedColors: 'active' });
+  await page.goto(
+    'http://127.0.0.1:6006/iframe.html?id=components-reactstarsrating--css-variables&viewMode=story',
+  );
+
+  const slider = page.getByRole('slider');
+  await slider.focus();
+  await expect(slider).toBeFocused();
+  await expect(slider).toHaveCSS('outline-style', 'solid');
+  await expect(slider.locator('svg').first()).toHaveCSS(
+    'forced-color-adjust',
+    'auto',
+  );
+});

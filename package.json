@@ -48,7 +48,7 @@
     "type": "git",
     "url": "git+https://github.com/fedoryakubovich/react-awesome-stars-rating.git"
   },
-  "homepage": "https://react-awesome-stars-rating.vercel.app",
+  "homepage": "https://react-awesome-stars-rating-orpin.vercel.app/",
   "author": "Fedor Yakubovich",
   "bugs": {
     "url": "https://github.com/fedoryakubovich/react-awesome-stars-rating/issues"
@@ -94,21 +94,21 @@
     "@semantic-release/github": "^12.0.9",
     "@semantic-release/npm": "^13.1.5",
     "@size-limit/file": "^13.0.3",
-    "@storybook/addon-a11y": "^10.5.10",
-    "@storybook/addon-links": "^10.5.10",
-    "@storybook/react-vite": "^10.5.10",
+    "@storybook/addon-a11y": "^10.6.0",
+    "@storybook/addon-links": "^10.6.0",
+    "@storybook/react-vite": "^10.6.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@tanstack/react-form": "^1.33.5",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^14.6.6",
+    "@testing-library/user-event": "^14.6.7",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
-    "@typescript-eslint/eslint-plugin": "^8.68.0",
-    "@typescript-eslint/parser": "^8.68.0",
+    "@types/react-dom": "^19.2.7",
+    "@typescript-eslint/eslint-plugin": "^8.69.0",
+    "@typescript-eslint/parser": "^8.69.0",
     "@vitejs/plugin-react": "^6.1.1",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^5.0.0",
     "axe-core": "^4.13.0",
     "conventional-changelog-conventionalcommits": "^9.3.1",
     "conventional-commits-filter": "^6.0.1",
@@ -117,7 +117,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-storybook": "10.5.10",
+    "eslint-plugin-storybook": "^10.6.0",
     "formik": "^2.4.9",
     "husky": "^9.1.7",
     "jsdom": "^30.0.1",
@@ -130,29 +130,29 @@
     "rimraf": "^6.1.3",
     "semantic-release": "^25.0.9",
     "size-limit": "^13.0.3",
-    "storybook": "^10.5.10",
+    "storybook": "^10.6.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "vite": "^8.2.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.0"
   },
   "size-limit": [
     {
       "name": "ESM entry",
       "path": "dist/index.mjs",
-      "limit": "2.55 kB",
+      "limit": "2.8 kB",
       "gzip": true
     },
     {
       "name": "CJS entry",
       "path": "dist/index.cjs",
-      "limit": "2.6 kB",
+      "limit": "2.85 kB",
       "gzip": true
     },
     {
       "name": "UMD bundle",
       "path": "dist/index.umd.cjs",
-      "limit": "2.7 kB",
+      "limit": "2.9 kB",
       "gzip": true
     }
   ],

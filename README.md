@@ -6,7 +6,7 @@
 
 An accessible star rating component for React. Half stars from pointer position, full keyboard control, any scale or palette — in under 3 kB gzipped with no runtime dependencies.
 
-**[Live demo](https://react-awesome-stars-rating.vercel.app)** · **[Storybook](https://react-awesome-stars-rating.vercel.app/storybook)**
+**[Live demo](https://react-awesome-stars-rating-orpin.vercel.app/)** · **[Storybook](https://react-awesome-stars-rating-orpin.vercel.app/storybook/)**
 
 ![react-awesome-stars-rating preview](https://raw.githubusercontent.com/fedoryakubovich/react-awesome-stars-rating/main/images/gifs/react-awesome-stars-rating.gif)
 
@@ -76,13 +76,16 @@ export default function Example() {
 | defaultValue   | Initial uncontrolled value                | `number`                   | `0`             |
 | onChange       | Called when value changes                 | `(value: number) => void`  | `() => {}`      |
 | name           | Hidden native form input name             | `string`                   | `undefined`     |
+| form           | Associated form ID                        | `string`                   | `undefined`     |
 | disabled       | Disable interaction and form submission   | `boolean`                  | `false`         |
-| isEdit         | Editing mode                              | `boolean`                  | `true`          |
+| readOnly       | Prevent editing                           | `boolean`                  | `false`         |
+| isEdit         | Deprecated inverse editing switch         | `boolean`                  | `true`          |
 | isHalf         | Allow half stars                          | `boolean`                  | `true`          |
 | count          | Number of stars                           | `number`                   | `5`             |
 | size           | Star size (px)                            | `number`                   | `25`            |
 | starGap        | Gap between stars                         | `number`                   | `0`             |
 | className      | Container class                           | `string`                   | `''`            |
+| style          | Container style and CSS variables         | `ReactStarsRatingStyle`    | `undefined`     |
 | primaryColor   | Active star color                         | `string`                   | `'orange'`      |
 | secondaryColor | Inactive star color                       | `string`                   | `'grey'`        |
 | hoverColor     | Optional pointer-preview color            | `string`                   | `undefined`     |
@@ -105,7 +108,7 @@ The control renders as a single `role="slider"` element with `aria-valuemin`, `a
 
 With `isArrowSubmit`, each arrow step reports through `onChange` immediately rather than waiting for `Enter` or blur.
 
-When `isEdit` is `false` the control is inert regardless of `isArrowSubmit`: no hover preview, no keyboard, `tabIndex={-1}`, and `aria-readonly="true"`.
+When `readOnly` is `true` the control is inert regardless of `isArrowSubmit`: no hover preview, no keyboard, `tabIndex={-1}`, and `aria-readonly="true"`. The older `isEdit={false}` API remains supported but is deprecated.
 
 The slider explicitly reports `aria-orientation="horizontal"`. Use
 `getValueText` to localize its spoken value:
@@ -137,6 +140,27 @@ remainder of the saved value uses `primaryColor`, and inactive stars use
 `secondaryColor`. When previewing above the saved value, only the additional
 preview region uses `hoverColor`.
 
+### Styling
+
+The forwarded `ref`, `className`, `style`, `title`, and `data-*` attributes
+target the slider container. CSS variables provide lightweight theming:
+
+```tsx
+<ReactStarsRating
+  defaultValue={3.5}
+  style={{
+    '--stars-rating-primary-color': '#f59e0b',
+    '--stars-rating-secondary-color': '#475569',
+    '--stars-rating-focus-color': '#2563eb',
+    '--stars-rating-size': '2rem',
+    '--stars-rating-gap': '0.25rem',
+  }}
+/>
+```
+
+The default focus-visible ring uses the system `Highlight` color, and SVG
+stars allow browser forced-colors adjustments for high-contrast modes.
+
 ## Server components
 
 The package carries the `'use client'` directive, so it can be imported directly from a server component in the Next.js App Router without a wrapper.
@@ -157,7 +181,13 @@ uncontrolled usage and native form reset behavior.
 ```
 
 Use `value` with `onChange` for controlled state. Supplying `value` always
-takes precedence over `defaultValue`.
+takes precedence over `defaultValue`. Use `form="form-id"` when the rating is
+rendered outside its associated form.
+
+HTML hidden inputs do not participate in native constraint validation, so a
+`required` attribute would be misleading and is intentionally not exposed.
+For required ratings, validate the controlled value or submitted `FormData`
+and expose the result with `aria-invalid` and descriptive error text.
 
 ### React Hook Form
 
@@ -249,6 +279,8 @@ Pre-commit (Husky) runs lint-staged (Prettier + ESLint on staged files) and comm
 - **CI** — on push/PR to `main`: format, lint, commitlint, typecheck, tests, coverage, build, package verification, publint/attw, size budgets, Storybook and site builds.
 - **Deploy** — Vercel builds the demo site on every push (see `vercel.json`), serving Storybook at `/storybook`.
 - **Release** — [semantic-release](https://github.com/semantic-release/semantic-release) on push to `main`: analyzes Conventional Commits, publishes to npm and creates a GitHub release.
+- **Recovery** — the manually dispatched `Verify or repair a published release` workflow verifies an exact npm version and its provenance, and can recreate a missing GitHub release only when its tag already exists.
+- **Security** — CodeQL and OpenSSF Scorecard publish findings to GitHub code scanning; dependency review checks pull requests for vulnerable dependencies.
 
 Publishing uses npm trusted publishing (OIDC) from `.github/workflows/ci.yml`; the workflow does not use an npm token.
 

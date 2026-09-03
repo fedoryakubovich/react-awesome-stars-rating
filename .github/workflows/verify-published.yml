@@ -1,0 +1,55 @@
+name: Verify or repair a published release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Published npm version, without the v prefix
+        required: true
+        type: string
+      repair_github_release:
+        description: Create the GitHub release if its existing tag has no release
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  verify-published:
+    name: Verify published package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+      - name: Verify npm package and provenance
+        env:
+          VERSION: ${{ inputs.version }}
+        run: node scripts/verify-published.mjs "$VERSION"
+
+  repair-release:
+    name: Repair GitHub release
+    if: inputs.repair_github_release
+    needs: verify-published
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Repair a missing GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid version: $VERSION" >&2
+            exit 1
+          fi
+          gh release view "v$VERSION" || gh release create "v$VERSION" --verify-tag --generate-notes --title "v$VERSION"

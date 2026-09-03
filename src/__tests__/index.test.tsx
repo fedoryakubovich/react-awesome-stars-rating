@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { createRef } from 'react';
 
 import ReactStarsRating from '../lib';
 
@@ -247,9 +248,43 @@ describe('Uncontrolled usage', () => {
     expect(getSlider()).toHaveAttribute('aria-valuenow', '2');
     expect(new FormData(screen.getByTestId('form')).get('rating')).toBe('2');
   });
+
+  test('associates with and resets from an external form', async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <form id="review-form" data-testid="form" />
+        <ReactStarsRating
+          defaultValue={1}
+          form="review-form"
+          isHalf={false}
+          name="rating"
+        />
+      </>,
+    );
+
+    await user.pointer({
+      keys: '[MouseLeft]',
+      target: withLayout(getStars()[2], 25),
+      coords: { clientX: 20 },
+    });
+    const form = screen.getByTestId('form') as HTMLFormElement;
+    expect(new FormData(form).get('rating')).toBe('3');
+
+    act(() => form.reset());
+    expect(getSlider()).toHaveAttribute('aria-valuenow', '1');
+    expect(new FormData(form).get('rating')).toBe('1');
+  });
 });
 
 describe('Read only mode', () => {
+  test('supports the standard readOnly prop', () => {
+    render(<ReactStarsRating readOnly value={2} />);
+
+    expect(getSlider()).toHaveAttribute('aria-readonly', 'true');
+    expect(getSlider()).toHaveAttribute('tabindex', '-1');
+  });
+
   test('does not report or preview changes', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
@@ -652,10 +687,65 @@ describe('Presentation props', () => {
     const slider = getSlider();
     expect(slider).toHaveClass('custom-rating');
     expect(getStars()[0]).toHaveAttribute('width', '40');
+    expect(getStars()[0]).toHaveStyle({ width: 'var(--stars-rating-size)' });
+    expect(slider.style.getPropertyValue('--stars-rating-size')).toBe('40px');
+    expect(slider.style.getPropertyValue('--stars-rating-gap')).toBe('8px');
 
     const wrappers = slider.querySelectorAll('span.star');
-    expect(wrappers[0]).toHaveStyle({ paddingRight: '8px' });
-    expect(wrappers[2]).not.toHaveStyle({ paddingRight: '8px' });
+    expect(wrappers[0]).toHaveStyle({
+      paddingRight: 'var(--stars-rating-gap)',
+    });
+    expect(wrappers[2]).not.toHaveStyle({
+      paddingRight: 'var(--stars-rating-gap)',
+    });
+  });
+
+  test('forwards refs and safe native span attributes', () => {
+    const ref = createRef<HTMLSpanElement>();
+    render(
+      <ReactStarsRating
+        ref={ref}
+        value={1}
+        title="Product rating"
+        data-testid="custom-rating"
+        style={{ '--stars-rating-focus-color': 'purple', marginTop: 4 }}
+      />,
+    );
+
+    const slider = screen.getByTestId('custom-rating');
+    expect(ref.current).toBe(slider);
+    expect(slider).toHaveAttribute('title', 'Product rating');
+    expect(slider).toHaveStyle({ marginTop: '4px' });
+    expect(slider.style.getPropertyValue('--stars-rating-focus-color')).toBe(
+      'purple',
+    );
+  });
+
+  test('attaches and detaches callback refs', () => {
+    const ref = vi.fn();
+    const { unmount } = render(<ReactStarsRating ref={ref} />);
+    expect(ref).toHaveBeenLastCalledWith(getSlider());
+    unmount();
+    expect(ref).toHaveBeenLastCalledWith(null);
+  });
+
+  test('shows a customizable focus-visible ring', async () => {
+    const user = userEvent.setup();
+    render(
+      <ReactStarsRating
+        value={1}
+        style={{ '--stars-rating-focus-color': 'purple' }}
+      />,
+    );
+
+    // JSDOM does not implement the browser's keyboard focus modality.
+    const matches = vi.spyOn(getSlider(), 'matches').mockReturnValue(true);
+    await user.tab();
+    expect(getSlider()).toHaveStyle({
+      outline: '2px solid var(--stars-rating-focus-color, highlight)',
+      'outline-offset': '2px',
+    });
+    matches.mockRestore();
   });
 
   test('paints the stars with the given colors', () => {

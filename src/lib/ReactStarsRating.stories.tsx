@@ -39,7 +39,11 @@ const meta = {
     },
     isEdit: {
       control: 'boolean',
-      description: 'Whether the rating is editable',
+      description: 'Deprecated: use readOnly instead',
+    },
+    readOnly: {
+      control: 'boolean',
+      description: 'Prevent editing',
     },
     disabled: {
       control: 'boolean',
@@ -48,6 +52,10 @@ const meta = {
     name: {
       control: 'text',
       description: 'Name of the hidden native form input',
+    },
+    form: {
+      control: 'text',
+      description: 'ID of an associated external form',
     },
     isHalf: {
       control: 'boolean',
@@ -96,7 +104,7 @@ export const Default: Story = {};
 
 export const ReadOnly: Story = {
   args: {
-    isEdit: false,
+    readOnly: true,
     value: 4,
   },
 };
@@ -141,5 +149,18 @@ export const LocalizedValue: Story = {
   args: {
     value: 2.5,
     getValueText: (value, count) => `${value} von ${count} Sternen`,
+  },
+};
+
+export const CssVariables: Story = {
+  args: {
+    value: 3.5,
+    style: {
+      '--stars-rating-primary-color': '#a78bfa',
+      '--stars-rating-secondary-color': '#475569',
+      '--stars-rating-focus-color': '#f8fafc',
+      '--stars-rating-size': '2.5rem',
+      '--stars-rating-gap': '0.4rem',
+    },
   },
 };

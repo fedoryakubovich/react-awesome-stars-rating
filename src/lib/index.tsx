@@ -1,11 +1,16 @@
 'use client';
 
 import {
+  forwardRef,
   useEffect,
   useId,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
+  type ComponentPropsWithoutRef,
+  type CSSProperties,
+  type FocusEvent,
   type KeyboardEvent,
   type PointerEvent,
 } from 'react';
@@ -13,7 +18,46 @@ import {
 import Star from './star';
 import styles from './styles';
 
-export type ReactStarsRatingProps = {
+type ReservedSpanProps =
+  | 'aria-disabled'
+  | 'aria-label'
+  | 'aria-labelledby'
+  | 'aria-orientation'
+  | 'aria-readonly'
+  | 'aria-valuemax'
+  | 'aria-valuemin'
+  | 'aria-valuenow'
+  | 'aria-valuetext'
+  | 'children'
+  | 'className'
+  | 'dangerouslySetInnerHTML'
+  | 'defaultValue'
+  | 'id'
+  | 'onBlur'
+  | 'onChange'
+  | 'onFocus'
+  | 'onKeyDown'
+  | 'onPointerCancel'
+  | 'onPointerDown'
+  | 'onPointerLeave'
+  | 'onPointerMove'
+  | 'onPointerUp'
+  | 'role'
+  | 'style'
+  | 'tabIndex';
+
+export type ReactStarsRatingStyle = CSSProperties & {
+  '--stars-rating-focus-color'?: string;
+  '--stars-rating-gap'?: string;
+  '--stars-rating-primary-color'?: string;
+  '--stars-rating-secondary-color'?: string;
+  '--stars-rating-size'?: string;
+};
+
+export type ReactStarsRatingProps = Omit<
+  ComponentPropsWithoutRef<'span'>,
+  ReservedSpanProps
+> & {
   /**
    * `id` of the rendered element. Defaults to a generated, SSR-safe id, so
    * only set this when something else needs to reference the control.
@@ -33,20 +77,25 @@ export type ReactStarsRatingProps = {
    */
   defaultValue?: number;
   /**
-   * Called with the new rating on click, on `Enter`, and on blur — and on
+   * Called when a pointer gesture commits, on `Enter`, and on blur — and on
    * every arrow key when {@link ReactStarsRatingProps.isArrowSubmit} is set.
-   * Hovering never calls it.
+   * Pointer previews never call it.
    */
   onChange?: (value: number) => void;
   /** Name of the hidden input contributed to the nearest HTML form. */
   name?: string;
+  /** `id` of a form to associate with the hidden input. */
+  form?: string;
   /** Disable interaction and native form submission. */
   disabled?: boolean;
+  /** Prevent editing while keeping the current value exposed to assistive technology. */
+  readOnly?: boolean;
   /**
    * Whether the rating can be changed. When `false` the control has no hover
    * preview, no keyboard handling, and is removed from the tab order.
    *
    * @defaultValue true
+   * @deprecated Prefer {@link ReactStarsRatingProps.readOnly}.
    */
   isEdit?: boolean;
   /**
@@ -83,16 +132,18 @@ export type ReactStarsRatingProps = {
    * @defaultValue ''
    */
   className?: string;
+  /** Container styles, including the documented `--stars-rating-*` variables. */
+  style?: ReactStarsRatingStyle;
   /**
    * Any CSS color for the filled part of a star.
    *
-   * @defaultValue 'orange'
+   * @defaultValue 'var(--stars-rating-primary-color, orange)'
    */
   primaryColor?: string;
   /**
    * Any CSS color for the empty part of a star.
    *
-   * @defaultValue 'grey'
+   * @defaultValue 'var(--stars-rating-secondary-color, grey)'
    */
   secondaryColor?: string;
   /**
@@ -155,324 +206,370 @@ const normalizeValue = (value: number, count: number, isHalf: boolean) => {
  * <ReactStarsRating value={value} onChange={setValue} isHalf size={32} />
  * ```
  */
-const ReactStarsRating = ({
-  id,
-  value,
-  defaultValue = 0,
-  onChange = () => {},
-  name,
-  disabled = false,
-  isEdit = true,
-  isHalf = true,
-  count = 5,
-  size = 25,
-  starGap = 0,
-  className = '',
-  primaryColor = 'orange',
-  secondaryColor = 'grey',
-  hoverColor,
-  isArrowSubmit = false,
-  ariaLabel = 'Star rating',
-  ariaLabelledBy,
-  getValueText = (currentValue, maximum) => `${currentValue} of ${maximum}`,
-}: ReactStarsRatingProps) => {
-  const normalizedCount = normalizeCount(count);
-  const normalizedSize = normalizeDimension(size, 25, Number.EPSILON);
-  const normalizedGap = normalizeDimension(starGap, 0);
-  const isControlled = value !== undefined;
-  const [uncontrolledValue, setUncontrolledValue] = useState(() =>
-    normalizeValue(defaultValue, normalizedCount, isHalf),
-  );
-  const committedValue = normalizeValue(
-    value ?? uncontrolledValue,
-    normalizedCount,
-    isHalf,
-  );
-  const generatedId = useId().replace(/:/g, '');
-  const resolvedId = id ?? `react-stars-rating-${generatedId}`;
-  const [displayState, setDisplayState] = useState(() => ({
-    sourceValue: committedValue,
-    displayValue: committedValue,
-  }));
-  const pendingKeyboardValueRef = useRef<number | null>(null);
-  const [hoverValue, setHoverValue] = useState<number | null>(null);
-  const containerRef = useRef<HTMLSpanElement>(null);
-  const displayValue =
-    displayState.sourceValue === committedValue
-      ? displayState.displayValue
-      : committedValue;
-  const setDisplayValue = (nextValue: number) => {
-    setDisplayState({
+const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
+  function ReactStarsRating(
+    {
+      id,
+      value,
+      defaultValue = 0,
+      onChange = () => {},
+      name,
+      form,
+      disabled = false,
+      readOnly = false,
+      isEdit = true,
+      isHalf = true,
+      count = 5,
+      size = 25,
+      starGap = 0,
+      className = '',
+      style,
+      primaryColor = 'var(--stars-rating-primary-color, orange)',
+      secondaryColor = 'var(--stars-rating-secondary-color, grey)',
+      hoverColor,
+      isArrowSubmit = false,
+      ariaLabel = 'Star rating',
+      ariaLabelledBy,
+      getValueText = (currentValue, maximum) => `${currentValue} of ${maximum}`,
+      ...spanProps
+    },
+    forwardedRef,
+  ) {
+    const isEditable = isEdit && !readOnly;
+    const normalizedCount = normalizeCount(count);
+    const normalizedSize = normalizeDimension(size, 25, Number.EPSILON);
+    const normalizedGap = normalizeDimension(starGap, 0);
+    const isControlled = value !== undefined;
+    const [uncontrolledValue, setUncontrolledValue] = useState(() =>
+      normalizeValue(defaultValue, normalizedCount, isHalf),
+    );
+    const committedValue = normalizeValue(
+      value ?? uncontrolledValue,
+      normalizedCount,
+      isHalf,
+    );
+    const generatedId = useId().replace(/:/g, '');
+    const resolvedId = id ?? `react-stars-rating-${generatedId}`;
+    const [displayState, setDisplayState] = useState(() => ({
       sourceValue: committedValue,
-      displayValue: normalizeValue(nextValue, normalizedCount, isHalf),
-    });
-  };
-
-  const fullId = useMemo(() => `fullId-${resolvedId}`, [resolvedId]);
-  const halfId = useMemo(() => `halfId-${resolvedId}`, [resolvedId]);
-  const noneId = useMemo(() => `noneId-${resolvedId}`, [resolvedId]);
-
-  useEffect(() => {
-    pendingKeyboardValueRef.current = null;
-  }, [committedValue]);
-
-  useEffect(() => {
-    if (isControlled) {
-      return;
-    }
-
-    const form = containerRef.current?.closest('form');
-    const handleReset = () => {
-      const resetValue = normalizeValue(defaultValue, normalizedCount, isHalf);
-      pendingKeyboardValueRef.current = null;
-      setHoverValue(null);
-      setUncontrolledValue(resetValue);
-      setDisplayState({ sourceValue: resetValue, displayValue: resetValue });
+      displayValue: committedValue,
+    }));
+    const pendingKeyboardValueRef = useRef<number | null>(null);
+    const [hoverValue, setHoverValue] = useState<number | null>(null);
+    const [isFocusVisible, setIsFocusVisible] = useState(false);
+    const containerRef = useRef<HTMLSpanElement>(null);
+    useImperativeHandle(forwardedRef, () => containerRef.current!, []);
+    const displayValue =
+      displayState.sourceValue === committedValue
+        ? displayState.displayValue
+        : committedValue;
+    const setDisplayValue = (nextValue: number) => {
+      setDisplayState({
+        sourceValue: committedValue,
+        displayValue: normalizeValue(nextValue, normalizedCount, isHalf),
+      });
     };
 
-    form?.addEventListener('reset', handleReset);
-    return () => form?.removeEventListener('reset', handleReset);
-  }, [defaultValue, isControlled, isHalf, normalizedCount]);
+    const fullId = useMemo(() => `fullId-${resolvedId}`, [resolvedId]);
+    const halfId = useMemo(() => `halfId-${resolvedId}`, [resolvedId]);
+    const noneId = useMemo(() => `noneId-${resolvedId}`, [resolvedId]);
 
-  const getValueFromEvent = (
-    event: PointerEvent<SVGSVGElement>,
-    fallbackIndex: number,
-  ) => {
-    const stars = Array.from(
-      containerRef.current?.querySelectorAll('svg') ?? [],
-    );
-    const selectedStar =
-      stars.find((star) => {
-        const bounds = star.getBoundingClientRect();
-        return bounds.width > 0 && event.clientX <= bounds.right;
-      }) ??
-      stars[stars.length - 1] ??
-      event.currentTarget;
-    const starPosition = stars.indexOf(selectedStar) + 1;
-    const selectedIndex = starPosition || fallbackIndex;
-
-    if (!isHalf) {
-      return selectedIndex;
-    }
-
-    const bounds = selectedStar.getBoundingClientRect();
-    const point = event.clientX - bounds.left;
-
-    // Rendered geometry keeps half selection correct under consumer scaling.
-    return point > bounds.width / 2 ? selectedIndex : selectedIndex - 0.5;
-  };
-
-  const handlePointerMove = (
-    event: PointerEvent<SVGSVGElement>,
-    index: number,
-  ) => {
-    if (!isEdit || disabled) {
-      return;
-    }
-
-    const isCaptured =
-      typeof event.currentTarget.hasPointerCapture === 'function' &&
-      event.currentTarget.hasPointerCapture(event.pointerId);
-    if (event.pointerType === 'touch' && !isCaptured) {
-      return;
-    }
-
-    const nextValue = getValueFromEvent(event, index);
-    pendingKeyboardValueRef.current = null;
-    setHoverValue(nextValue);
-    setDisplayValue(nextValue);
-  };
-
-  const handlePointerLeave = (event: PointerEvent<SVGSVGElement>) => {
-    if (!isEdit || disabled || event.buttons !== 0) {
-      return;
-    }
-
-    setHoverValue(null);
-    setDisplayValue(committedValue);
-  };
-
-  const handleBlur = () => {
-    const pendingValue = pendingKeyboardValueRef.current;
-
-    if (pendingValue !== null) {
+    useEffect(() => {
       pendingKeyboardValueRef.current = null;
-      commitValue(pendingValue);
-    }
-  };
+    }, [committedValue]);
 
-  const commitValue = (nextValue: number) => {
-    const normalizedValue = normalizeValue(nextValue, normalizedCount, isHalf);
-    setDisplayValue(normalizedValue);
-    if (!isControlled) {
-      setUncontrolledValue(normalizedValue);
-    }
-    onChange(normalizedValue);
-  };
+    useEffect(() => {
+      if (isControlled) {
+        return;
+      }
 
-  const handlePointerDown = (
-    event: PointerEvent<SVGSVGElement>,
-    index: number,
-  ) => {
-    if (!isEdit || disabled) {
-      return;
-    }
-
-    containerRef.current?.focus();
-    event.currentTarget.setPointerCapture?.(event.pointerId);
-    pendingKeyboardValueRef.current = null;
-    const nextValue = getValueFromEvent(event, index);
-    setHoverValue(nextValue);
-    setDisplayValue(nextValue);
-  };
-
-  const handlePointerUp = (
-    event: PointerEvent<SVGSVGElement>,
-    index: number,
-  ) => {
-    if (!isEdit || disabled) {
-      return;
-    }
-
-    commitValue(getValueFromEvent(event, index));
-    event.currentTarget.releasePointerCapture?.(event.pointerId);
-    if (event.pointerType === 'touch') {
-      setHoverValue(null);
-    }
-  };
-
-  const handlePointerCancel = (event: PointerEvent<SVGSVGElement>) => {
-    event.currentTarget.releasePointerCapture?.(event.pointerId);
-    pendingKeyboardValueRef.current = null;
-    setHoverValue(null);
-    setDisplayValue(committedValue);
-  };
-
-  const updateValueFromKeyboard = (nextValue: number) => {
-    const clampedNextValue = normalizeValue(nextValue, normalizedCount, isHalf);
-
-    if (clampedNextValue === displayValue) {
-      return;
-    }
-
-    setDisplayValue(clampedNextValue);
-
-    if (isArrowSubmit) {
-      pendingKeyboardValueRef.current = null;
-      commitValue(clampedNextValue);
-    } else {
-      pendingKeyboardValueRef.current = clampedNextValue;
-    }
-  };
-
-  const updateValueByStep = (delta: number) => {
-    const normalizedValue =
-      displayValue % 1 === 0.5 ? displayValue : Math.round(displayValue);
-    updateValueFromKeyboard(normalizedValue + delta);
-  };
-
-  // Only attached while editing is enabled, so no isEdit guard is needed.
-  const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>) => {
-    switch (event.key) {
-      case 'ArrowLeft':
-      case 'ArrowDown':
-        event.preventDefault();
-        updateValueByStep(isHalf ? -0.5 : -1);
-        break;
-      case 'ArrowRight':
-      case 'ArrowUp':
-        event.preventDefault();
-        updateValueByStep(isHalf ? 0.5 : 1);
-        break;
-      case 'Home':
-        event.preventDefault();
-        updateValueFromKeyboard(0);
-        break;
-      case 'End':
-        event.preventDefault();
-        updateValueFromKeyboard(normalizedCount);
-        break;
-      case 'Enter':
-        event.preventDefault();
+      const associatedForm = form
+        ? document.getElementById(form)
+        : containerRef.current?.closest('form');
+      const handleReset = () => {
+        const resetValue = normalizeValue(
+          defaultValue,
+          normalizedCount,
+          isHalf,
+        );
         pendingKeyboardValueRef.current = null;
-        commitValue(displayValue);
-        break;
-      default:
-        break;
-    }
-  };
+        setHoverValue(null);
+        setUncontrolledValue(resetValue);
+        setDisplayState({ sourceValue: resetValue, displayValue: resetValue });
+      };
 
-  const renderStars = () =>
-    Array.from({ length: normalizedCount }, (_, position) => {
-      const index = position + 1;
-      const style =
-        index !== normalizedCount ? { paddingRight: normalizedGap } : undefined;
+      associatedForm?.addEventListener('reset', handleReset);
+      return () => associatedForm?.removeEventListener('reset', handleReset);
+    }, [defaultValue, form, isControlled, isHalf, normalizedCount]);
 
-      return (
-        <span
-          key={`react-stars-rating-char${index}`}
-          className={`star star-${index}`}
-          style={style}
-        >
-          <Star
-            index={index}
-            value={displayValue}
-            size={normalizedSize}
-            isHalf={isHalf}
-            fullId={fullId}
-            halfId={halfId}
-            noneId={noneId}
-            primaryColor={primaryColor}
-            secondaryColor={secondaryColor}
-            hoverColor={hoverColor}
-            hoverValue={hoverValue}
-            committedValue={committedValue}
-            onPointerMove={(event) => handlePointerMove(event, index)}
-            onPointerLeave={handlePointerLeave}
-            onPointerDown={(event) => handlePointerDown(event, index)}
-            onPointerUp={(event) => handlePointerUp(event, index)}
-            onPointerCancel={handlePointerCancel}
-          />
-        </span>
+    const getValueFromEvent = (
+      event: PointerEvent<SVGSVGElement>,
+      fallbackIndex: number,
+    ) => {
+      const stars = Array.from(
+        containerRef.current?.querySelectorAll('svg') ?? [],
       );
-    });
+      const selectedStar =
+        stars.find((star) => {
+          const bounds = star.getBoundingClientRect();
+          return bounds.width > 0 && event.clientX <= bounds.right;
+        }) ??
+        stars[stars.length - 1] ??
+        event.currentTarget;
+      const starPosition = stars.indexOf(selectedStar) + 1;
+      const selectedIndex = starPosition || fallbackIndex;
 
-  const interactiveProps = isEdit && !disabled;
+      if (!isHalf) {
+        return selectedIndex;
+      }
 
-  const clampedValue = normalizeValue(displayValue, normalizedCount, isHalf);
+      const bounds = selectedStar.getBoundingClientRect();
+      const point = event.clientX - bounds.left;
 
-  return (
-    <span
-      ref={containerRef}
-      id={resolvedId}
-      role="slider"
-      aria-label={ariaLabelledBy ? undefined : ariaLabel}
-      aria-labelledby={ariaLabelledBy}
-      aria-valuemin={0}
-      aria-valuemax={normalizedCount}
-      aria-valuenow={clampedValue}
-      aria-valuetext={getValueText(clampedValue, normalizedCount)}
-      aria-orientation="horizontal"
-      aria-readonly={!isEdit}
-      aria-disabled={disabled || undefined}
-      tabIndex={interactiveProps ? 0 : -1}
-      onKeyDown={interactiveProps ? handleKeyDown : undefined}
-      onBlur={interactiveProps ? handleBlur : undefined}
-      style={isEdit ? styles.activeContainer : styles.inActiveContainer}
-      className={className}
-    >
-      {renderStars()}
-      {name ? (
-        <input
-          type="hidden"
-          name={name}
-          value={committedValue}
-          disabled={disabled}
-        />
-      ) : null}
-    </span>
-  );
-};
+      // Rendered geometry keeps half selection correct under consumer scaling.
+      return point > bounds.width / 2 ? selectedIndex : selectedIndex - 0.5;
+    };
+
+    const handlePointerMove = (
+      event: PointerEvent<SVGSVGElement>,
+      index: number,
+    ) => {
+      if (!isEditable || disabled) {
+        return;
+      }
+
+      const isCaptured =
+        typeof event.currentTarget.hasPointerCapture === 'function' &&
+        event.currentTarget.hasPointerCapture(event.pointerId);
+      if (event.pointerType === 'touch' && !isCaptured) {
+        return;
+      }
+
+      const nextValue = getValueFromEvent(event, index);
+      pendingKeyboardValueRef.current = null;
+      setHoverValue(nextValue);
+      setDisplayValue(nextValue);
+    };
+
+    const handlePointerLeave = (event: PointerEvent<SVGSVGElement>) => {
+      if (!isEditable || disabled || event.buttons !== 0) {
+        return;
+      }
+
+      setHoverValue(null);
+      setDisplayValue(committedValue);
+    };
+
+    const handleBlur = () => {
+      setIsFocusVisible(false);
+      const pendingValue = pendingKeyboardValueRef.current;
+
+      if (pendingValue !== null) {
+        pendingKeyboardValueRef.current = null;
+        commitValue(pendingValue);
+      }
+    };
+
+    const commitValue = (nextValue: number) => {
+      const normalizedValue = normalizeValue(
+        nextValue,
+        normalizedCount,
+        isHalf,
+      );
+      setDisplayValue(normalizedValue);
+      if (!isControlled) {
+        setUncontrolledValue(normalizedValue);
+      }
+      onChange(normalizedValue);
+    };
+
+    const handlePointerDown = (
+      event: PointerEvent<SVGSVGElement>,
+      index: number,
+    ) => {
+      if (!isEditable || disabled) {
+        return;
+      }
+
+      containerRef.current?.focus();
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+      pendingKeyboardValueRef.current = null;
+      const nextValue = getValueFromEvent(event, index);
+      setHoverValue(nextValue);
+      setDisplayValue(nextValue);
+    };
+
+    const handlePointerUp = (
+      event: PointerEvent<SVGSVGElement>,
+      index: number,
+    ) => {
+      if (!isEditable || disabled) {
+        return;
+      }
+
+      commitValue(getValueFromEvent(event, index));
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+      if (event.pointerType === 'touch') {
+        setHoverValue(null);
+      }
+    };
+
+    const handlePointerCancel = (event: PointerEvent<SVGSVGElement>) => {
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+      pendingKeyboardValueRef.current = null;
+      setHoverValue(null);
+      setDisplayValue(committedValue);
+    };
+
+    const updateValueFromKeyboard = (nextValue: number) => {
+      const clampedNextValue = normalizeValue(
+        nextValue,
+        normalizedCount,
+        isHalf,
+      );
+
+      if (clampedNextValue === displayValue) {
+        return;
+      }
+
+      setDisplayValue(clampedNextValue);
+
+      if (isArrowSubmit) {
+        pendingKeyboardValueRef.current = null;
+        commitValue(clampedNextValue);
+      } else {
+        pendingKeyboardValueRef.current = clampedNextValue;
+      }
+    };
+
+    const updateValueByStep = (delta: number) => {
+      const normalizedValue =
+        displayValue % 1 === 0.5 ? displayValue : Math.round(displayValue);
+      updateValueFromKeyboard(normalizedValue + delta);
+    };
+
+    // Only attached while editing is enabled, so no isEdit guard is needed.
+    const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>) => {
+      switch (event.key) {
+        case 'ArrowLeft':
+        case 'ArrowDown':
+          event.preventDefault();
+          updateValueByStep(isHalf ? -0.5 : -1);
+          break;
+        case 'ArrowRight':
+        case 'ArrowUp':
+          event.preventDefault();
+          updateValueByStep(isHalf ? 0.5 : 1);
+          break;
+        case 'Home':
+          event.preventDefault();
+          updateValueFromKeyboard(0);
+          break;
+        case 'End':
+          event.preventDefault();
+          updateValueFromKeyboard(normalizedCount);
+          break;
+        case 'Enter':
+          event.preventDefault();
+          pendingKeyboardValueRef.current = null;
+          commitValue(displayValue);
+          break;
+        default:
+          break;
+      }
+    };
+
+    const renderStars = () =>
+      Array.from({ length: normalizedCount }, (_, position) => {
+        const index = position + 1;
+        const hasGap = index !== normalizedCount;
+
+        return (
+          <span
+            key={`react-stars-rating-char${index}`}
+            className={`star star-${index}`}
+            style={
+              hasGap ? { paddingRight: 'var(--stars-rating-gap)' } : undefined
+            }
+          >
+            <Star
+              index={index}
+              value={displayValue}
+              size={normalizedSize}
+              isHalf={isHalf}
+              fullId={fullId}
+              halfId={halfId}
+              noneId={noneId}
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
+              hoverColor={hoverColor}
+              hoverValue={hoverValue}
+              committedValue={committedValue}
+              onPointerMove={(event) => handlePointerMove(event, index)}
+              onPointerLeave={handlePointerLeave}
+              onPointerDown={(event) => handlePointerDown(event, index)}
+              onPointerUp={(event) => handlePointerUp(event, index)}
+              onPointerCancel={handlePointerCancel}
+            />
+          </span>
+        );
+      });
+
+    const interactiveProps = isEditable && !disabled;
+
+    const clampedValue = normalizeValue(displayValue, normalizedCount, isHalf);
+    const handleFocus = (event: FocusEvent<HTMLSpanElement>) => {
+      setIsFocusVisible(event.currentTarget.matches(':focus-visible'));
+    };
+    const containerStyle = {
+      ...(isEditable ? styles.activeContainer : styles.inActiveContainer),
+      '--stars-rating-gap': `${normalizedGap}px`,
+      '--stars-rating-size': `${normalizedSize}px`,
+      ...(isFocusVisible
+        ? {
+            outline: '2px solid var(--stars-rating-focus-color, highlight)',
+            outlineOffset: 2,
+          }
+        : undefined),
+      ...style,
+    } as ReactStarsRatingStyle;
+
+    return (
+      <span
+        {...spanProps}
+        ref={containerRef}
+        id={resolvedId}
+        role="slider"
+        aria-label={ariaLabelledBy ? undefined : ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-valuemin={0}
+        aria-valuemax={normalizedCount}
+        aria-valuenow={clampedValue}
+        aria-valuetext={getValueText(clampedValue, normalizedCount)}
+        aria-orientation="horizontal"
+        aria-readonly={!isEditable}
+        aria-disabled={disabled || undefined}
+        tabIndex={interactiveProps ? 0 : -1}
+        onKeyDown={interactiveProps ? handleKeyDown : undefined}
+        onBlur={interactiveProps ? handleBlur : undefined}
+        onFocus={interactiveProps ? handleFocus : undefined}
+        style={containerStyle}
+        className={className}
+      >
+        {renderStars()}
+        {name ? (
+          <input
+            type="hidden"
+            name={name}
+            value={committedValue}
+            disabled={disabled}
+            form={form}
+          />
+        ) : null}
+      </span>
+    );
+  },
+);
 
 export { ReactStarsRating };
 export default ReactStarsRating;

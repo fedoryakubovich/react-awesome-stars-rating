@@ -35,17 +35,16 @@ for (const entry of ['index.mjs', 'index.cjs', 'index.umd.cjs']) {
   );
 }
 
+// Rendering verifies React component validity, including forwardRef objects.
 const renders = (Component) =>
   renderToStaticMarkup(React.createElement(Component, { value: 3.5 }));
 
 const esm = await import(new URL('../dist/index.mjs', import.meta.url));
-assert.equal(typeof esm.default, 'function');
 assert.equal(esm.default, esm.ReactStarsRating);
 assert.match(renders(esm.default), /role="slider"/);
 
 const require = createRequire(import.meta.url);
 const commonjs = require('..');
-assert.equal(typeof commonjs.default, 'function');
 assert.equal(commonjs.default, commonjs.ReactStarsRating);
 assert.match(renders(commonjs.default), /role="slider"/);
 
@@ -77,7 +76,6 @@ const browserContext = { React };
 vm.createContext(browserContext);
 vm.runInContext(umdSource, browserContext);
 const umd = browserContext.ReactAwesomeStarsRating;
-assert.equal(typeof umd.default, 'function');
 assert.equal(umd.default, umd.ReactStarsRating);
 assert.match(renders(umd.default), /role="slider"/);
 
