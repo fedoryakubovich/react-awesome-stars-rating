@@ -30,6 +30,7 @@ const run = (command, commandArgs, cwd) => {
 
 const requestedTarball = readOption('--tarball');
 const requestedReact = readOption('--react');
+const expectedVersion = readOption('--expected-version') ?? '0.0.0-development';
 const workspaces = [];
 
 try {
@@ -51,7 +52,10 @@ try {
     tarballPath = join(packDirectory, filename);
   }
 
-  assert.match(basename(tarballPath), /0\.0\.0-development\.tgz$/);
+  assert.equal(
+    basename(tarballPath),
+    `react-awesome-stars-rating-${expectedVersion}.tgz`,
+  );
 
   const reactVersions = requestedReact
     ? [requestedReact]
@@ -147,7 +151,7 @@ root.unmount();
         'utf8',
       ),
     );
-    assert.equal(installedManifest.version, '0.0.0-development');
+    assert.equal(installedManifest.version, expectedVersion);
     assert.equal(installedManifest.engines, undefined);
     console.log(
       `Verified packed consumer with React ${reactVersion} on Node ${process.version}.`,

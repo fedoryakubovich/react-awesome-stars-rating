@@ -4,7 +4,7 @@
 [![CI](https://github.com/fedoryakubovich/react-awesome-stars-rating/actions/workflows/ci.yml/badge.svg)](https://github.com/fedoryakubovich/react-awesome-stars-rating/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/react-awesome-stars-rating)](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/main/LICENSE)
 
-An accessible star rating component for React. Half stars from pointer position, full keyboard control, any scale or palette — in under 2 kB gzipped with no runtime dependencies.
+An accessible star rating component for React. Half stars from pointer position, full keyboard control, any scale or palette — in under 3 kB gzipped with no runtime dependencies.
 
 **[Live demo](https://react-awesome-stars-rating.vercel.app)** · **[Storybook](https://react-awesome-stars-rating.vercel.app/storybook)**
 
@@ -12,7 +12,7 @@ An accessible star rating component for React. Half stars from pointer position,
 
 ## Highlights
 
-- Under 2 kB gzipped, no runtime dependencies
+- Under 3 kB gzipped, no runtime dependencies
 - Half-star precision from pointer position, plus arrow-key stepping
 - `role="slider"` with live `aria-valuenow` / `aria-valuetext`, verified with axe-core
 - ESM + CJS with correct types for each, and a UMD bundle for CDN use
@@ -69,23 +69,27 @@ export default function Example() {
 
 ## Props
 
-| Name           | Description                               | Type                      | Default         |
-| :------------- | :---------------------------------------- | :------------------------ | :-------------- |
-| id             | Identifier                                | `string`                  | auto-generated  |
-| value          | Current value                             | `number`                  | `0`             |
-| onChange       | Called when value changes                 | `(value: number) => void` | `() => {}`      |
-| isEdit         | Editing mode                              | `boolean`                 | `true`          |
-| isHalf         | Allow half stars                          | `boolean`                 | `true`          |
-| count          | Number of stars                           | `number`                  | `5`             |
-| size           | Star size (px)                            | `number`                  | `25`            |
-| starGap        | Gap between stars                         | `number`                  | `0`             |
-| className      | Container class                           | `string`                  | `''`            |
-| primaryColor   | Active star color                         | `string`                  | `'orange'`      |
-| secondaryColor | Inactive star color                       | `string`                  | `'grey'`        |
-| hoverColor     | Optional pointer-preview color            | `string`                  | `undefined`     |
-| isArrowSubmit  | Arrow keys trigger `onChange` immediately | `boolean`                 | `false`         |
-| ariaLabel      | Accessible label (if no `ariaLabelledBy`) | `string`                  | `'Star rating'` |
-| ariaLabelledBy | ID of element that labels the control     | `string`                  | `undefined`     |
+| Name           | Description                               | Type                       | Default         |
+| :------------- | :---------------------------------------- | :------------------------- | :-------------- |
+| id             | Identifier                                | `string`                   | auto-generated  |
+| value          | Controlled current value                  | `number`                   | `undefined`     |
+| defaultValue   | Initial uncontrolled value                | `number`                   | `0`             |
+| onChange       | Called when value changes                 | `(value: number) => void`  | `() => {}`      |
+| name           | Hidden native form input name             | `string`                   | `undefined`     |
+| disabled       | Disable interaction and form submission   | `boolean`                  | `false`         |
+| isEdit         | Editing mode                              | `boolean`                  | `true`          |
+| isHalf         | Allow half stars                          | `boolean`                  | `true`          |
+| count          | Number of stars                           | `number`                   | `5`             |
+| size           | Star size (px)                            | `number`                   | `25`            |
+| starGap        | Gap between stars                         | `number`                   | `0`             |
+| className      | Container class                           | `string`                   | `''`            |
+| primaryColor   | Active star color                         | `string`                   | `'orange'`      |
+| secondaryColor | Inactive star color                       | `string`                   | `'grey'`        |
+| hoverColor     | Optional pointer-preview color            | `string`                   | `undefined`     |
+| isArrowSubmit  | Arrow keys trigger `onChange` immediately | `boolean`                  | `false`         |
+| ariaLabel      | Accessible label (if no `ariaLabelledBy`) | `string`                   | `'Star rating'` |
+| ariaLabelledBy | ID of element that labels the control     | `string`                   | `undefined`     |
+| getValueText   | Formats accessible value text             | `(value, count) => string` | English text    |
 
 ## Keyboard and accessibility
 
@@ -102,6 +106,16 @@ The control renders as a single `role="slider"` element with `aria-valuemin`, `a
 With `isArrowSubmit`, each arrow step reports through `onChange` immediately rather than waiting for `Enter` or blur.
 
 When `isEdit` is `false` the control is inert regardless of `isArrowSubmit`: no hover preview, no keyboard, `tabIndex={-1}`, and `aria-readonly="true"`.
+
+The slider explicitly reports `aria-orientation="horizontal"`. Use
+`getValueText` to localize its spoken value:
+
+```tsx
+<ReactStarsRating
+  value={2.5}
+  getValueText={(value, count) => `${value} von ${count} Sternen`}
+/>
+```
 
 ### Hover preview color
 
@@ -128,6 +142,22 @@ preview region uses `hoverColor`.
 The package carries the `'use client'` directive, so it can be imported directly from a server component in the Next.js App Router without a wrapper.
 
 ## Form Integrations
+
+### Native HTML forms
+
+Pass `name` to contribute a hidden value to `FormData`. `defaultValue` enables
+uncontrolled usage and native form reset behavior.
+
+```tsx
+<form action="/reviews" method="post">
+  <ReactStarsRating name="rating" defaultValue={3} />
+  <button type="submit">Submit</button>
+  <button type="reset">Reset</button>
+</form>
+```
+
+Use `value` with `onChange` for controlled state. Supplying `value` always
+takes precedence over `defaultValue`.
 
 ### React Hook Form
 

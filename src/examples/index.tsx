@@ -1,14 +1,15 @@
-import type { ReactNode } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 
 import SimpleExample from './SimpleExample';
-import HookFormExample from './HookFormExample';
-import FormikExample from './FormikExample';
-import TanStackFormExample from './TanStackFormExample';
 import Playground from './Playground';
 import ProductRatingExample from './ProductRatingExample';
 import ScaleExample from './ScaleExample';
 import CodeBlock from './CodeBlock';
 import ReactStarsRating from '../lib';
+
+const HookFormExample = lazy(() => import('./HookFormExample'));
+const FormikExample = lazy(() => import('./FormikExample'));
+const TanStackFormExample = lazy(() => import('./TanStackFormExample'));
 
 const USAGE = `import ReactStarsRating from 'react-awesome-stars-rating';
 
@@ -19,7 +20,7 @@ const Review = () => {
 };`;
 
 const FEATURES = [
-  { title: '1.5 kB gzipped', detail: 'No runtime dependencies beyond React.' },
+  { title: 'Under 3 kB', detail: 'No runtime dependencies beyond React.' },
   { title: 'Half stars', detail: 'Pointer position decides half or full.' },
   { title: 'Keyboard ready', detail: 'Arrow keys, Enter and blur submit.' },
   {
@@ -144,9 +145,11 @@ const Examples = () => (
       >
         <div className="grid items-stretch gap-6 lg:grid-cols-2 xl:grid-cols-4">
           <SimpleExample />
-          <HookFormExample />
-          <FormikExample />
-          <TanStackFormExample />
+          <Suspense fallback={<p>Loading form examples…</p>}>
+            <HookFormExample />
+            <FormikExample />
+            <TanStackFormExample />
+          </Suspense>
         </div>
       </Section>
 

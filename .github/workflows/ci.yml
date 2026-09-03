@@ -64,7 +64,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:e2e
 
   consumer-matrix:
@@ -135,3 +135,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+      - name: Resolve released version
+        id: released
+        run: |
+          VERSION="$(git tag --points-at HEAD --list 'v*' | sed -n '1s/^v//p')"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Verify published npm package and provenance
+        if: steps.released.outputs.version != ''
+        run: npm run verify:published -- "${{ steps.released.outputs.version }}"

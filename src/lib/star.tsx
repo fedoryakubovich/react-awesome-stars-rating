@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { PointerEvent } from 'react';
 
 import Gradient from './gradient';
 
@@ -10,9 +10,11 @@ type StarProps = {
   hoverColor?: string;
   hoverValue?: number | null;
   committedValue?: number;
-  onMouseLeave?: (event: MouseEvent<SVGSVGElement>) => void;
-  onMouseMove?: (event: MouseEvent<SVGSVGElement>) => void;
-  onChange?: (event: MouseEvent<SVGSVGElement>) => void;
+  onPointerLeave?: (event: PointerEvent<SVGSVGElement>) => void;
+  onPointerMove?: (event: PointerEvent<SVGSVGElement>) => void;
+  onPointerDown?: (event: PointerEvent<SVGSVGElement>) => void;
+  onPointerUp?: (event: PointerEvent<SVGSVGElement>) => void;
+  onPointerCancel?: (event: PointerEvent<SVGSVGElement>) => void;
   isHalf: boolean;
   fill?: string;
   index: number;
@@ -26,9 +28,11 @@ type StarProps = {
 const StarSVG = ({
   viewBox = '0 0 306 306',
   size,
-  onMouseMove,
-  onMouseLeave,
-  onChange,
+  onPointerMove,
+  onPointerLeave,
+  onPointerDown,
+  onPointerUp,
+  onPointerCancel,
   index,
   value,
   isHalf,
@@ -62,9 +66,11 @@ const StarSVG = ({
       viewBox={viewBox}
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      onMouseLeave={onMouseLeave}
-      onClick={onChange}
-      onMouseMove={onMouseMove}
+      onPointerLeave={onPointerLeave}
+      onPointerMove={onPointerMove}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
     >
       <Gradient
         primaryColor={primaryColor}
