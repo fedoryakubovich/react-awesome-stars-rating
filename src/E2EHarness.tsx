@@ -86,6 +86,24 @@ const E2EHarness = () => {
         />
         <button type="reset">Reset uncontrolled rating</button>
       </form>
+      <ReactStarsRating
+        dir="rtl"
+        defaultValue={1}
+        size={40}
+        starGap={8}
+        ariaLabel="RTL rating"
+        primaryColor="orange"
+        secondaryColor="grey"
+      />
+      <form onReset={(event) => event.preventDefault()}>
+        <ReactStarsRating
+          defaultValue={1}
+          name="cancelable"
+          isArrowSubmit
+          ariaLabel="Cancelable reset rating"
+        />
+        <button type="reset">Cancel reset</button>
+      </form>
     </main>
   );
 };

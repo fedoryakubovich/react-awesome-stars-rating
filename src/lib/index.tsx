@@ -32,10 +32,9 @@ type ReservedSpanProps =
   | 'className'
   | 'dangerouslySetInnerHTML'
   | 'defaultValue'
+  | 'dir'
   | 'id'
-  | 'onBlur'
   | 'onChange'
-  | 'onFocus'
   | 'onKeyDown'
   | 'onPointerCancel'
   | 'onPointerDown'
@@ -86,6 +85,8 @@ export type ReactStarsRatingProps = Omit<
   name?: string;
   /** `id` of a form to associate with the hidden input. */
   form?: string;
+  /** Layout, fill and horizontal keyboard direction. Defaults to `ltr`. */
+  dir?: 'ltr' | 'rtl';
   /** Disable interaction and native form submission. */
   disabled?: boolean;
   /** Prevent editing while keeping the current value exposed to assistive technology. */
@@ -119,7 +120,7 @@ export type ReactStarsRatingProps = Omit<
    */
   size?: number;
   /**
-   * Space between stars, in pixels. Applied as right padding to every star
+   * Space between stars, in pixels. Applied as inline-end padding to every star
    * except the last.
    *
    * @defaultValue 0
@@ -213,6 +214,8 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
       value,
       defaultValue = 0,
       onChange = () => {},
+      onBlur,
+      onFocus,
       name,
       form,
       disabled = false,
@@ -224,6 +227,7 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
       starGap = 0,
       className = '',
       style,
+      dir = 'ltr',
       primaryColor = 'var(--stars-rating-primary-color, orange)',
       secondaryColor = 'var(--stars-rating-secondary-color, grey)',
       hoverColor,
@@ -235,6 +239,7 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
     },
     forwardedRef,
   ) {
+    const isRtl = dir === 'rtl';
     const isEditable = isEdit && !readOnly;
     const normalizedCount = normalizeCount(count);
     const normalizedSize = normalizeDimension(size, 25, Number.EPSILON);
@@ -255,6 +260,7 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
       displayValue: committedValue,
     }));
     const pendingKeyboardValueRef = useRef<number | null>(null);
+    const activePointerRef = useRef<number | null>(null);
     const [hoverValue, setHoverValue] = useState<number | null>(null);
     const [isFocusVisible, setIsFocusVisible] = useState(false);
     const containerRef = useRef<HTMLSpanElement>(null);
@@ -286,20 +292,33 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
       const associatedForm = form
         ? document.getElementById(form)
         : containerRef.current?.closest('form');
-      const handleReset = () => {
-        const resetValue = normalizeValue(
-          defaultValue,
-          normalizedCount,
-          isHalf,
-        );
-        pendingKeyboardValueRef.current = null;
-        setHoverValue(null);
-        setUncontrolledValue(resetValue);
-        setDisplayState({ sourceValue: resetValue, displayValue: resetValue });
+      let mounted = true;
+      const handleReset = (event: Event) => {
+        // Browsers may flush microtasks between native listeners. Wait for the
+        // next task so React/ancestor listeners have time to cancel the reset.
+        setTimeout(() => {
+          if (!mounted || event.defaultPrevented) return;
+          const resetValue = normalizeValue(
+            defaultValue,
+            normalizedCount,
+            isHalf,
+          );
+          pendingKeyboardValueRef.current = null;
+          activePointerRef.current = null;
+          setHoverValue(null);
+          setUncontrolledValue(resetValue);
+          setDisplayState({
+            sourceValue: resetValue,
+            displayValue: resetValue,
+          });
+        });
       };
 
       associatedForm?.addEventListener('reset', handleReset);
-      return () => associatedForm?.removeEventListener('reset', handleReset);
+      return () => {
+        mounted = false;
+        associatedForm?.removeEventListener('reset', handleReset);
+      };
     }, [defaultValue, form, isControlled, isHalf, normalizedCount]);
 
     const getValueFromEvent = (
@@ -312,7 +331,12 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
       const selectedStar =
         stars.find((star) => {
           const bounds = star.getBoundingClientRect();
-          return bounds.width > 0 && event.clientX <= bounds.right;
+          return (
+            bounds.width > 0 &&
+            (isRtl
+              ? event.clientX >= bounds.left
+              : event.clientX <= bounds.right)
+          );
         }) ??
         stars[stars.length - 1] ??
         event.currentTarget;
@@ -324,7 +348,9 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
       }
 
       const bounds = selectedStar.getBoundingClientRect();
-      const point = event.clientX - bounds.left;
+      const point = isRtl
+        ? bounds.right - event.clientX
+        : event.clientX - bounds.left;
 
       // Rendered geometry keeps half selection correct under consumer scaling.
       return point > bounds.width / 2 ? selectedIndex : selectedIndex - 0.5;
@@ -338,10 +364,12 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
         return;
       }
 
-      const isCaptured =
-        typeof event.currentTarget.hasPointerCapture === 'function' &&
-        event.currentTarget.hasPointerCapture(event.pointerId);
-      if (event.pointerType === 'touch' && !isCaptured) {
+      const activePointer = activePointerRef.current;
+      if (
+        (activePointer !== null && activePointer !== event.pointerId) ||
+        (activePointer === null &&
+          (event.pointerType === 'touch' || event.buttons !== 0))
+      ) {
         return;
       }
 
@@ -360,14 +388,15 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
       setDisplayValue(committedValue);
     };
 
-    const handleBlur = () => {
+    const handleBlur = (event: FocusEvent<HTMLSpanElement>) => {
       setIsFocusVisible(false);
       const pendingValue = pendingKeyboardValueRef.current;
+      pendingKeyboardValueRef.current = null;
 
-      if (pendingValue !== null) {
-        pendingKeyboardValueRef.current = null;
+      if (isEditable && !disabled && pendingValue !== null) {
         commitValue(pendingValue);
       }
+      onBlur?.(event);
     };
 
     const commitValue = (nextValue: number) => {
@@ -387,11 +416,18 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
       event: PointerEvent<SVGSVGElement>,
       index: number,
     ) => {
-      if (!isEditable || disabled) {
+      if (
+        !isEditable ||
+        disabled ||
+        event.button !== 0 ||
+        event.isPrimary === false ||
+        activePointerRef.current !== null
+      ) {
         return;
       }
 
       containerRef.current?.focus();
+      activePointerRef.current = event.pointerId;
       event.currentTarget.setPointerCapture?.(event.pointerId);
       pendingKeyboardValueRef.current = null;
       const nextValue = getValueFromEvent(event, index);
@@ -403,19 +439,23 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
       event: PointerEvent<SVGSVGElement>,
       index: number,
     ) => {
-      if (!isEditable || disabled) {
+      if (activePointerRef.current !== event.pointerId || event.button !== 0) {
         return;
       }
 
-      commitValue(getValueFromEvent(event, index));
+      activePointerRef.current = null;
       event.currentTarget.releasePointerCapture?.(event.pointerId);
+      if (!isEditable || disabled) return;
+      commitValue(getValueFromEvent(event, index));
       if (event.pointerType === 'touch') {
         setHoverValue(null);
       }
     };
 
     const handlePointerCancel = (event: PointerEvent<SVGSVGElement>) => {
-      event.currentTarget.releasePointerCapture?.(event.pointerId);
+      if (activePointerRef.current !== event.pointerId) return;
+      activePointerRef.current = null;
+      // Cancellation/lost capture already releases capture in the browser.
       pendingKeyboardValueRef.current = null;
       setHoverValue(null);
       setDisplayValue(committedValue);
@@ -452,11 +492,17 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
     const handleKeyDown = (event: KeyboardEvent<HTMLSpanElement>) => {
       switch (event.key) {
         case 'ArrowLeft':
+          event.preventDefault();
+          updateValueByStep((isHalf ? 0.5 : 1) * (isRtl ? 1 : -1));
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          updateValueByStep((isHalf ? 0.5 : 1) * (isRtl ? -1 : 1));
+          break;
         case 'ArrowDown':
           event.preventDefault();
           updateValueByStep(isHalf ? -0.5 : -1);
           break;
-        case 'ArrowRight':
         case 'ArrowUp':
           event.preventDefault();
           updateValueByStep(isHalf ? 0.5 : 1);
@@ -489,7 +535,9 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
             key={`react-stars-rating-char${index}`}
             className={`star star-${index}`}
             style={
-              hasGap ? { paddingRight: 'var(--stars-rating-gap)' } : undefined
+              hasGap
+                ? { paddingInlineEnd: 'var(--stars-rating-gap)' }
+                : undefined
             }
           >
             <Star
@@ -497,6 +545,7 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
               value={displayValue}
               size={normalizedSize}
               isHalf={isHalf}
+              isRtl={isRtl}
               fullId={fullId}
               halfId={halfId}
               noneId={noneId}
@@ -510,6 +559,7 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
               onPointerDown={(event) => handlePointerDown(event, index)}
               onPointerUp={(event) => handlePointerUp(event, index)}
               onPointerCancel={handlePointerCancel}
+              onLostPointerCapture={handlePointerCancel}
             />
           </span>
         );
@@ -520,6 +570,7 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
     const clampedValue = normalizeValue(displayValue, normalizedCount, isHalf);
     const handleFocus = (event: FocusEvent<HTMLSpanElement>) => {
       setIsFocusVisible(event.currentTarget.matches(':focus-visible'));
+      onFocus?.(event);
     };
     const containerStyle = {
       ...(isEditable ? styles.activeContainer : styles.inActiveContainer),
@@ -539,6 +590,7 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
         {...spanProps}
         ref={containerRef}
         id={resolvedId}
+        dir={dir}
         role="slider"
         aria-label={ariaLabelledBy ? undefined : ariaLabel}
         aria-labelledby={ariaLabelledBy}
@@ -551,8 +603,8 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
         aria-disabled={disabled || undefined}
         tabIndex={interactiveProps ? 0 : -1}
         onKeyDown={interactiveProps ? handleKeyDown : undefined}
-        onBlur={interactiveProps ? handleBlur : undefined}
-        onFocus={interactiveProps ? handleFocus : undefined}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
         style={containerStyle}
         className={className}
       >

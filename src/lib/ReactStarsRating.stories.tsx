@@ -102,6 +102,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
+export const RightToLeft: Story = {
+  args: { dir: 'rtl', value: 2.5 },
+};
+
 export const ReadOnly: Story = {
   args: {
     readOnly: true,

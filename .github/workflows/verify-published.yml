@@ -31,7 +31,9 @@ jobs:
       - name: Verify npm package and provenance
         env:
           VERSION: ${{ inputs.version }}
-        run: node scripts/verify-published.mjs "$VERSION"
+        run: |
+          npm ci --ignore-scripts
+          node scripts/verify-published.mjs "$VERSION"
 
   repair-release:
     name: Repair GitHub release

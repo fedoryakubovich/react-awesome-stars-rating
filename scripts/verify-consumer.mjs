@@ -110,10 +110,12 @@ const element = React.createElement(ReactStarsRating, {
   value: 3.5,
   isHalf: true,
   ariaLabel: 'Consumer rating',
+  ...(ratingRef ? { dir: 'rtl' } : {}),
 });
 const html = renderToString(element);
 assert.match(html, /role="slider"/);
 assert.match(html, /aria-valuenow="3.5"/);
+if (ratingRef) assert.match(html, /dir="rtl"/);
 
 const dom = new JSDOM('<!doctype html><div id="root">' + html + '</div>', {
   url: 'http://localhost',

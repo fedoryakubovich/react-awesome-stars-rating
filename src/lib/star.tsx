@@ -16,6 +16,8 @@ type StarProps = {
   onPointerUp?: (event: PointerEvent<SVGSVGElement>) => void;
   onPointerCancel?: (event: PointerEvent<SVGSVGElement>) => void;
   isHalf: boolean;
+  isRtl: boolean;
+  onLostPointerCapture?: (event: PointerEvent<SVGSVGElement>) => void;
   fill?: string;
   index: number;
   value: number;
@@ -36,6 +38,8 @@ const StarSVG = ({
   index,
   value,
   isHalf,
+  isRtl,
+  onLostPointerCapture,
   primaryColor,
   secondaryColor,
   hoverColor,
@@ -66,6 +70,7 @@ const StarSVG = ({
       style={{
         forcedColorAdjust: 'auto',
         width: 'var(--stars-rating-size)',
+        transform: isRtl ? 'scaleX(-1)' : undefined,
       }}
       viewBox={viewBox}
       xmlns="http://www.w3.org/2000/svg"
@@ -75,6 +80,7 @@ const StarSVG = ({
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
+      onLostPointerCapture={onLostPointerCapture}
     >
       <Gradient
         primaryColor={primaryColor}

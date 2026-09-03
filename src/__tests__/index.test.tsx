@@ -136,6 +136,8 @@ describe('Pointer interaction', () => {
 
     const fourth = withLayout(getStars()[3], 30);
     fireEvent.pointerDown(fourth, {
+      isPrimary: true,
+      button: 0,
       clientX: 25,
       pointerId: 1,
       pointerType: 'mouse',
@@ -168,6 +170,13 @@ describe('Pointer interaction', () => {
     expect(getSlider()).toHaveAttribute('aria-valuenow', '1');
 
     fourth.hasPointerCapture = vi.fn(() => true);
+    fireEvent.pointerDown(fourth, {
+      isPrimary: true,
+      clientX: 25,
+      pointerId: 1,
+      pointerType: 'touch',
+      button: 0,
+    });
     fireEvent.pointerMove(fourth, {
       clientX: 25,
       pointerId: 1,
@@ -271,7 +280,10 @@ describe('Uncontrolled usage', () => {
     const form = screen.getByTestId('form') as HTMLFormElement;
     expect(new FormData(form).get('rating')).toBe('3');
 
-    act(() => form.reset());
+    await act(async () => {
+      form.reset();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
     expect(getSlider()).toHaveAttribute('aria-valuenow', '1');
     expect(new FormData(form).get('rating')).toBe('1');
   });
@@ -693,10 +705,10 @@ describe('Presentation props', () => {
 
     const wrappers = slider.querySelectorAll('span.star');
     expect(wrappers[0]).toHaveStyle({
-      paddingRight: 'var(--stars-rating-gap)',
+      paddingInlineEnd: 'var(--stars-rating-gap)',
     });
     expect(wrappers[2]).not.toHaveStyle({
-      paddingRight: 'var(--stars-rating-gap)',
+      paddingInlineEnd: 'var(--stars-rating-gap)',
     });
   });
 

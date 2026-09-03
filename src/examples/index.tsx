@@ -20,7 +20,7 @@ const Review = () => {
 };`;
 
 const FEATURES = [
-  { title: 'Under 3 kB', detail: 'No runtime dependencies beyond React.' },
+  { title: '~3 kB gzipped', detail: 'No runtime dependencies beyond React.' },
   { title: 'Half stars', detail: 'Pointer position decides half or full.' },
   { title: 'Keyboard ready', detail: 'Arrow keys, Enter and blur submit.' },
   {
