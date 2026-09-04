@@ -56,16 +56,59 @@ expose React as a global, and expects `window.React` to be present.
 ## Usage
 
 ```tsx
+import { useState } from 'react';
 import ReactStarsRating from 'react-awesome-stars-rating';
 
-const onChange = (value: number) => {
-  console.log(`Rating: ${value}`);
-};
-
 export default function Example() {
-  return <ReactStarsRating onChange={onChange} value={3.5} />;
+  const [rating, setRating] = useState(3.5);
+  return <ReactStarsRating value={rating} onChange={setRating} />;
 }
 ```
+
+Use `value` with a state-updating `onChange` when your application owns the
+rating. For a self-managed input, use `<ReactStarsRating defaultValue={3.5} />`.
+Do not switch between controlled and uncontrolled usage during an input's lifetime.
+
+### Clear a rating
+
+Keep zero as the empty rating and provide an explicitly labeled button:
+
+```tsx
+const [rating, setRating] = useState(0);
+
+<>
+  <ReactStarsRating
+    value={rating}
+    onChange={setRating}
+    ariaLabel="Your rating"
+  />
+  <button type="button" onClick={() => setRating(0)}>
+    Clear rating
+  </button>
+</>;
+```
+
+### Display an average
+
+Use `readOnly` for aggregate scores, with visible text so the number and review
+count are available without interpreting the star graphic:
+
+```tsx
+<>
+  <ReactStarsRating value={4.3} readOnly ariaLabel="Average rating" />
+  <span>4.3 out of 5 · 128 reviews</span>
+</>
+```
+
+With `isHalf`, the SVG displays partial fill for fractional values; editing
+still selects half-star steps. Do not round an average just to display it.
+
+### Next.js App Router
+
+The published entry point includes `"use client"`. A Server Component can render
+a read-only rating with serializable props. Put state and callbacks inside your
+own Client Component (`"use client"` at the top of its file), as in the usage
+example above; do not pass ordinary callback functions from a Server Component.
 
 ## Props
 
@@ -214,6 +257,47 @@ HTML hidden inputs do not participate in native constraint validation, so a
 `required` attribute would be misleading and is intentionally not exposed.
 For required ratings, validate the controlled value or submitted `FormData`
 and expose the result with `aria-invalid` and descriptive error text.
+
+For example, inside a component, validate on submit and focus the rating when
+invalid (also validate submitted data on your server):
+
+```tsx
+const [rating, setRating] = useState(0);
+const [error, setError] = useState(false);
+const ratingRef = useRef<HTMLSpanElement>(null);
+const errorId = useId();
+
+<form
+  onSubmit={(event) => {
+    event.preventDefault();
+    const invalid = rating === 0;
+    setError(invalid);
+    if (invalid) ratingRef.current?.focus();
+    else console.log('Submit rating:', rating);
+  }}
+>
+  <ReactStarsRating
+    ref={ratingRef}
+    name="rating"
+    value={rating}
+    onChange={(value) => {
+      setRating(value);
+      setError(false);
+    }}
+    ariaLabel="Your rating (required)"
+    aria-invalid={error || undefined}
+    aria-describedby={error ? errorId : undefined}
+  />
+  {error && (
+    <p id={errorId} role="alert">
+      Choose a rating before submitting.
+    </p>
+  )}
+  <button type="submit">Submit</button>
+</form>;
+```
+
+Import `useState`, `useRef` and `useId` from React for this recipe.
 
 ### React Hook Form
 

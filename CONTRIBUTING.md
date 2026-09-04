@@ -53,7 +53,30 @@ conventional-changelog-writer@9 or newer` during `generateNotes`.
 
 Upgrade it only once semantic-release moves to writer 9.
 
-## Pre-commit
+## Consumer and accessibility validation
+
+`npm run test:next` packs the library, installs it into a temporary Next.js
+App Router project, builds for production and checks server rendering and
+hydrated keyboard/clear interactions in Chromium. Run
+`npx playwright install chromium` first. Its isolated dependency lockfile lives
+in `fixtures/next-consumer`; Next.js is not a library dependency. This check is
+part of browser CI and therefore gates release publication.
+
+Physical-device screen-reader testing is tracked separately in
+[the manual checklist](docs/accessibility-testing.md). It is not yet verified;
+automated checks must not be presented as a VoiceOver/TalkBack certification.
+
+### CI installation measurements
+
+The v1.4.0 release run had npm cache hits, but installation took 76s in the
+browser job, 103s in the build job and 272s in the release job. These timings
+alone do not establish whether downloads, audit requests or extraction caused
+the variance. `scripts/ci-install.mjs` reports timings in job summaries and
+uses `--prefer-offline` to favor cached tarballs. Audit, lifecycle scripts,
+clean installs and separate consumer tests remain enabled. Compare several
+runs before claiming a speedup or making further cache changes.
+
+## Commit hooks
 
 - **lint-staged** — Oxfmt and Oxlint run on staged files before each commit.
 - **commitlint** — Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/) (e.g. `feat: ...`, `fix: ...`, `docs: ...`).
