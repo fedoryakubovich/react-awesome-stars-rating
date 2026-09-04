@@ -102,15 +102,20 @@ import { hydrateRoot } from 'react-dom/client';
 import { JSDOM } from 'jsdom';
 import ReactStarsRating from 'react-awesome-stars-rating';
 
+// Release recovery also verifies older versions, before ref support existed.
+const ratingRef = ${expectedVersion === '0.0.0-development'} ? React.createRef() : undefined;
 const element = React.createElement(ReactStarsRating, {
+  ref: ratingRef,
   id: 'consumer-rating',
   value: 3.5,
   isHalf: true,
   ariaLabel: 'Consumer rating',
+  ...(ratingRef ? { dir: 'rtl' } : {}),
 });
 const html = renderToString(element);
 assert.match(html, /role="slider"/);
 assert.match(html, /aria-valuenow="3.5"/);
+if (ratingRef) assert.match(html, /dir="rtl"/);
 
 const dom = new JSDOM('<!doctype html><div id="root">' + html + '</div>', {
   url: 'http://localhost',
@@ -132,8 +137,10 @@ await new Promise((resolve) => setTimeout(resolve, 25));
 console.error = originalError;
 
 assert.equal(document.querySelector('[role="slider"]').getAttribute('aria-valuenow'), '3.5');
+if (ratingRef) assert.equal(ratingRef.current, document.querySelector('[role="slider"]'));
 assert.deepEqual(errors.filter((message) => /hydration|did not match/i.test(message)), []);
 root.unmount();
+if (ratingRef) assert.equal(ratingRef.current, null);
 `;
 
     const verifierPath = join(consumerDirectory, 'verify.mjs');

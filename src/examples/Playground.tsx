@@ -77,23 +77,28 @@ const Playground = () => {
   ];
 
   return (
-    <div className="grid gap-6 rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)] lg:grid-cols-[1.1fr_1fr] lg:p-8">
-      <div className="flex flex-col gap-6">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-6">
-          <ReactStarsRating
-            id="playground"
-            value={value}
-            onChange={setValue}
-            count={count}
-            size={size}
-            starGap={starGap}
-            isHalf={isHalf}
-            isEdit={isEdit}
-            isArrowSubmit={isArrowSubmit}
-            primaryColor={palette.primary}
-            hoverColor={palette.hover}
-            secondaryColor={palette.secondary}
-          />
+    <div className="grid min-w-0 grid-cols-1 gap-6 rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:p-8">
+      <div className="flex min-w-0 flex-col gap-6">
+        <div className="min-w-0 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 sm:p-6">
+          <div
+            data-testid="rating-preview-scroll"
+            className="overflow-x-auto p-1"
+          >
+            <ReactStarsRating
+              id="playground"
+              value={value}
+              onChange={setValue}
+              count={count}
+              size={size}
+              starGap={starGap}
+              isHalf={isHalf}
+              isEdit={isEdit}
+              isArrowSubmit={isArrowSubmit}
+              primaryColor={palette.primary}
+              hoverColor={palette.hover}
+              secondaryColor={palette.secondary}
+            />
+          </div>
           <p className="mt-4 text-sm text-slate-600">
             Value{' '}
             <span className="font-medium text-slate-900">

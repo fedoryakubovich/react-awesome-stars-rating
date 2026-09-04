@@ -4,7 +4,6 @@ on:
   push:
     branches: ['main']
   pull_request:
-    branches: ['main']
 
 permissions:
   contents: read
@@ -29,6 +28,7 @@ jobs:
       - run: npm ci
       - run: npm run format
       - run: npm run lint
+      - run: npm run verify:lint
       - name: Validate commit messages
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
@@ -66,6 +66,16 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:e2e
+      - name: Preserve browser failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: browser-failure-diagnostics
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
 
   consumer-matrix:
     needs: build-test
@@ -131,7 +141,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Release
-        run: npx semantic-release
+        run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
@@ -142,4 +152,6 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - name: Verify published npm package and provenance
         if: steps.released.outputs.version != ''
+        env:
+          EXPECTED_COMMIT: ${{ github.sha }}
         run: npm run verify:published -- "${{ steps.released.outputs.version }}"

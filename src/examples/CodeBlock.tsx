@@ -4,7 +4,7 @@ type CodeBlockProps = {
 };
 
 const CodeBlock = ({ code, label }: CodeBlockProps) => (
-  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-950">
+  <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-950">
     {label ? (
       <p className="border-b border-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
         {label}

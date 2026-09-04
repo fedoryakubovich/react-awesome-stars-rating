@@ -15,8 +15,10 @@
   "include": [
     "src",
     "e2e",
+    "e2e-deployed",
     ".storybook",
     "playwright.config.ts",
+    "playwright.deployed.config.ts",
     "vite.config.ts",
     "vite.site.config.ts",
     "vite.umd.config.ts"

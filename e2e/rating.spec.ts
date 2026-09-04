@@ -41,6 +41,70 @@ test('prevents browser defaults for handled slider keys', async ({ page }) => {
   );
 });
 
+test('ignores right-clicks and releases from gestures started outside the rating', async ({
+  page,
+}) => {
+  const star = page
+    .getByRole('slider', { name: 'Star rating', exact: true })
+    .locator('svg')
+    .nth(2);
+  const box = (await star.boundingBox())!;
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2, {
+    button: 'right',
+  });
+  await expect(page.getByTestId('change-count')).toHaveText('0');
+  await page.keyboard.press('Escape');
+  await page.mouse.move(1, 1);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.up();
+  await expect(page.getByTestId('change-count')).toHaveText('0');
+});
+
+test('RTL layout, spacing, pointer halves and keyboard direction agree', async ({
+  page,
+}) => {
+  const slider = page.getByRole('slider', { name: 'RTL rating' });
+  const first = (await slider.locator('svg').first().boundingBox())!;
+  const third = (await slider.locator('svg').nth(2).boundingBox())!;
+  expect(first.x).toBeGreaterThan(third.x);
+  expect(first.x - third.x).toBeCloseTo(96);
+  await page.mouse.click(
+    third.x + third.width * 0.75,
+    third.y + third.height / 2,
+  );
+  await expect(slider).toHaveAttribute('aria-valuenow', '2.5');
+  await expect(slider.locator('svg').nth(2)).toHaveCSS(
+    'transform',
+    'matrix(-1, 0, 0, 1, 0, 0)',
+  );
+  await page.mouse.click(
+    third.x + third.width * 0.25,
+    third.y + third.height / 2,
+  );
+  await expect(slider).toHaveAttribute('aria-valuenow', '3');
+  await slider.focus();
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('Enter');
+  await expect(slider).toHaveAttribute('aria-valuenow', '3.5');
+  await page.keyboard.press('ArrowRight');
+  await page.keyboard.press('Enter');
+  await expect(slider).toHaveAttribute('aria-valuenow', '3');
+});
+
+test('canceled native reset preserves rating and form data', async ({
+  page,
+}) => {
+  const slider = page.getByRole('slider', { name: 'Cancelable reset rating' });
+  await slider.focus();
+  await page.keyboard.press('End');
+  await expect(slider).toHaveAttribute('aria-valuenow', '5');
+  await expect(slider.locator('input')).toHaveValue('5');
+  await page.getByRole('button', { name: 'Cancel reset' }).click();
+  await expect(slider).toHaveAttribute('aria-valuenow', '5');
+  await expect(slider.locator('input')).toHaveValue('5');
+});
+
 test('selects pointer halves and does not submit the click again on blur', async ({
   page,
 }) => {
@@ -194,12 +258,15 @@ for (const story of [
   'uncontrolled',
   'disabled',
   'localized-value',
+  'css-variables',
+  'right-to-left',
 ]) {
   test(`Storybook ${story} state is accessible and interactive`, async ({
     page,
   }) => {
     await page.goto(
-      `http://127.0.0.1:6006/iframe.html?id=components-reactstarsrating--${story}&viewMode=story`,
+      // Playwright owns the axe run here; avoid racing the addon's auto-scan.
+      `http://127.0.0.1:6006/iframe.html?id=components-reactstarsrating--${story}&viewMode=story&globals=a11y.manual:!true`,
     );
     const slider = page.getByRole('slider');
     await expect(slider).toBeVisible();
@@ -220,3 +287,25 @@ for (const story of [
     }
   });
 }
+
+test('retains focus and star visibility in forced-colors mode', async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name !== 'chromium',
+    'Forced colors are Chromium-only',
+  );
+  await page.emulateMedia({ forcedColors: 'active' });
+  await page.goto(
+    'http://127.0.0.1:6006/iframe.html?id=components-reactstarsrating--css-variables&viewMode=story',
+  );
+
+  const slider = page.getByRole('slider');
+  await slider.focus();
+  await expect(slider).toBeFocused();
+  await expect(slider).toHaveCSS('outline-style', 'solid');
+  await expect(slider.locator('svg').first()).toHaveCSS(
+    'forced-color-adjust',
+    'auto',
+  );
+});

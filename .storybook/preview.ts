@@ -28,13 +28,6 @@ const preview: Preview = {
       },
     },
   },
-
-  initialGlobals: {
-    viewport: {
-      value: 'desktop',
-      isRotated: false,
-    },
-  },
 };
 
 export default preview;

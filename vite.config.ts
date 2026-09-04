@@ -23,7 +23,7 @@ export default defineConfig({
     },
   },
   test: {
-    exclude: [...configDefaults.exclude, 'e2e/**'],
+    exclude: [...configDefaults.exclude, 'e2e/**', 'e2e-deployed/**'],
     environment: 'jsdom',
     setupFiles: ['./src/setupTests.ts'],
     globals: true,

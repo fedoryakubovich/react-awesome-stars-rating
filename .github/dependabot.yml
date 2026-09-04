@@ -40,13 +40,12 @@ updates:
         patterns:
           - storybook
           - '@storybook/*'
-          - eslint-plugin-storybook
       linting:
         patterns:
           - eslint
           - eslint-*
-          - '@typescript-eslint/*'
-          - prettier
+          - oxlint
+          - oxfmt
           - '@commitlint/*'
           - lint-staged
           - husky
