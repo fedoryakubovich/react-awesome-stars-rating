@@ -67,6 +67,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:consumer": "node scripts/verify-consumer.mjs",
+    "test:next": "node scripts/verify-next.mjs",
     "coverage": "vitest run --coverage",
     "verify:package": "node scripts/verify-package.mjs",
     "verify:release": "node scripts/verify-release-notes.mjs",

@@ -265,6 +265,15 @@ const ReactStarsRating = forwardRef<HTMLSpanElement, ReactStarsRatingProps>(
     const [isFocusVisible, setIsFocusVisible] = useState(false);
     const containerRef = useRef<HTMLSpanElement>(null);
     useImperativeHandle(forwardedRef, () => containerRef.current!, []);
+    // Synchronize the preview's source, not just its rendered value. Otherwise
+    // an A -> B -> A controlled update can resurrect the old preview for A.
+    if (displayState.sourceValue !== committedValue) {
+      setDisplayState({
+        sourceValue: committedValue,
+        displayValue: committedValue,
+      });
+      setHoverValue(null);
+    }
     const displayValue =
       displayState.sourceValue === committedValue
         ? displayState.displayValue

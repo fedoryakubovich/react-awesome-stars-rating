@@ -91,6 +91,7 @@
     {
       "files": [
         "src/**/*.{ts,tsx}",
+        "fixtures/next-consumer/app/**/*.jsx",
         "e2e/**/*.ts",
         "e2e-deployed/**/*.ts",
         "*.config.ts",

@@ -1,0 +1,13 @@
+{
+  "name": "stars-next-consumer-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build"
+  },
+  "dependencies": {
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  }
+}
