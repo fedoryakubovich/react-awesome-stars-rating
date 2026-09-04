@@ -59,9 +59,10 @@
     "build": "vite build && vite build -c vite.umd.config.ts && tsc -p tsconfig.build.json && node scripts/emit-cjs-types.mjs",
     "build:site": "vite build --config vite.site.config.ts",
     "preview": "vite preview",
-    "lint": "eslint .",
-    "format": "prettier --check .",
-    "format:write": "prettier --write .",
+    "lint": "oxlint .",
+    "verify:lint": "node scripts/verify-lint.mjs",
+    "format": "oxfmt --check .",
+    "format:write": "oxfmt --write .",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
@@ -107,24 +108,20 @@
     "@testing-library/user-event": "^14.6.7",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
-    "@typescript-eslint/eslint-plugin": "^8.69.0",
-    "@typescript-eslint/parser": "^8.69.0",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "^5.0.0",
     "axe-core": "^4.13.0",
     "conventional-changelog-conventionalcommits": "^9.3.1",
     "conventional-commits-filter": "^6.0.1",
     "eslint": "^9.39.5",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-storybook": "^10.6.0",
     "formik": "^2.4.9",
     "husky": "^9.1.7",
     "jsdom": "^30.0.1",
     "lint-staged": "^17.4.1",
-    "prettier": "^3.9.6",
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0",
     "publint": "^0.3.24",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -160,7 +157,10 @@
     }
   ],
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,cjs,json,css,md}": "prettier --write",
-    "*.{ts,tsx,js,jsx,mjs}": "eslint --fix"
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "oxlint --fix",
+      "oxfmt --write"
+    ],
+    "*.{json,jsonc,css,md,yml,yaml,html}": "oxfmt --write"
   }
 }

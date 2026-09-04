@@ -15,21 +15,22 @@ covered separately by installed-consumer tests.
 
 ## Scripts
 
-| Command                 | Description                       |
-| ----------------------- | --------------------------------- |
-| `npm run dev`           | Demo app (Vite)                   |
-| `npm run storybook`     | Storybook                         |
-| `npm run test`          | Unit tests (Vitest)               |
-| `npm run test:watch`    | Tests in watch mode               |
-| `npm run test:e2e`      | Playwright browser tests          |
-| `npm run test:consumer` | Packed React 18/19 consumer tests |
-| `npm run coverage`      | Tests with coverage               |
-| `npm run lint`          | ESLint                            |
-| `npm run format`        | Prettier check                    |
-| `npm run format:write`  | Prettier fix                      |
-| `npm run typecheck`     | TypeScript check                  |
-| `npm run build`         | Build ESM + CJS + UMD to `dist/`  |
-| `npm run build:site`    | Build demo site to `dist-site/`   |
+| Command                 | Description                         |
+| ----------------------- | ----------------------------------- |
+| `npm run dev`           | Demo app (Vite)                     |
+| `npm run storybook`     | Storybook                           |
+| `npm run test`          | Unit tests (Vitest)                 |
+| `npm run test:watch`    | Tests in watch mode                 |
+| `npm run test:e2e`      | Playwright browser tests            |
+| `npm run test:consumer` | Packed React 18/19 consumer tests   |
+| `npm run coverage`      | Tests with coverage                 |
+| `npm run lint`          | Oxlint                              |
+| `npm run verify:lint`   | Lint configuration regression tests |
+| `npm run format`        | Oxfmt check                         |
+| `npm run format:write`  | Oxfmt fix                           |
+| `npm run typecheck`     | TypeScript check                    |
+| `npm run build`         | Build ESM + CJS + UMD to `dist/`    |
+| `npm run build:site`    | Build demo site to `dist-site/`     |
 
 ## A note on `conventional-commits-filter`
 
@@ -54,10 +55,37 @@ Upgrade it only once semantic-release moves to writer 9.
 
 ## Pre-commit
 
-- **lint-staged** — Prettier and ESLint run on staged files before each commit.
+- **lint-staged** — Oxfmt and Oxlint run on staged files before each commit.
 - **commitlint** — Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/) (e.g. `feat: ...`, `fix: ...`, `docs: ...`).
 
-## Project Structure
+## Linting and formatting
+
+Use the Oxc editor extension with the repository's `.oxlintrc.json` and
+`.oxfmtrc.json`. Disable ESLint/Prettier format-on-save for this workspace to
+avoid conflicting edits. Oxfmt preserves our 80-column, single-quote style;
+package.json sorting is disabled. Generated outputs and the historical
+changelog remain excluded.
+
+Oxlint runs the migrated JavaScript, TypeScript, React, Hooks and accessibility
+rules. `no-undef` and `react/require-render-return` are explicitly enabled even
+though the migrator classifies them as nursery rules. React's version setting
+is 19.2 (our development dependency); the consumer peer range still includes 18.
+
+Three rules remain JavaScript plugins: `react-legacy/no-deprecated` and
+`react-hooks-legacy/config` / `gating`. Keep `eslint-plugin-react`,
+`eslint-plugin-react-hooks`, and their ESLint 9 peer dependency until native
+equivalents are available. We do not run ESLint separately. Oxlint's JS plugin
+API is alpha, so run `npm run verify:lint` when updating tooling. No custom
+plugins are authored here, so `@oxlint/plugins` is unnecessary.
+
+The migration intentionally omits `no-dupe-args` and `no-octal` (syntax errors
+in our strict ES modules), `react/jsx-uses-react` (automatic JSX transform), and
+`react/jsx-uses-vars` (handled by Oxlint's unused-variable analysis).
+The unused Storybook ESLint dependency was removed; it was not enabled before.
+Type checking remains a separate `npm run typecheck` gate, not a type-aware
+Oxlint migration. CI checks all PR targets, including stacked tooling PRs.
+
+## Source directories
 
 - `src/lib` — rating component and styles
 - `src/examples` — demo app examples
