@@ -4,7 +4,6 @@ on:
   push:
     branches: ['main']
   pull_request:
-    branches: ['main']
 
 permissions:
   contents: read
@@ -29,6 +28,7 @@ jobs:
       - run: npm ci
       - run: npm run format
       - run: npm run lint
+      - run: npm run verify:lint
       - name: Validate commit messages
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
