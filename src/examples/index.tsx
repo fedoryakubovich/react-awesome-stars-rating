@@ -55,8 +55,8 @@ const Section = ({
 const Examples = () => (
   <div className="min-h-screen bg-[radial-gradient(circle_at_top,#fff7ed_0%,#ffffff_45%)]">
     <main className="mx-auto flex max-w-6xl flex-col gap-20 px-6 py-16">
-      <header className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-center">
-        <div>
+      <header className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-center">
+        <div className="min-w-0">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-ember-500">
             React Awesome Stars Rating
           </p>
@@ -101,13 +101,14 @@ const Examples = () => (
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <div className="rounded-3xl bg-white/90 p-8 text-center shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
             <ReactStarsRating
               id="hero"
               value={4.5}
               isEdit={false}
               size={52}
+              style={{ '--stars-rating-size': 'clamp(24px, 8vw, 52px)' }}
               starGap={6}
               ariaLabel="Example rating of 4.5 out of 5"
             />
@@ -132,7 +133,7 @@ const Examples = () => (
         title="Beyond a single input"
         description="Read-only summaries, alternative scales and custom palettes come from the same component."
       >
-        <div className="grid items-stretch gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
           <ProductRatingExample />
           <ScaleExample />
         </div>
@@ -143,7 +144,7 @@ const Examples = () => (
         title="Works with your form library"
         description="Controlled value and onChange are all any of these adapters need."
       >
-        <div className="grid items-stretch gap-6 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2 xl:grid-cols-4">
           <SimpleExample />
           <Suspense fallback={<p>Loading form examples…</p>}>
             <HookFormExample />

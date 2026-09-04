@@ -9,7 +9,7 @@ type CardProps = {
 
 const Card = ({ title, description, children, className = '' }: CardProps) => (
   <div
-    className={`flex h-full flex-col rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)] ${className}`}
+    className={`flex h-full min-w-0 flex-col rounded-3xl bg-white/90 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.08)] ${className}`}
   >
     <h3 className="font-display text-2xl text-slate-900">{title}</h3>
     {description ? (

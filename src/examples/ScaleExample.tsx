@@ -19,7 +19,7 @@ const ScaleExample = () => {
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
             Sizes
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-6">
+          <div className="mt-3 flex flex-wrap items-center gap-6 overflow-x-auto">
             {SIZES.map((size) => (
               <div key={size} className="text-center">
                 <ReactStarsRating
@@ -38,7 +38,7 @@ const ScaleExample = () => {
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
             Ten point scale
           </p>
-          <div className="mt-3">
+          <div className="mt-3 overflow-x-auto p-1">
             <ReactStarsRating
               id="ten-point"
               value={tenPoint}
