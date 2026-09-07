@@ -3,6 +3,23 @@
 Status: **not yet performed on physical devices** for this release. Automated
 axe, keyboard, touch-emulation and hydration tests are not a substitute.
 
+## Verification record — 2026-09-07
+
+Scope: v1.4.1 component code with the release's strengthened disabled-state test.
+No component runtime changes are included in this feedback release.
+
+| Check                                                                | Result                                                      |
+| -------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Chromium, Firefox and WebKit keyboard, axe and interaction suite     | 99 passed; 6 intentional platform skips (local macOS run)   |
+| Phone widths, touch emulation, RTL, focus re-entry and forced colors | Covered by the browser suite, subject to its platform skips |
+| iPhone Safari with VoiceOver                                         | Not tested: the known iPhone was offline                    |
+| Android Chrome with TalkBack                                         | Not tested: Android device tooling was unavailable          |
+
+Record actual announcements and gestures before changing either physical-device
+row to passed. The automated suite cannot establish those results.
+
+## Physical-device procedure
+
 Use the deployed demo and Storybook linked in the README. Test Safari with
 VoiceOver on an iPhone and Chrome with TalkBack on an Android device. Record
 device, OS, browser, assistive-technology version, package version and date.

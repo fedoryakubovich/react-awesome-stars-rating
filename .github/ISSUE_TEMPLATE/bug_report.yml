@@ -1,0 +1,42 @@
+name: Bug report
+description: Report a bug, regression or accessibility problem.
+labels: [bug]
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include a minimal code example or reproduction link and the steps to trigger the problem. Remove private data.
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Package and React versions
+      placeholder: react-awesome-stars-rating 1.4.1, React 19.2.8
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, device and operating system
+      description: Include versions. For build problems, also include framework and Node versions.
+    validations:
+      required: true
+  - type: textarea
+    id: accessibility
+    attributes:
+      label: Accessibility details (if relevant)
+      description: Screen reader and version, input method, spoken output, and the gesture or key used. State whether this was a physical device or emulation.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Relevant logs, screenshots, or the last working version. Do not share tokens or personal information.

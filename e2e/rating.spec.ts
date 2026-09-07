@@ -277,7 +277,16 @@ for (const story of [
       .analyze();
     expect(results.violations).toEqual([]);
 
-    if (story === 'read-only') {
+    if (story === 'disabled') {
+      await expect(slider).toHaveAttribute('aria-disabled', 'true');
+      await expect(slider).toHaveAttribute('tabindex', '-1');
+      const initialValue = await slider.getAttribute('aria-valuenow');
+      // Playwright otherwise refuses to click aria-disabled controls.
+      await slider.click({ force: true });
+      await slider.focus();
+      await page.keyboard.press('ArrowRight');
+      await expect(slider).toHaveAttribute('aria-valuenow', initialValue!);
+    } else if (story === 'read-only') {
       await expect(slider).toHaveAttribute('aria-readonly', 'true');
       await expect(slider).toHaveAttribute('tabindex', '-1');
     } else {

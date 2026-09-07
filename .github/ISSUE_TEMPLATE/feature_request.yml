@@ -1,0 +1,27 @@
+name: Feature request
+description: Describe a user need or improvement.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe a concrete use case and who benefits.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Suggested behavior
+      description: Explain the desired result; an API proposal is optional.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Current workaround or alternatives
+      description: Can the existing API support your use case? What makes the workaround difficult?
+  - type: input
+    id: environment
+    attributes:
+      label: Package, React and framework versions (if relevant)

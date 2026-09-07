@@ -373,6 +373,18 @@ const form = useForm<FormValues>({
 
 ## Development
 
+### Maintenance and feedback
+
+The library is in maintenance mode: new feature development is paused while
+we collect real-world feedback. Bug fixes, accessibility reports and security
+updates remain welcome. Use the repository's bug and feature issue forms to
+include reproduction steps, versions and the user need behind a request.
+
+Automated keyboard, axe and browser checks do not establish physical-device
+screen-reader compatibility. VoiceOver on iPhone and TalkBack on Android still
+need manual verification; see `docs/accessibility-testing.md` in the repository
+for the procedure and recorded results.
+
 ```bash
 npm install
 npm run dev          # demo app
