@@ -100,3 +100,9 @@ updates:
     commit-message:
       prefix: ci
       include: scope
+    # CodeQL requires init, autobuild, analyze, and upload-sarif to use the
+    # same action version within a workflow run.
+    groups:
+      codeql:
+        patterns:
+          - 'github/codeql-action/*'
