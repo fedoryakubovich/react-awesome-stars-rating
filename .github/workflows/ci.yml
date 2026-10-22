@@ -87,8 +87,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ['20', '22', '24']
-        react: ['18.3.1', '19.2.8']
+        node: ['22', '24', '26']
+        react: ['18.3.1', '19.3.1']
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

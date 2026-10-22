@@ -92,7 +92,7 @@ changelog remain excluded.
 Oxlint runs the migrated JavaScript, TypeScript, React, Hooks and accessibility
 rules. `no-undef` and `react/require-render-return` are explicitly enabled even
 though the migrator classifies them as nursery rules. React's version setting
-is 19.2 (our development dependency); the consumer peer range still includes 18.
+is 19.3 (our development dependency); the consumer peer range still includes 18.
 
 Three rules remain JavaScript plugins: `react-legacy/no-deprecated` and
 `react-hooks-legacy/config` / `gating`. Keep `eslint-plugin-react`,

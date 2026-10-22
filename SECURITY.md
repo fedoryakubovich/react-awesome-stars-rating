@@ -7,9 +7,10 @@ Security fixes are released for the latest version published under the npm
 
 ## Reporting a vulnerability
 
-Please use GitHub's **Report a vulnerability** form in the repository Security
-tab. This keeps reports private until a fix and coordinated disclosure are
-ready.
+Please use GitHub's
+[Report a vulnerability](https://github.com/fedoryakubovich/react-awesome-stars-rating/security/advisories/new)
+form in the repository Security tab. This keeps reports private until a fix and
+coordinated disclosure are ready.
 
 Do not include exploit details in a public issue. Include the affected version,
 impact, reproduction steps, and any suggested mitigation in the private report.
