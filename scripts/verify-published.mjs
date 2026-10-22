@@ -85,7 +85,7 @@ try {
     tarball: await readFile(tarball),
   });
 
-  for (const reactVersion of ['18.3.1', '19.2.8']) {
+  for (const reactVersion of ['18.3.1', '19.3.1']) {
     run('node', [
       'scripts/verify-consumer.mjs',
       '--tarball',

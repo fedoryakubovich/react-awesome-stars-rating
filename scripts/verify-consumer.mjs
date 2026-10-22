@@ -59,7 +59,7 @@ try {
 
   const reactVersions = requestedReact
     ? [requestedReact]
-    : ['18.3.1', '19.2.8'];
+    : ['18.3.1', '19.3.1'];
 
   for (const reactVersion of reactVersions) {
     const consumerDirectory = await mkdtemp(

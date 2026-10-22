@@ -4,7 +4,7 @@
     { "name": "react-legacy", "specifier": "eslint-plugin-react" },
     { "name": "react-hooks-legacy", "specifier": "eslint-plugin-react-hooks" }
   ],
-  "settings": { "react": { "version": "19.2" } },
+  "settings": { "react": { "version": "19.3" } },
   "plugins": ["unicorn"],
   "categories": {
     "correctness": "off"

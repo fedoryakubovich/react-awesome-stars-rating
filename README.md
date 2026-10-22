@@ -23,7 +23,7 @@ An accessible star rating component for React. Half stars from pointer position,
 
 React 18 or React 19 (`react` and `react-dom` are peer dependencies). The
 published browser package has no Node runtime requirement. Installed-consumer
-CI verifies React 18 and 19 across Node 20, 22 and 24, including server
+CI verifies React 18 and 19 across Node 22, 24 and 26, including server
 rendering and hydration.
 
 Upgrading from 0.x? See the [migration guide](https://github.com/fedoryakubovich/react-awesome-stars-rating/blob/main/MIGRATION.md).
