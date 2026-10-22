@@ -5,14 +5,15 @@ on:
     branches: ['main']
     types: [opened, reopened, synchronize]
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
 
 jobs:
   auto-merge:
     if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Fetch update metadata
         id: metadata
