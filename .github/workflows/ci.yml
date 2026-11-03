@@ -4,6 +4,8 @@ on:
   push:
     branches: ['main']
   pull_request:
+  # Started by post-merge-checks.yml after a bot merge, which fires no push event.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -29,7 +31,9 @@ jobs:
       - run: npm run format
       - run: npm run lint
       - run: npm run verify:lint
+      # A manual run has no commit range; the merged commits were linted on their PR.
       - name: Validate commit messages
+        if: github.event_name != 'workflow_dispatch'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: npm run commitlint -- --from="$BASE_SHA" --to=HEAD
@@ -118,7 +122,9 @@ jobs:
         run: test "${{ needs.consumer-matrix.result }}" = success
 
   release:
-    if: github.event_name == 'push'
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     needs: [build-test, browser-test, consumer-test]
     runs-on: ubuntu-latest
     timeout-minutes: 15
