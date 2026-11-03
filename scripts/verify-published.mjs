@@ -59,8 +59,10 @@ const tag = `refs/tags/v${version}`;
 const refs = run('git', ['ls-remote', repository, tag, `${tag}^{}`])
   .split('\n')
   .map((line) => line.split(/\s+/));
-const commit = (refs.find(([, ref]) => ref === `${tag}^{}`) ??
-  refs.find(([, ref]) => ref === tag))?.[0];
+const commit = (
+  refs.find(([, ref]) => ref === `${tag}^{}`) ??
+  refs.find(([, ref]) => ref === tag)
+)?.[0];
 assert.match(commit ?? '', /^[a-f0-9]{40}$/, 'release tag is missing');
 if (process.env.EXPECTED_COMMIT)
   assert.equal(
