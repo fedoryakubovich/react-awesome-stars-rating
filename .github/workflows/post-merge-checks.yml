@@ -1,0 +1,38 @@
+name: Post-merge checks
+
+# Dependabot pull requests are merged by auto-merge with GITHUB_TOKEN, and
+# GitHub fires no push event for those merges. Without this workflow, main
+# would get no CI (and so no release), CodeQL or Scorecard run after them.
+# workflow_dispatch is the one event GITHUB_TOKEN is allowed to start.
+#
+# pull_request_target is safe here: the job checks out nothing and passes
+# no pull request data to the commands it runs.
+on:
+  pull_request_target:
+    branches: ['main']
+    types: [closed]
+
+permissions: {}
+
+concurrency:
+  group: post-merge-checks
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.merged_by.login == 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Run main-branch workflows
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          for workflow in ci.yml codeql.yml scorecard.yml docs-health.yml; do
+            gh workflow run "$workflow" --ref main
+          done
