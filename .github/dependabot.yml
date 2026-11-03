@@ -15,13 +15,13 @@ updates:
       prefix-development: chore
       include: scope
     # Keep unsupported toolchain majors from repeatedly opening PRs that cannot
-    # pass npm's peer-dependency resolution. Remove these entries when the
-    # corresponding ESLint and TypeScript plugins add support.
+    # pass CI. Remove an entry once its blocker ships support:
+    # - eslint: eslint-plugin-react does not accept the next major yet.
+    # - conventional-changelog-conventionalcommits: the next major needs
+    #   conventional-changelog-writer@9, which
+    #   @semantic-release/release-notes-generator does not use yet.
     ignore:
       - dependency-name: eslint
-        update-types:
-          - version-update:semver-major
-      - dependency-name: typescript
         update-types:
           - version-update:semver-major
       - dependency-name: conventional-changelog-conventionalcommits
